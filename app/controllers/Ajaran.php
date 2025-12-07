@@ -6,6 +6,7 @@ class Ajaran extends Controller {
         $data['title'] = 'Data Tahun Ajaran';
         $data['ajaran'] = $this->model('Ajaran_model')->tampil();
         
+        
         $this->view('templates/header', $data);
         $this->view('templates/topbar');
         $this->view('templates/sidebar');
