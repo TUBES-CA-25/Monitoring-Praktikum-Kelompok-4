@@ -63,4 +63,5 @@ class User extends Controller {
         header('Location: '.BASEURL. '/user');
         exit;
     }
+
 }

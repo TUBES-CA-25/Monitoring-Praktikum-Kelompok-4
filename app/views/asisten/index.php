@@ -137,50 +137,63 @@
 
 
                             <!-- BAGIAN USER DATA USER INDIVIDU -->
-                            <?php if ($_SESSION['role'] == 'Asisten') : ?>                             
-                              <table class="table table-hover table-borderless">
-                                <tbody>
-                                    <?php foreach ($data['user'] as $user) : ?>
-                                      <tr>
-                                        <td width="30%">Username</td>
-                                        <td><?= $user['username']; ?></td>
-                                      </tr>
-                                      <?php endforeach; ?>
-                                    <?php foreach ($data['asisten'] as $asisten) : ?>
-                                      <tr>
-                                        <td>Stambuk</td>
-                                        <td><?= $asisten['stambuk']; ?></td>
-                                      </tr>
-                                      <?php endforeach; ?>
-                                      <?php foreach ($data['user'] as $user) : ?>
-                                      <tr>
-                                        <td>Nama</td>
-                                        <td><?= $user['nama_user']; ?></td>
-                                      </tr>
-                                      <?php endforeach; ?>
-                                      <?php foreach ($data['asisten'] as $asisten) : ?>
-                                      <tr>
-                                        <td>Angkatan</td>
-                                        <td><?= $asisten['angkatan']; ?></td>
-                                      </tr>
-                                      <tr>
-                                        <td>Jenis Kelamin</td>
-                                        <td><?= $asisten['jenis_kelamin']; ?></td>
-                                      </tr>
-                                      <tr>
-                                        <td>Tanda Tangan</td>
-                                        <!-- <td class="text-center"><img src="<?= BASEURL; ?>/<?= $asisten['photo_profil'] ?>" alt="Foto" style="max-width: 100px; max-height: 100px;"></td> -->
-                                        <td><img src="<?= BASEURL; ?>/<?= $asisten['photo_path'] ?>" alt="Foto" style="max-width: 100px; max-height: 100px;"></td>
-                                      </tr>
-                                      <tr>
-                                        <td colspan="2">
-                                            <a class="btn btn-primary btn-sm button-style text-center" onclick="change('User', '<?= $user['id_user']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
-                                        </td>
-                                      </tr>
-                                    <?php endforeach; ?>
-                                </tbody>
-                              </table>
-                              <?php endif; ?>
+                            <?php if ($_SESSION['role'] == 'Asisten') : ?>
+  
+                            <?php 
+                                // Cek apakah data ada isinya untuk menghindari error offset
+                                $u = isset($data['user'][0]) ? $data['user'][0] : null; 
+                                $a = isset($data['asisten'][0]) ? $data['asisten'][0] : null;
+                            ?>
+
+                            <?php if ($u && $a): // Pastikan data user & asisten tersedia ?>
+                            <table class="table table-hover table-borderless">
+                              <tbody>
+                                  <tr>
+                                    <td width="30%">Username</td>
+                                    <td><?= $u['username']; ?></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Stambuk</td>
+                                    <td><?= $a['stambuk']; ?></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Nama</td>
+                                    <td><?= $a['nama_asisten']; ?></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Angkatan</td>
+                                    <td><?= $a['angkatan']; ?></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Jenis Kelamin</td>
+                                    <td><?= $a['jenis_kelamin']; ?></td>
+                                  </tr>
+                                  <tr>
+                                    <td>Tanda Tangan</td>
+                                    <td>
+                                      <?php if (!empty($a['photo_path'])): ?>
+                                          <img src="<?= BASEURL; ?>/<?= $a['photo_path'] ?>" alt="Foto" style="max-width: 100px; max-height: 100px;">
+                                      <?php else: ?>
+                                          -
+                                      <?php endif; ?>
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <td colspan="2" class="text-center">
+                                        <a href="javascript:void(0);" 
+                                          class="btn btn-primary btn-sm button-style" 
+                                          data-bs-toggle="modal" 
+                                          data-bs-target="#myModal"
+                                          onclick="change('User', '<?= $u['id_user']; ?>')">
+                                          <i class="fa fa-edit"></i> Edit Profil
+                                        </a>
+                                    </td>
+                                  </tr>
+                              </tbody>
+                            </table>
+                            <?php endif; ?>
+
+                          <?php endif; ?>
                               <!-- AKHIR BAGIAN USER -->
 
 
