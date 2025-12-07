@@ -37,6 +37,13 @@
               <i class="fas fa-sign-out-alt"></i> Logout
           </a>
       </li>
+      <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0);" 
+             data-bs-toggle="modal" data-bs-target="#myModal"
+             onclick="change('User', '<?= $_SESSION['id_user']; ?>')">
+              <i class="fas fa-user"></i> Profil
+          </a>
+      </li>
     </ul>
   </nav>
   <!-- /.navbar -->

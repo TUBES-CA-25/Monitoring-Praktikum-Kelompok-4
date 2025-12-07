@@ -169,9 +169,12 @@ class Asisten_model {
     }
 
     public function getAsistenDetails($id_user) {
-        $this->db->query("CALL getAsistenDetails(:id_user)");
-        $this->db->bind(':id_user', $id_user);
-        $result = $this->db->resultSet();
-        return $result;
+        // PERBAIKAN: Gunakan SELECT biasa, JANGAN pakai CALL
+        $this->db->query("SELECT * FROM mst_asisten 
+                          JOIN mst_user ON mst_asisten.id_user = mst_user.id_user 
+                          WHERE mst_user.id_user = :id_user");
+        
+        $this->db->bind('id_user', $id_user);
+        return $this->db->resultSet(); 
     }
 }

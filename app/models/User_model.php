@@ -17,45 +17,38 @@ class User_model{
 
         return $this->db->rowCount();
     }
-    // public function prosesUbah($data){
-    //     $this->db->query("UPDATE mst_user 
-    //                     SET 
-    //                         nama_user = :nama_user, 
-    //                         username = :username, 
-    //                         password = :password, 
-    //                         role = :role 
-    //                     WHERE 
-    //                         id_user = :id_user;");
 
-    //     $this->db->bind('nama_user', $data['nama_user']);
-    //     $this->db->bind('username', $data['username']);
-    //     $this->db->bind('password', $data['password']);
-    //     $this->db->bind('role', $data['role']);
-    //     $this->db->bind('id_user', $data['id_user']);
-    
-    //     $this->db->execute();
-    
-    //     return $this->db->rowCount();
-    // }
     public function prosesUbah($data){
-        $this->db->query("UPDATE mst_user 
-                          SET 
-                              nama_user = :nama_user, 
-                              username = :username, 
-                              password = :password, 
-                              role = :role 
-                          WHERE 
-                              id_user = :id_user;");
-    
+        if (!empty($data['password'])) {
+            $query = "UPDATE mst_user 
+                      SET nama_user = :nama_user, 
+                          username = :username, 
+                          password = :password, 
+                          role = :role 
+                      WHERE id_user = :id_user";
+        } else {
+            $query = "UPDATE mst_user 
+                      SET nama_user = :nama_user, 
+                          username = :username, 
+                          role = :role 
+                      WHERE id_user = :id_user";
+        }
+
+        $this->db->query($query);
         $this->db->bind('nama_user', $data['nama_user']);
         $this->db->bind('username', $data['username']);
-        $this->db->bind('password', $data['password']);
-        $this->db->bind('role', isset($data['role']) ? $data['role'] : ''); // Pastikan role tidak kosong jika tidak diubah
+        $this->db->bind('role', $data['role']);
         $this->db->bind('id_user', $data['id_user']);
-    
-        $this->db->execute();
-    
-        return $this->db->rowCount();
+
+        if (!empty($data['password'])) {
+            $this->db->bind('password', $data['password']);
+        }
+        try {
+            $this->db->execute();
+            return true; 
+        } catch (PDOException $e) {
+            return false;
+        }
     }
     
     public function tampil(){
@@ -87,12 +80,15 @@ class User_model{
         $this->db->query("SELECT COUNT(*) as jumlah FROM mst_user");
         $result = $this->db->single();
         return $result['jumlah'];
-    }    
+    } 
+
     public function getUserDetails($id_user) {
-        $this->db->query("CALL getUserDetails(:id_user)");
-        $this->db->bind(':id_user', $id_user);
-        $result = $this->db->resultSet();
+        // PERBAIKAN: Gunakan SELECT biasa dengan LEFT JOIN
+        $this->db->query("SELECT * FROM mst_user 
+                          LEFT JOIN mst_asisten ON mst_user.id_user = mst_asisten.id_user 
+                          WHERE mst_user.id_user = :id_user");
         
-        return $result;
+        $this->db->bind(':id_user', $id_user);
+        return $this->db->resultSet();
     }
 }
