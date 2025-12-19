@@ -2,7 +2,7 @@
 
 // 1. Setting URL (Sesuaikan dengan nama folder di htdocs)
 // Jika nama folder di htdocs adalah 'monitoring', maka:
-define('BASEURL', 'http://localhost/monitoring');
+define('BASEURL', 'http://localhost/monitoring-praktikum');
 
 // 2. Setting Database (Default XAMPP)
 define('DB_HOST', 'localhost');
