@@ -1,3 +1,6 @@
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -123,8 +126,137 @@
               <!-- /.card-body -->
             </div>
           </div>
+          <?php if ($_SESSION['role'] == 'Asisten') : ?>
+          <div class="row">
+            <!-- ================= LEFT : KALENDER ================= -->
+            <div class="col-md-8">
+              <div class="card">
+                <div class="card-header">
+                  <h3 class="card-title">
+                    <i class="fas fa-calendar-alt"></i> Kalender Monitoring Praktikum
+                  </h3>
+                </div>
+
+                <div class="card-body">
+                  <!-- FULLCALENDAR -->
+                  <div id="calendar-monitoring" style="min-height:420px;"></div>
+
+                  <!-- LEGEND -->
+                  <div class="mt-3">
+                    <span class="badge bg-success">Monitoring Selesai</span>
+                    <span class="badge bg-danger">Belum Diisi</span>
+                    <span class="badge bg-warning">Hari Ini</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ================= RIGHT : SIDE PANEL ================= -->
+            <div class="col-md-4">
+
+              <!-- ===== MONITORING HARI INI ===== -->
+              <div class="card">
+                <div class="card-header bg-warning">
+                  <h3 class="card-title">
+                    <i class="fas fa-clock"></i> Monitoring Hari Ini
+                  </h3>
+                </div>
+
+                <div class="card-body">
+                  <?php if (!empty($data['monitoringHariIni'])) : ?>
+                    <p><strong>Mata Kuliah:</strong><br>
+                      <?= $data['monitoringHariIni']['nama_matkul']; ?>
+                    </p>
+
+                    <p><strong>Jam:</strong><br>
+                      <?= $data['monitoringHariIni']['jam_mulai']; ?> -
+                      <?= $data['monitoringHariIni']['jam_selesai']; ?>
+                    </p>
+
+                    <p><strong>Laboratorium:</strong><br>
+                      <?= $data['monitoringHariIni']['ruangan']; ?>
+                    </p>
+
+                    <a href="<?= BASEURL; ?>/monitoring/isi/<?= $data['monitoringHariIni']['id_jadwal']; ?>"
+                      class="btn btn-primary btn-block">
+                      <i class="fas fa-edit"></i> Isi Monitoring
+                    </a>
+                  <?php else : ?>
+                    <p class="text-muted text-center">
+                      Tidak ada jadwal hari ini
+                    </p>
+                  <?php endif; ?>
+                </div>
+              </div>
+
+              <!-- ===== AKTIVITAS TERAKHIR ===== -->
+              <div class="card mt-3">
+                <div class="card-header bg-info">
+                  <h3 class="card-title">
+                    <i class="fas fa-history"></i> Aktivitas Terakhir
+                  </h3>
+                </div>
+
+                <div class="card-body p-0">
+                  <ul class="list-group list-group-flush">
+                    <?php if (!empty($data['aktivitasTerakhir'])) : ?>
+                      <?php foreach ($data['aktivitasTerakhir'] as $a) : ?>
+                        <li class="list-group-item">
+                          <strong><?= $a['nama_matkul']; ?></strong><br>
+                          <small>
+                            <?= $a['ruangan']; ?> • <?= $a['tanggal']; ?>
+                          </small>
+                          <span class="badge bg-success float-right">
+                            Selesai
+                          </span>
+                        </li>
+                      <?php endforeach; ?>
+                    <?php else : ?>
+                      <li class="list-group-item text-muted text-center">
+                        Belum ada aktivitas
+                      </li>
+                    <?php endif; ?>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- ================= FULLCALENDAR SCRIPT ================= -->
+          <script>
+          document.addEventListener('DOMContentLoaded', function () {
+
+            const calendarEl = document.getElementById('calendar-monitoring');
+            if (!calendarEl) return;
+
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+              initialView: 'dayGridMonth',
+              locale: 'id',
+              height: 420,
+              firstDay: 1,
+
+              events: {
+                url: "<?= BASEURL ?>/dashboard/calendarAsisten",
+                method: "GET"
+              },
+
+              eventDidMount: function(info) {
+                info.el.setAttribute('title', info.event.title);
+              },
+
+              eventClick: function(info) {
+                const idJadwal = info.event.extendedProps.id_jadwal;
+                window.location.href =
+                  "<?= BASEURL ?>/monitoring/isi/" + idJadwal;
+              }
+            });
+
+            calendar.render();
+          });
+          </script>
+          <?php endif; ?>
           <!-- /.col -->
-           
           <?php if ($_SESSION['role'] == 'Admin') : ?>
           <div class="col-md-4">
             <!-- Info Boxes Style 2 -->

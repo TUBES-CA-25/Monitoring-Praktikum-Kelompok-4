@@ -165,4 +165,33 @@ class Mentoring_model{
         $result = $this->db->single();
         return $result['count'];
     }
+
+    public function getHariIni($id_asisten) {
+        $this->db->query("
+            SELECT j.id_jadwal, m.nama_matkul, j.jam_mulai, j.jam_selesai, r.nama_ruangan
+            FROM jadwal_praktikum j
+            JOIN mst_matakuliah m ON j.id_matkul = m.id_matkul
+            JOIN mst_ruangan r ON j.id_ruangan = r.id_ruangan
+            WHERE j.id_asisten = :id
+              AND j.tanggal = CURDATE()
+            LIMIT 1
+        ");
+        $this->db->bind('id', $id_asisten);
+        return $this->db->single();
+    }
+
+    public function getAktivitasTerakhir($id_asisten) {
+        $this->db->query("
+            SELECT m.nama_matkul, r.nama_ruangan, mon.tanggal
+            FROM monitoring mon
+            JOIN jadwal_praktikum j ON mon.id_jadwal = j.id_jadwal
+            JOIN mst_matakuliah m ON j.id_matkul = m.id_matkul
+            JOIN mst_ruangan r ON j.id_ruangan = r.id_ruangan
+            WHERE mon.id_asisten = :id
+            ORDER BY mon.tanggal DESC
+            LIMIT 5
+        ");
+        $this->db->bind('id', $id_asisten);
+        return $this->db->resultSet();
+    }
 }
