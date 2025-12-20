@@ -184,24 +184,48 @@
               </div>
             </div>
           </div>
-        <?php elseif ($_SESSION['role'] == 'Admin') : ?>
-          <div class="tab-pane fade show active" id="jadwal-frekuensi2" role="tabpanel" aria-labelledby="jadwal-frekuensi2-tab">
-            <!-- Konten untuk Jadwal Frekuensi Keseluruhan -->
-            <div class="row">
-              <div class="col-md-12">
-                <div class="card">
-                  <div class="card-header">
-                    <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary button-style" onclick="add('Frekuensi')">Tambah</a>
-                    <div class="card-tools">
-                      <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                        <i class="fas fa-minus"></i>
-                      </button>
-                      <button type="button" class="btn btn-tool" data-card-widget="remove">
-                        <i class="fas fa-times"></i>
-                      </button>
-                    </div>
-                  </div>
-                  <div class="card-body p-0">
+          <?php elseif ($_SESSION['role'] == 'Admin') : ?>
+            <div class="tab-pane fade show active" id="jadwal-frekuensi2" role="tabpanel" aria-labelledby="jadwal-frekuensi2-tab">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="card">
+                    <div class="card-header">
+                      <div class="d-flex justify-content-between align-items-center">
+                      <div class="filter-section">
+                <form action="<?= BASEURL; ?>/Frekuensi" method="post" class="form-inline">
+                    <select name="id_tahun_filter" class="form-control form-control-sm mr-2">
+                        <option value="">-- Semua Tahun Ajaran --</option>
+                        <?php foreach ($data['ajaranOptions'] as $ajaran) : ?>
+                            <option value="<?= $ajaran['id_tahun']; ?>" 
+                                <?php 
+                                    // Logika agar pilihan tetap 'selected' setelah halaman reload
+                                    if(isset($_POST['id_tahun_filter']) && $_POST['id_tahun_filter'] == $ajaran['id_tahun']) {
+                                        echo 'selected';
+                                    } 
+                                ?>>
+                                <?= $ajaran['tahun_ajaran']; ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    
+                    <button type="submit" class="btn btn-info btn-sm">
+                        <i class="fas fa-filter"></i> Filter
+                    </button>
+                    
+                    <a href="<?= BASEURL; ?>/Frekuensi" class="btn btn-secondary btn-sm ml-1">
+                        <i class="fas fa-sync"></i> Reset
+                    </a>
+                </form>
+            </div>
+
+                        <div class="button-section">
+                              <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary btn-sm button-style" onclick="add('Frekuensi')">Tambah</a>
+                            </div>
+                          </div>
+                          
+                          </div> 
+
+                        <div class="card-body p-0">
                     <div class="d-md-flex">
                       <div class="p-1 flex-fill" style="overflow: hidden">
                         <div id="world-map-markers">
