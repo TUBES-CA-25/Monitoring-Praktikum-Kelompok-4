@@ -194,4 +194,29 @@ class Mentoring_model{
         $this->db->bind('id', $id_asisten);
         return $this->db->resultSet();
     }
+
+    public function getCalendarAsisten($id_asisten)
+    {
+        $this->db->query("
+            SELECT
+                tm.id_mentoring,
+                tm.tanggal,
+                tm.status_dosen,
+                tm.id_asisten_pengganti,
+
+                f.id_frekuensi,
+                mk.nama_matkul,
+                r.nama_ruangan
+            FROM trs_frekuensi f
+            JOIN mst_matakuliah mk ON f.id_matkul = mk.id_matkul
+            JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
+            LEFT JOIN trs_mentoring tm 
+                ON tm.id_frekuensi = f.id_frekuensi
+            WHERE f.id_asisten1 = :id_asisten
+        ");
+
+        $this->db->bind('id_asisten', $id_asisten);
+        return $this->db->resultSet();
+    }
+
 }
