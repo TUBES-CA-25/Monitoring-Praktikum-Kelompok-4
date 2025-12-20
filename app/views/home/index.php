@@ -225,36 +225,37 @@
 
           <!-- ================= FULLCALENDAR SCRIPT ================= -->
           <script>
-          document.addEventListener('DOMContentLoaded', function () {
+            document.addEventListener('DOMContentLoaded', function () {
 
-            const calendarEl = document.getElementById('calendar-monitoring');
-            if (!calendarEl) return;
+              const calendarEl = document.getElementById('calendar-monitoring');
+              if (!calendarEl) return;
 
-            const calendar = new FullCalendar.Calendar(calendarEl, {
-              initialView: 'dayGridMonth',
-              locale: 'id',
-              height: 420,
-              firstDay: 1,
+              const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'id',
+                height: 420,
+                firstDay: 1,
 
-              events: {
-                url: "<?= BASEURL ?>/dashboard/calendarAsisten",
-                method: "GET"
-              },
+                events: "<?= BASEURL ?>/dashboard/calendarAsisten",
 
-              eventDidMount: function(info) {
-                info.el.setAttribute('title', info.event.title);
-              },
+                eventDidMount: function(info) {
+                  info.el.setAttribute(
+                    'title',
+                    info.event.title + ' | ' + info.event.extendedProps.ruangan
+                  );
+                },
 
-              eventClick: function(info) {
-                const idJadwal = info.event.extendedProps.id_jadwal;
-                window.location.href =
-                  "<?= BASEURL ?>/monitoring/isi/" + idJadwal;
-              }
+                eventClick: function(info) {
+                  const idFrekuensi = info.event.extendedProps.id_frekuensi;
+                  window.location.href =
+                    "<?= BASEURL ?>/monitoring/isi/" + idFrekuensi;
+                }
+              });
+
+              calendar.render();
             });
-
-            calendar.render();
-          });
           </script>
+          
           <?php endif; ?>
           <!-- /.col -->
           <?php if ($_SESSION['role'] == 'Admin') : ?>
