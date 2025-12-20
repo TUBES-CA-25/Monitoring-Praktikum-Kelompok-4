@@ -1,4 +1,4 @@
-﻿#Sistem Monitoring Praktikum Laboratorium FIKOM UMI
+##﻿# **Sistem Monitoring Praktikum Laboratorium FIKOM UMI**
 
 ### Kelompok 4
 ### - Zaki Falihin Ayyubi
@@ -79,11 +79,6 @@ monitoring-praktikum/
 - Definisi: Jembatan atau penghubung antara Model dan View.
 - Peran Utama: Menerima permintaan (request) dari pengguna (misal: klik tombol Filter), meminta data ke Model, lalu mengirimkan hasilnya ke View untuk ditampilkan. Controller mengatur "lalu lintas" logika aplikasi.
 
-: Logika utama aplikasi (Controllers, Models, Views).
-  * config/ : Konfigurasi database dan base URL.
-  * controllers/ : Penghubung alur logika.
-  * views/ : Tampilan antarmuka (HTML/PHP).
-* public/ : File yang diakses public (CSS, JS, Images, Index.php).
 
 ##  Role & Akses Login
 
@@ -94,8 +89,9 @@ Aplikasi ini memiliki 3 jenis user dengan hak akses berbeda:
 | Admin | Full access (kelola semua data) |
 | Asisten | Edit Profil & Input, Edit kegiatan monitoring |
 
-** LINK WIREFRAME, UI/UX : https://www.figma.com/design/4NRVbxZMbC3GH0vDGgKXw1/Tubes-Monitoring-Praktikum?node-id=0-1&p=f&t=wp3gnwP24i3hwVg0-0
-** LINK FLOWCHART, USE CASE, ACTIVITY DIAGRAM, ERD : https://app.diagrams.net/?src=about#G1STQ8m5rozE-dUxZWm64ATBabYVF9YJAM#%7B%22pageId%22%3A%22Sj3gRpXGsk_He88CJsHY%22%7D
+**LINK WIREFRAME, UI/UX** : https://www.figma.com/design/4NRVbxZMbC3GH0vDGgKXw1/Tubes-Monitoring-Praktikum?node-id=0-1&p=f&t=wp3gnwP24i3hwVg0-0
+**LINK FLOWCHART, USE CASE, ACTIVITY DIAGRAM, ERD** : https://app.diagrams.net/?src=about#G1STQ8m5rozE-dUxZWm64ATBabYVF9YJAM#%7B%22pageId%22%3A%22Sj3gRpXGsk_He88CJsHY%22%7D
+
 
 
 
