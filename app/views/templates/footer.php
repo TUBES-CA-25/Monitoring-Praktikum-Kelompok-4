@@ -210,8 +210,6 @@
     $('#myModal').modal('show');
 });
 
-<<<<<<< HEAD
-=======
 function hapusMentoring(idMentoring, idFrekuensi) {
         $('.modal-title').html('Hapus Data Mentoring');
         $('.modal-body').html(`
@@ -226,7 +224,6 @@ function hapusMentoring(idMentoring, idFrekuensi) {
         `);
     }
 
->>>>>>> appyx
 </script>
 </body>
 </html>
