@@ -1,0 +1,15 @@
+Thumbs.db
+Desktop.ini
+.DS_Store
+*.log
+
+public/img/uploads/*
+!public/img/uploads/.gitkeep
+
+public/template/docs/
+public/template/build/
+public/template/.github/
+
+public/template/pages/
+
+*.sql

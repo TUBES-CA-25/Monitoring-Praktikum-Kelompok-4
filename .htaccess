@@ -1,0 +1,9 @@
+Options -Multiviews
+RewriteEngine On
+
+# Ensure that access to existing files and directories is not rewritten
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redirect all other requests to index.php
+RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]
