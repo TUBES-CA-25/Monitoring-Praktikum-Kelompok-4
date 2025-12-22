@@ -1,66 +1,5 @@
 <div class="container">
     <form id="formUbahMentoring" action="<?= BASEURL?>/Mentoring/prosesUbah" method="post" autocomplete="off">
-<<<<<<< HEAD
-    <input type="hidden" value="<?= $data['ubahdata']['id_mentoring']?>" name="id_mentoring">
-        <div class="row">
-            <div class="col-12">
-                <div class="form-group mb-1">
-                    <label for="tanggal" class="form-label">Tanggal</label>
-                    <input type="date" name="tanggal" class="form-control " value="<?= $data['ubahdata']['tanggal']?>" >
-                </div>
-                <div class="form-group mb-1">
-                    <label for="uraian_materi" class="form-label">Uraian Materi</label>
-                    <textarea name="uraian_materi" class="form-control"><?= $data['ubahdata']['uraian_materi'] ?></textarea>
-                </div>
-                <div class="form-group mb-1">
-                    <label for="uraian_tugas" class="form-label">Uraian Tugas</label>
-                    <textarea name="uraian_tugas" class="form-control"><?= $data['ubahdata']['uraian_tugas'] ?></textarea>
-                </div>
-                <div class="form-group mb-1">
-                    <label for="id_dosen" class="form-label">Dosen</label>
-                    <select name="id_dosen" class="form-control ">
-                        <?php
-                        foreach ($data['dosenOptions'] as $dosen) {
-                            $selected = ($dosen['id_dosen'] == $data['ubahdata']['id_dosen']) ? 'selected' : '';
-                            echo "<option value='{$dosen['id_dosen']}' {$selected}>{$dosen['nama_dosen']}</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="form-group mb-1">
-                    <label for="id_asisten1" class="form-label">Asisten 1</label>
-                    <select name="id_asisten1" class="form-control ">
-                        <?php
-                        foreach ($data['asistenOptions'] as $asisten) {
-                            $selected = ($asisten['id_asisten'] == $data['ubahdata']['id_asisten1']) ? 'selected' : '';
-                            echo "<option value='{$asisten['id_asisten']}' {$selected}>{$asisten['nama_asisten']}</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="form-group mb-1">
-                    <label for="id_asisten2" class="form-label">Asisten 2</label>
-                    <select name="id_asisten2" class="form-control ">
-                        <?php
-                        foreach ($data['asistenOptions'] as $asisten) {
-                            $selected = ($asisten['id_asisten'] == $data['ubahdata']['id_asisten2']) ? 'selected' : '';
-                            echo "<option value='{$asisten['id_asisten']}' {$selected}>{$asisten['nama_asisten']}</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-                <!-- <div class="form-group mb-1">
-                    <label for="id_asisten_pengganti" class="form-label">Asisten Pengganti</label>
-                    <select name="id_asisten_pengganti" class="form-control ">
-                        <?php
-                        foreach ($data['asistenOptions'] as $asisten) {
-                            $selected = ($asisten['id_asisten'] == $data['ubahdata']['id_asisten_pengganti']) ? 'selected' : '';
-                            echo "<option value='{$asisten['id_asisten']}' {$selected}>{$asisten['nama_asisten']}</option>";
-                        }
-                        ?>
-                    </select>
-                </div> -->
-=======
         <input type="hidden" value="<?= $data['ubahdata']['id_mentoring']?>" name="id_mentoring">
         <input type="hidden" value="<?= $data['ubahdata']['id_frekuensi']?>" name="id_frekuensi">
 
@@ -124,12 +63,10 @@
                     </div>
                 </div>
 
->>>>>>> appyx
                 <div class="form-group mb-1">
                     <label for="id_asisten_pengganti" class="form-label">Asisten Pengganti</label>
                     <select name="id_asisten_pengganti" class="form-control">
                         <option value="">Tidak ada asisten pengganti</option>
-<<<<<<< HEAD
                         <?php
                         foreach ($data['asistenOptions'] as $asisten) {
                             $selected = ($asisten['id_asisten'] == $data['ubahdata']['id_asisten_pengganti']) ? 'selected' : '';
@@ -174,22 +111,6 @@
                 <br>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">Ubah</button>
-=======
-                        <?php foreach ($data['asistenOptions'] as $asisten) : ?>
-                            <?php 
-                            // Logic agar dropdown terpilih sesuai data lama
-                            $selected = ($asisten['id_asisten'] == $data['ubahdata']['id_asisten_pengganti']) ? 'selected' : ''; 
-                            ?>
-                            <option value="<?= $asisten['id_asisten']; ?>" <?= $selected; ?>>
-                                <?= $asisten['nama_asisten']; ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
->>>>>>> appyx
                     <button type="button" class="btn btn-secondary ml-2" data-bs-dismiss="modal">Batal</button>
                 </div>
             </div>
