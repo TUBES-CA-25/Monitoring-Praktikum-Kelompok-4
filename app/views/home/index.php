@@ -1,6 +1,3 @@
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -19,7 +16,6 @@
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
-
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
@@ -219,43 +215,8 @@
                   </ul>
                 </div>
               </div>
-
             </div>
-          </div>
-
-          <!-- ================= FULLCALENDAR SCRIPT ================= -->
-          <script>
-            document.addEventListener('DOMContentLoaded', function () {
-
-              const calendarEl = document.getElementById('calendar-monitoring');
-              if (!calendarEl) return;
-
-              const calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth',
-                locale: 'id',
-                height: 420,
-                firstDay: 1,
-
-                events: "<?= BASEURL ?>/dashboard/calendarAsisten",
-
-                eventDidMount: function(info) {
-                  info.el.setAttribute(
-                    'title',
-                    info.event.title + ' | ' + info.event.extendedProps.ruangan
-                  );
-                },
-
-                eventClick: function(info) {
-                  const idFrekuensi = info.event.extendedProps.id_frekuensi;
-                  window.location.href =
-                    "<?= BASEURL ?>/monitoring/isi/" + idFrekuensi;
-                }
-              });
-
-              calendar.render();
-            });
-          </script>
-          
+          </div>          
           <?php endif; ?>
           <!-- /.col -->
           <?php if ($_SESSION['role'] == 'Admin') : ?>
