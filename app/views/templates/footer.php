@@ -210,6 +210,23 @@
     $('#myModal').modal('show');
 });
 
+<<<<<<< HEAD
+=======
+function hapusMentoring(idMentoring, idFrekuensi) {
+        $('.modal-title').html('Hapus Data Mentoring');
+        $('.modal-body').html(`
+            <div class="text-center mb-3">
+                <p>Apakah Anda yakin ingin menghapus data mentoring ini?</p>
+            </div>
+            <div class="text-center">
+                <a href="<?= BASEURL ?>/Mentoring/prosesHapus/${idMentoring}/${idFrekuensi}" class="btn btn-danger">Hapus</a>
+                
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        `);
+    }
+
+>>>>>>> appyx
 </script>
 </body>
 </html>

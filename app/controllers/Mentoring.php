@@ -19,7 +19,11 @@ class Mentoring extends Controller {
         $data['ruanganOptions'] = $this->model('Mentoring_model')->tampilRuangan();
         $data['frekuensiOptions'] = $this->model('Frekuensi_model')->detailFrekuensi($id_frekuensi);
 
+<<<<<<< HEAD
         $this->view('frekuensi/tambah_mentoring', $data);
+=======
+        $this->view('mentoring/tambah_mentoring', $data);
+>>>>>>> appyx
     }
     public function tambah(){
         $data['dosenOptions'] = $this->model('Mentoring_model')->tampilDosen();
@@ -113,7 +117,11 @@ class Mentoring extends Controller {
         $data['ruanganOptions'] = $this->model('Mentoring_model')->tampilRuangan();
         $data['ubahdata'] = $this->model('Mentoring_model')->ubah($id);
 
+<<<<<<< HEAD
         $this->view('frekuensi/ubah_mentoring', $data);
+=======
+        $this->view('mentoring/ubah_mentoring', $data);
+>>>>>>> appyx
     }
     public function prosesUbah(){
         // Cek apakah ada baris yang berubah
@@ -131,6 +139,7 @@ class Mentoring extends Controller {
         header('Location: '.BASEURL. '/frekuensi/detail/' . $id_frekuensi);
         exit;
     }
+<<<<<<< HEAD
     public function hapus($id){
         if($this->model('Mentoring_model')->prosesHapus($id)){
             Flasher::setFlash(' berhasil dihapus', '', 'success');
@@ -138,6 +147,26 @@ class Mentoring extends Controller {
             Flasher::setFlash(' tidak berhasil dihapus', '', 'danger');
         }
         header('Location: '.BASEURL. '/mentoring');
+=======
+    // public function prosesHapus($id){
+    //     if($this->model('Mentoring_model')->prosesHapus($id)){
+    //         Flasher::setFlash(' berhasil dihapus', '', 'success');
+    //     }else{
+    //         Flasher::setFlash(' tidak berhasil dihapus', '', 'danger');
+    //     }
+    //     header('Location: '.BASEURL. '/mentoring');
+    //     exit;
+    // }
+
+    // Terima dua parameter: $id (untuk dihapus) dan $id_frekuensi (untuk redirect)
+    public function prosesHapus($id, $id_frekuensi){
+        if($this->model('Mentoring_model')->prosesHapus($id)){
+            Flasher::setFlash('berhasil dihapus', '', 'success');
+        } else {
+            Flasher::setFlash('tidak berhasil dihapus', '', 'danger');
+        }
+        header('Location: '.BASEURL. '/frekuensi/detail/' . $id_frekuensi);
+>>>>>>> appyx
         exit;
     }
 }
