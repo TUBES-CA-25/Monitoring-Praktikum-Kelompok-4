@@ -15,10 +15,73 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+DELIMITER $$
+CREATE PROCEDURE delete_user_with_references(IN p_id_user INT)
+BEGIN
+    DECLARE v_id_asisten INT;
+
+    -- Ambil id_asisten dari user
+    SELECT id_asisten
+    INTO v_id_asisten
+    FROM mst_asisten
+    WHERE id_user = p_id_user
+    LIMIT 1;
+
+    IF v_id_asisten IS NOT NULL THEN
+
+        -- 1️⃣ HAPUS trs_mentoring DULU
+        DELETE FROM trs_mentoring
+        WHERE id_frekuensi IN (
+            SELECT id_frekuensi
+            FROM trs_frekuensi
+            WHERE id_asisten1 = v_id_asisten
+               OR id_asisten2 = v_id_asisten
+        );
+
+        -- 2️⃣ HAPUS trs_frekuensi
+        DELETE FROM trs_frekuensi
+        WHERE id_asisten1 = v_id_asisten
+           OR id_asisten2 = v_id_asisten;
+
+        -- 3️⃣ HAPUS mst_asisten
+        DELETE FROM mst_asisten
+        WHERE id_asisten = v_id_asisten;
+
+    END IF;
+
+    -- 4️⃣ HAPUS mst_user
+    DELETE FROM mst_user
+    WHERE id_user = p_id_user;
+
+END$$
+DELIMITER ;
+
+
+DELIMITER $$
+CREATE PROCEDURE delete_asisten_with_references(IN p_id_asisten INT)
+BEGIN
+    -- 1️⃣ Hapus mentoring yang terkait frekuensi asisten
+    DELETE FROM trs_mentoring
+    WHERE id_frekuensi IN (
+        SELECT id_frekuensi
+        FROM trs_frekuensi
+        WHERE id_asisten1 = p_id_asisten
+           OR id_asisten2 = p_id_asisten
+    );
+
+    -- 2️⃣ Hapus frekuensi yang melibatkan asisten
+    DELETE FROM trs_frekuensi
+    WHERE id_asisten1 = p_id_asisten
+       OR id_asisten2 = p_id_asisten;
+
+    -- 3️⃣ Hapus asisten
+    DELETE FROM mst_asisten
+    WHERE id_asisten = p_id_asisten;
+END$$
+DELIMITER ;
 --
 -- Table structure for table `mst_asisten`
 --
-
 DROP TABLE IF EXISTS `mst_asisten`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
