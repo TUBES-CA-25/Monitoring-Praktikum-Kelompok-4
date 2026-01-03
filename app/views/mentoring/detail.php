@@ -182,6 +182,14 @@
                                                                 data-id="<?= $mentoring['id_mentoring']; ?>"
                                                                 onclick="change('Mentoring', <?= $mentoring['id_mentoring']; ?>)"> Edit
                                                             </a>
+                                                            <br>
+                                                            <a href="javascript:void(0);" 
+                                                                class="badge badge-danger"
+                                                                data-bs-toggle="modal" 
+                                                                data-bs-target="#myModal"
+                                                                onclick="hapusMentoring('<?= $mentoring['id_mentoring']; ?>', '<?= $data['detail']['id_frekuensi']; ?>')"> 
+                                                                Hapus
+                                                            </a>
                                                         </td>
                                                     </tr>
                                                 <?php endforeach; 

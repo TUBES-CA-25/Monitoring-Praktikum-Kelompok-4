@@ -126,7 +126,7 @@ class Frekuensi extends Controller {
             $this->view('templates/header', $data);
             $this->view('templates/topbar');
             $this->view('templates/sidebar');
-            $this->view('frekuensi/detail', $data);
+            $this->view('mentoring/detail', $data);
             $this->view('templates/footer');
         } else {
             Flasher::setFlash('Data tidak ditemukan', '', 'danger');

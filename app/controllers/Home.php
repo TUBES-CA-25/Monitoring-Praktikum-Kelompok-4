@@ -19,8 +19,48 @@ class Home extends Controller {
         $this->view('templates/footer');        
     }
 
-    public function calendarAsisten() {
+    public function calendarAsisten()
+    {
         header('Content-Type: application/json');
-        echo json_encode([]);
+
+        $id_asisten = $_SESSION['id_user'];
+        $rows = $this->model('Mentoring_model')->getCalendarAsisten($id_asisten);
+
+        $events = [];
+
+        foreach ($rows as $row) {
+
+            // Skip jika belum ada tanggal (belum ada mentoring sama sekali)
+            if (empty($row['tanggal'])) {
+                continue;
+            }
+
+            // Default warna
+            $color = '#dc3545'; // merah = belum isi
+
+            if (!empty($row['id_mentoring'])) {
+                $color = '#28a745'; // hijau = selesai
+            }
+
+            if (!empty($row['id_asisten_pengganti'])) {
+                $color = '#fd7e14'; // oranye
+            }
+
+            $events[] = [
+                'title' => $row['nama_matkul'],
+                'start' => $row['tanggal'], // ⬅️ INI KUNCI
+                'backgroundColor' => $color,
+                'borderColor' => '#000',
+                'extendedProps' => [
+                    'id_frekuensi' => $row['id_frekuensi'],
+                    'ruangan' => $row['nama_ruangan'],
+                    'status' => !empty($row['id_mentoring']) ? 'done' : 'pending'
+                ]
+            ];
+        }
+
+        echo json_encode($events);
+        exit;
     }
+
 }

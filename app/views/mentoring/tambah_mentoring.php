@@ -2,6 +2,13 @@
     <div class="row">
         <div class="col-12">  
             <div class="form-group mb-1">
+                <label for="id_frekuensi" class="form-label">Frekuensi</label>
+                <select name="id_frekuensi" class="form-control">
+                    <option value="<?= $data['frekuensiOptions']['id_frekuensi']; ?>" selected><?= $data['frekuensiOptions']['frekuensi']; ?></option>
+                </select>
+            </div>
+            <div class="form-group mb-1">
+
                 <label for="text" class="form-label">Tanggal</label>
                 <?php
                     $tanggalHariIni = date("Y-m-d");
@@ -49,33 +56,6 @@
                     <option value="">Pilih Nama Asisten Pengganti</option>
                     <?php foreach ($data['asistenOptions'] as $asisten) : ?>
                         <option value="<?= $asisten['id_asisten']; ?>"><?= $asisten['nama_asisten']; ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="form-group mb-1">
-                <label for="id_matkul" class="form-label">Matakuliah</label>
-                <select name="id_matkul" class="form-control" required>
-                    <option value="">Pilih Matakuliah</option>
-                    <?php foreach ($data['matakuliahOptions'] as $matakuliah) : ?>
-                        <option value="<?= $matakuliah['id_matkul']; ?>"><?= $matakuliah['nama_matkul']; ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="form-group mb-1">
-                <label for="id_kelas" class="form-label">Kelas</label>
-                <select name="id_kelas" class="form-control" required>
-                    <option value="">Pilih Kelas</option>
-                    <?php foreach ($data['kelasOptions'] as $kelas) : ?>
-                        <option value="<?= $kelas['id_kelas']; ?>"><?= $kelas['kelas']; ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
-            <div class="form-group mb-1">
-                <label for="id_ruangan" class="form-label">Laboratorium</label>
-                <select name="id_ruangan" class="form-control" required>
-                    <option value="">Pilih Laboratorium</option>
-                    <?php foreach ($data['ruanganOptions'] as $ruangan) : ?>
-                        <option value="<?= $ruangan['id_ruangan']; ?>"><?= $ruangan['nama_ruangan']; ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

@@ -42,12 +42,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
-<!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 <script type="text/javascript" src="https://code.jquery.com/jquery-3.7.0.js"></script>
 
 <!-- REQUIRED SCRIPTS -->
 <!-- jQuery -->
-<!-- <script src="<?= BASEURL?>/public/js/jquery.min.js"></script> -->
+<script src="<?= BASEURL?>/public/js/jquery.min.js"></script>
 <script src="<?= BASEURL?>/public/template/plugins/jquery/jquery.min.js"></script>
 <!-- Bootstrap -->
 <script src="<?= BASEURL?>/public/template/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -66,7 +66,7 @@
 <script src="<?= BASEURL?>/public/template/plugins/chart.js/Chart.min.js"></script>
 
 <!-- AdminLTE for demo purposes -->
-<!-- <script src="<?= BASEURL?>/public/template/dist/js/demo.js"></script> -->
+<script src="<?= BASEURL?>/public/template/dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="<?= BASEURL?>/public/template/dist/js/pages/dashboard2.js"></script>
 <script src="//cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
@@ -82,9 +82,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/3.1.0/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/3.1.0/js/buttons.print.min.js"></script>
- 
-<script>
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
+<script>
     $(document).ready(function() {
       $('#example2').DataTable();
     });
@@ -210,6 +212,49 @@
     $('#myModal').modal('show');
 });
 
+function hapusMentoring(idMentoring, idFrekuensi) {
+        $('.modal-title').html('Hapus Data Mentoring');
+        $('.modal-body').html(`
+            <div class="text-center mb-3">
+                <p>Apakah Anda yakin ingin menghapus data mentoring ini?</p>
+            </div>
+            <div class="text-center">
+                <a href="<?= BASEURL ?>/Mentoring/prosesHapus/${idMentoring}/${idFrekuensi}" class="btn btn-danger">Hapus</a>
+                
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        `);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+
+      const calendarEl = document.getElementById('calendar-monitoring');
+      if (!calendarEl) return;
+
+      const calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        locale: 'id',
+        height: 420,
+        firstDay: 1,
+
+        events: "<?= BASEURL ?>/dashboard/calendarAsisten",
+
+      eventDidMount: function(info) {
+        info.el.setAttribute(
+        'title',
+          info.event.title + ' | ' + info.event.extendedProps.ruangan
+          );
+        },
+
+      eventClick: function(info) {
+          const idFrekuensi = info.event.extendedProps.id_frekuensi;
+            window.location.href =
+          "<?= BASEURL ?>/monitoring/isi/" + idFrekuensi;
+        }
+      });
+
+      calendar.render();
+    });
 </script>
 </body>
 </html>
