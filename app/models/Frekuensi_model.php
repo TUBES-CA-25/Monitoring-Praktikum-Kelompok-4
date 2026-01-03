@@ -10,9 +10,9 @@ class Frekuensi_model{
     
         $this->db->query("INSERT INTO trs_frekuensi
                             (frekuensi, id_jurusan, id_matkul, id_tahun, id_kelas, 
-                            hari, jam_mulai, jam_selesai, id_ruangan, 
+                            haVALUESri, jam_mulai, jam_selesai, id_ruangan, 
                             id_dosen, id_asisten1, id_asisten2) 
-                        VALUES 
+                         
                             (:frekuensi, :id_jurusan, :id_matkul, :id_tahun, :id_kelas, 
                             :hari, :jam_mulai, :jam_selesai, :id_ruangan, 
                             :id_dosen, :id_asisten1, :id_asisten2)");
@@ -116,7 +116,25 @@ class Frekuensi_model{
         return $this->db->resultSet();
     }
     
-    public function tampilDosen(){
+// Menampilkan data frekuensi berdasarkan filter tahun ajaran
+    public function tampilBerdasarkanTahun($id_tahun) {
+        $this->db->query("SELECT trs_frekuensi.*, mst_matakuliah.kode_matkul, mst_matakuliah.nama_matkul, 
+                          mst_tahun_ajaran.tahun_ajaran, mst_kelas.kelas, mst_ruangan.nama_ruangan, 
+                          mst_dosen.nama_dosen, a1.nama_asisten AS asisten_1, a2.nama_asisten AS asisten_2 
+                          FROM trs_frekuensi 
+                          JOIN mst_dosen ON trs_frekuensi.id_dosen = mst_dosen.id_dosen 
+                          JOIN mst_asisten a1 ON trs_frekuensi.id_asisten1 = a1.id_asisten 
+                          JOIN mst_asisten a2 ON trs_frekuensi.id_asisten2 = a2.id_asisten 
+                          JOIN mst_matakuliah ON trs_frekuensi.id_matkul = mst_matakuliah.id_matkul 
+                          JOIN mst_tahun_ajaran ON trs_frekuensi.id_tahun = mst_tahun_ajaran.id_tahun 
+                          JOIN mst_kelas ON trs_frekuensi.id_kelas = mst_kelas.id_kelas 
+                          JOIN mst_ruangan ON trs_frekuensi.id_ruangan = mst_ruangan.id_ruangan 
+                          WHERE trs_frekuensi.id_tahun = :id_tahun");
+        
+        $this->db->bind('id_tahun', $id_tahun); 
+        return $this->db->resultSet(); 
+    }
+        public function tampilDosen(){
         $this->db->query("SELECT id_dosen, nama_dosen FROM mst_dosen");
 
         return $this->db->resultSet();

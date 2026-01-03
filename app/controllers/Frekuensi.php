@@ -13,12 +13,22 @@ class Frekuensi extends Controller {
     //     $this->view('templates/footer');
     // }
     public function index() {
-        // Mendapatkan id_user dari sesi
+        // Mendapatkan id_user dan role dari sesi
         $id_user = isset($_SESSION['id_user']) ? $_SESSION['id_user'] : null;
         $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
 
-        $data['frekuensi'] = $this->model('Frekuensi_model')->tampil();
+        // Ambil data untuk dropdown filter tahun ajaran
+        $data['ajaranOptions'] = $this->model('Frekuensi_model')->tampilAjaran();
 
+        // LOGIKA FILTER: Cek jika ada pengiriman data filter tahun
+        if (isset($_POST['id_tahun_filter']) && $_POST['id_tahun_filter'] != '') {
+            $data['frekuensi'] = $this->model('Frekuensi_model')->tampilBerdasarkanTahun($_POST['id_tahun_filter']);
+        } else {
+            // Jika tidak ada filter, tampilkan semua seperti biasa
+            $data['frekuensi'] = $this->model('Frekuensi_model')->tampil();
+        }
+
+        // Kode untuk akses asisten (tetap dipertahankan agar asisten bisa melihat jadwalnya sendiri)
         if ($role == 'Asisten') {
             $asisten = $this->model('Frekuensi_model')->getAsistenIdByUserId($id_user);
             
@@ -34,6 +44,7 @@ class Frekuensi extends Controller {
 
         $data['title'] = 'Data Jadwal Praktikum';
 
+        // Memanggil View
         $this->view('templates/header', $data);
         $this->view('templates/topbar');
         $this->view('templates/sidebar');
