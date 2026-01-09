@@ -121,6 +121,7 @@ class Frekuensi extends Controller {
         $data['title'] = 'Detail Jadwal Praktikum';
         $data['detail'] = $this->model('Frekuensi_model')->detailFrekuensi($id);
         $data['mentoring'] = $this->model('Frekuensi_model')->getMentoringByFrekuensiId($id);
+        $data['frekuensi'] = $this->model('Frekuensi_model')->detailFrekuensi($id);
 
         if ($data['detail']) {
             $this->view('templates/header', $data);

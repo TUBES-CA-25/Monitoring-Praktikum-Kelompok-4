@@ -75,39 +75,6 @@
                         ?>
                     </select>
                 </div>
-                <div class="form-group mb-1">
-                    <label for="id_matkul" class="form-label">Matakuliah</label>
-                    <select name="id_matkul" class="form-control ">
-                        <?php
-                        foreach ($data['matakuliahOptions'] as $matakuliah) {
-                            $selected = ($matakuliah['id_matkul'] == $data['ubahdata']['id_matkul']) ? 'selected' : '';
-                            echo "<option value='{$matakuliah['id_matkul']}' {$selected}>{$matakuliah['nama_matkul']}</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="form-group mb-1">
-                    <label for="id_kelas" class="form-label">Kelas</label>
-                    <select name="id_kelas" class="form-control ">
-                        <?php
-                        foreach ($data['kelasOptions'] as $kelas) {
-                            $selected = ($kelas['id_kelas'] == $data['ubahdata']['id_kelas']) ? 'selected' : '';
-                            echo "<option value='{$kelas['id_kelas']}' {$selected}>{$kelas['kelas']}</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
-                <div class="form-group mb-1">
-                    <label for="id_ruangan" class="form-label">Laboratorium</label>
-                    <select name="id_ruangan" class="form-control ">
-                        <?php
-                        foreach ($data['ruanganOptions'] as $ruangan) {
-                            $selected = ($ruangan['id_ruangan'] == $data['ubahdata']['id_ruangan']) ? 'selected' : '';
-                            echo "<option value='{$ruangan['id_ruangan']}' {$selected}>{$ruangan['nama_ruangan']}</option>";
-                        }
-                        ?>
-                    </select>
-                </div>
                 <br>
                 <div class="text-center">
                     <button type="submit" class="btn btn-primary">Ubah</button>

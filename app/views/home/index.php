@@ -147,45 +147,41 @@
               </div>
             </div>
 
-            <!-- ================= RIGHT : SIDE PANEL ================= -->
             <div class="col-md-4">
-
-              <!-- ===== MONITORING HARI INI ===== -->
               <div class="card">
-                <div class="card-header bg-warning">
-                  <h3 class="card-title">
-                    <i class="fas fa-clock"></i> Monitoring Hari Ini
-                  </h3>
-                </div>
+                  <div class="card-header bg-warning">
+                      <h3 class="card-title"><i class="fas fa-clock"></i> Monitoring Hari Ini</h3>
+                  </div>
+                  <div class="card-body">
+                      <?php if (!empty($data['monitoringHariIni'])) : ?>
+                          <?php foreach ($data['monitoringHariIni'] as $index => $jadwal) : ?>
+                              <div class="monitoring-item <?= $index > 0 ? 'mt-3 pt-3 border-top' : ''; ?>">
+                                  <p class="mb-1">
+                                      <strong>Mata Kuliah:</strong><br>
+                                      <?= $jadwal['nama_matkul']; ?> (<?= $jadwal['kelas']; ?> - <?= $jadwal['frekuensi']; ?>)
+                                  </p>
+                                  
+                                  <p class="mb-1"><strong>Jam:</strong><br>
+                                      <span class="badge badge-secondary">
+                                          <i class="fas fa-clock"></i> <?= substr($jadwal['jam_mulai'], 0, 5); ?> - <?= substr($jadwal['jam_selesai'], 0, 5); ?>
+                                      </span>
+                                  </p>
+                                  
+                                  <p class="mb-2"><strong>Laboratorium:</strong><br>
+                                      <i class="fas fa-map-marker-alt"></i> <?= $jadwal['ruangan']; ?>
+                                  </p>
 
-                <div class="card-body">
-                  <?php if (!empty($data['monitoringHariIni'])) : ?>
-                    <p><strong>Mata Kuliah:</strong><br>
-                      <?= $data['monitoringHariIni']['nama_matkul']; ?>
-                    </p>
-
-                    <p><strong>Jam:</strong><br>
-                      <?= $data['monitoringHariIni']['jam_mulai']; ?> -
-                      <?= $data['monitoringHariIni']['jam_selesai']; ?>
-                    </p>
-
-                    <p><strong>Laboratorium:</strong><br>
-                      <?= $data['monitoringHariIni']['ruangan']; ?>
-                    </p>
-
-                    <a href="<?= BASEURL; ?>/monitoring/isi/<?= $data['monitoringHariIni']['id_jadwal']; ?>"
-                      class="btn btn-primary btn-block">
-                      <i class="fas fa-edit"></i> Isi Monitoring
-                    </a>
-                  <?php else : ?>
-                    <p class="text-muted text-center">
-                      Tidak ada jadwal hari ini
-                    </p>
-                  <?php endif; ?>
-                </div>
+                                  <a href="<?= BASEURL; ?>/frekuensi/detail/<?= $jadwal['id_jadwal']; ?>" class="btn btn-primary btn-sm btn-block">
+                                      <i class="fas fa-edit"></i> Isi Monitoring
+                                  </a>
+                              </div>
+                          <?php endforeach; ?>
+                      <?php else : ?>
+                          <p class="text-muted text-center py-3">Tidak ada jadwal hari ini</p>
+                      <?php endif; ?>
+                  </div>
               </div>
 
-              <!-- ===== AKTIVITAS TERAKHIR ===== -->
               <div class="card mt-3">
                 <div class="card-header bg-info">
                   <h3 class="card-title">
@@ -198,25 +194,30 @@
                     <?php if (!empty($data['aktivitasTerakhir'])) : ?>
                       <?php foreach ($data['aktivitasTerakhir'] as $a) : ?>
                         <li class="list-group-item">
-                          <strong><?= $a['nama_matkul']; ?></strong><br>
-                          <small>
-                            <?= $a['ruangan']; ?> • <?= $a['tanggal']; ?>
-                          </small>
-                          <span class="badge bg-success float-right">
-                            Selesai
-                          </span>
+                          <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                              <strong><?= $a['nama_matkul']; ?> (<?= $a['kelas']; ?>)</strong><br>
+                              <small class="text-muted">
+                                <i class="fas fa-map-marker-alt"></i> <?= $a['ruangan']; ?> • 
+                                <i class="fas fa-clock"></i> <?= substr($a['jam_mulai'], 0, 5); ?> - <?= substr($a['jam_selesai'], 0, 5); ?>
+                              </small><br>
+                              <small class="text-primary font-weight-bold">
+                                <i class="fas fa-calendar-day"></i> <?= $a['tanggal']; ?>
+                              </small>
+                            </div>
+                            <span class="badge bg-success">Selesai</span>
+                          </div>
                         </li>
                       <?php endforeach; ?>
                     <?php else : ?>
-                      <li class="list-group-item text-muted text-center">
+                      <li class="list-group-item text-muted text-center py-3">
                         Belum ada aktivitas
                       </li>
                     <?php endif; ?>
                   </ul>
                 </div>
               </div>
-            </div>
-          </div>          
+          </div>
           <?php endif; ?>
           <!-- /.col -->
           <?php if ($_SESSION['role'] == 'Admin') : ?>

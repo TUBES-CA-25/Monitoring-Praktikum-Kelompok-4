@@ -289,4 +289,35 @@ class Frekuensi_model{
         $result = $this->db->resultSet();
         return $result;
     }
+
+    public function getJadwalHariIniAsisten($id_asisten) {
+        date_default_timezone_set('Asia/Jakarta');
+
+        $daftar_hari = [
+            1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 
+            4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'
+        ];
+        $hari_ini = $daftar_hari[date('N')];
+
+        $this->db->query("SELECT
+                            f.id_frekuensi AS id_jadwal,
+                            f.frekuensi,
+                            f.jam_mulai,
+                            f.jam_selesai,
+                            mk.nama_matkul,
+                            r.nama_ruangan AS ruangan,
+                            k.kelas
+                        FROM trs_frekuensi f
+                        JOIN mst_matakuliah mk ON f.id_matkul = mk.id_matkul
+                        JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
+                        JOIN mst_kelas k ON f.id_kelas = k.id_kelas
+                        WHERE (f.id_asisten1 = :id_asisten OR f.id_asisten2 = :id_asisten)
+                        AND f.hari = :hari_ini
+                        ORDER BY f.jam_mulai ASC");
+
+        $this->db->bind('id_asisten', $id_asisten);
+        $this->db->bind('hari_ini', $hari_ini);
+
+        return $this->db->resultSet();
+    }
 }

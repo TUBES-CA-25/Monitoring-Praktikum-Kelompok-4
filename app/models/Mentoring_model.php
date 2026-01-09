@@ -180,43 +180,50 @@ class Mentoring_model{
         return $this->db->single();
     }
 
-    public function getAktivitasTerakhir($id_asisten) {
-        $this->db->query("
-            SELECT m.nama_matkul, r.nama_ruangan, mon.tanggal
-            FROM monitoring mon
-            JOIN jadwal_praktikum j ON mon.id_jadwal = j.id_jadwal
-            JOIN mst_matakuliah m ON j.id_matkul = m.id_matkul
-            JOIN mst_ruangan r ON j.id_ruangan = r.id_ruangan
-            WHERE mon.id_asisten = :id
-            ORDER BY mon.tanggal DESC
-            LIMIT 5
-        ");
-        $this->db->bind('id', $id_asisten);
-        return $this->db->resultSet();
-    }
-
     public function getCalendarAsisten($id_asisten)
     {
-        $this->db->query("
-            SELECT
-                tm.id_mentoring,
-                tm.tanggal,
-                tm.status_dosen,
-                tm.id_asisten_pengganti,
-
-                f.id_frekuensi,
-                mk.nama_matkul,
-                r.nama_ruangan
-            FROM trs_frekuensi f
-            JOIN mst_matakuliah mk ON f.id_matkul = mk.id_matkul
-            JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
-            LEFT JOIN trs_mentoring tm 
-                ON tm.id_frekuensi = f.id_frekuensi
-            WHERE f.id_asisten1 = :id_asisten
-        ");
+        // Mengambil SEMUA jadwal frekuensi milik asisten, 
+        // dan menggabungkannya dengan data mentoring jika sudah ada.
+        $this->db->query("SELECT
+                            f.id_frekuensi,
+                            f.hari,
+                            mk.nama_matkul,
+                            r.nama_ruangan,
+                            tm.id_mentoring,
+                            tm.tanggal,
+                            tm.id_asisten_pengganti
+                        FROM trs_frekuensi f
+                        JOIN mst_matakuliah mk ON f.id_matkul = mk.id_matkul
+                        JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
+                        LEFT JOIN trs_mentoring tm ON f.id_frekuensi = tm.id_frekuensi
+                        WHERE f.id_asisten1 = :id_asisten 
+                        OR f.id_asisten2 = :id_asisten
+                        ORDER BY tm.tanggal ASC");
 
         $this->db->bind('id_asisten', $id_asisten);
         return $this->db->resultSet();
     }
 
+    public function getAktivitasTerakhirAsisten($id_asisten) {
+        $this->db->query("SELECT 
+                            mk.nama_matkul, 
+                            r.nama_ruangan AS ruangan, 
+                            m.tanggal,
+                            k.kelas,
+                            f.jam_mulai,
+                            f.jam_selesai
+                        FROM trs_mentoring m
+                        JOIN trs_frekuensi f ON m.id_frekuensi = f.id_frekuensi
+                        JOIN mst_matakuliah mk ON f.id_matkul = mk.id_matkul
+                        JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
+                        JOIN mst_kelas k ON f.id_kelas = k.id_kelas
+                        WHERE f.id_asisten1 = :id_asisten 
+                            OR f.id_asisten2 = :id_asisten 
+                            OR m.id_asisten_pengganti = :id_asisten
+                        ORDER BY m.tanggal DESC, m.id_mentoring DESC 
+                        LIMIT 5");
+                        
+        $this->db->bind('id_asisten', $id_asisten);
+        return $this->db->resultSet();
+    }   
 }
