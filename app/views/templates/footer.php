@@ -255,6 +255,38 @@ function hapusMentoring(idMentoring, idFrekuensi) {
 
       calendar.render();
     });
+
+  $(document).ready(function() {
+    const toggleButton = $('#dark-mode-toggle');
+    const body = $('body');
+    const icon = toggleButton.find('i');
+
+    // 1. Cek status Dark Mode di penyimpanan browser saat halaman dimuat
+    if (localStorage.getItem('theme') === 'dark') {
+      body.addClass('dark-mode');
+      icon.removeClass('fa-moon').addClass('fa-sun');
+      // Opsional: Jika navbar/sidebar butuh penyesuaian warna spesifik
+      $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
+    }
+
+    // 2. Fungsi saat tombol diklik
+    toggleButton.on('click', function(e) {
+      e.preventDefault();
+      body.toggleClass('dark-mode');
+      
+      if (body.hasClass('dark-mode')) {
+        // Mode Gelap Aktif
+        localStorage.setItem('theme', 'dark');
+        icon.removeClass('fa-moon').addClass('fa-sun');
+        $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
+      } else {
+        // Mode Terang Aktif
+        localStorage.setItem('theme', 'light');
+        icon.removeClass('fa-sun').addClass('fa-moon');
+        $('.main-header').addClass('navbar-white navbar-light').removeClass('navbar-dark');
+      }
+    });
+  });
 </script>
 </body>
 </html>
