@@ -135,14 +135,7 @@ class Frekuensi extends Controller {
             exit;
         }
     }    
-    // public function getFrekuensiCount() {
-    //     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //         $input = json_decode(file_get_contents('php://input'), true);
-    //         $singkatan = $input['singkatan'];
-    //         $count = $this->model('Frekuensi_model')->getFrekuensiCount($singkatan);
-    //         echo json_encode(['count' => $count]);
-    //     }
-    // }  
+    
     public function getFrekuensiCount() {
         $input = json_decode(file_get_contents('php://input'), true);
         $singkatan = $input['singkatan'];

@@ -58,7 +58,14 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary button-style" onclick="add('Mentoring', <?= $data['detail']['id_frekuensi']; ?>)">Tambah</a>
+                            <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary shadow-sm" onclick="add('Mentoring', '<?= $data['frekuensi']['id_frekuensi']; ?>')">
+                                <i class="fas fa-plus"></i> Tambah
+                            </a>
+                            <?php if ($_SESSION['role'] == 'Admin') : ?>
+                                <a href="<?= BASEURL; ?>/mentoring/export/<?= $data['frekuensi']['id_frekuensi']; ?>" class="btn btn-success shadow-sm ml-2">
+                                    <i class="fas fa-file-excel"></i> Export Excel
+                                </a>
+                            <?php endif; ?>
                         </div>
                         <div class="card-body">
                             <div class="overflow-auto">

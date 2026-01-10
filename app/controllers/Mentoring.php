@@ -161,4 +161,22 @@ class Mentoring extends Controller {
         header('Location: '.BASEURL. '/frekuensi/detail/' . $id_frekuensi);
         exit;
     }
+
+    public function export($id_frekuensi) {
+        // 1. Ambil data detail frekuensi dan daftar mentoring
+        $data['frekuensi'] = $this->model('Frekuensi_model')->detailFrekuensi($id_frekuensi);
+        $data['mentoring'] = $this->model('Frekuensi_model')->getMentoringByFrekuensiId($id_frekuensi);
+
+        // 2. Tentukan nama file
+        $filename = "Monitoring_" . $data['frekuensi']['nama_matkul'] . "_" . $data['frekuensi']['frekuensi'] . ".xls";
+
+        // 3. Set Header untuk download Excel
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+
+        // 4. Load View khusus export (berupa tabel HTML murni)
+        $this->view('mentoring/export_excel', $data);
+    }
 }

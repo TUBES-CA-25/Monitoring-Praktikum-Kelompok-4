@@ -91,6 +91,7 @@
             <div class="col-md-12">
           <?php endif; ?>
             <!-- MAP & BOX PANE -->
+          <?php if ($_SESSION['role'] == 'Admin') : ?>
             <div class="card">
               <div class="card-header">
                 <h3 class="card-title">ICLabs Monitoring</h3>
@@ -122,6 +123,7 @@
               <!-- /.card-body -->
             </div>
           </div>
+          <?php endif; ?>
           <?php if ($_SESSION['role'] == 'Asisten') : ?>
           <div class="row">
             <!-- ================= LEFT : KALENDER ================= -->
