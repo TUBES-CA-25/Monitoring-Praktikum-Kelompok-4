@@ -15,7 +15,7 @@ class Home extends Controller {
         $data['jumlahDataMentoring'] = $this->model('Mentoring_model')->jumlahDataMentoring();
         
         // --- LOGIKA ASISTEN ---
-        if ($_SESSION['role'] == 'Asisten') {
+        if (isset($_SESSION['role']) && $_SESSION['role'] === 'Asisten') {
         $frekuensiModel = $this->model('Frekuensi_model');
         $mentoringModel = $this->model('Mentoring_model');
         
