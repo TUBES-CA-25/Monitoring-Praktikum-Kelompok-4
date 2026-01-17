@@ -142,7 +142,6 @@
                   <!-- LEGEND -->
                   <div class="mt-3">
                     <span class="badge bg-success">Monitoring Selesai</span>
-                    <span class="badge bg-danger">Belum Diisi</span>
                     <span class="badge bg-warning">Hari Ini</span>
                   </div>
                 </div>

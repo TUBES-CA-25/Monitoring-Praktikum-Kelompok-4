@@ -6,7 +6,6 @@
             <div class="form-group mb-2">
                 <label class="font-weight-bold" style="font-size: 0.9rem;">Tanggal</label>
                 <?php
-                    // Set timezone sesuai lokasi (Asia/Jakarta untuk WIB, Asia/Makassar untuk WITA)
                     date_default_timezone_set('Asia/Makassar'); 
                     $tanggalHariIni = date("Y-m-d");
                 ?>

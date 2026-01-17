@@ -1,6 +1,9 @@
 <?php
 
 class Controller{
+    protected $db;
+    protected $id_asisten;
+
     public function __construct(){
         session_start(); 
         if (isset($_SESSION['role'])) {
@@ -23,11 +26,11 @@ class Controller{
         return new $model;
     }
     public function isLogin() {
-        if (!$_SESSION['id_user']) {
-            header('Location:' . BASEURL);
-            exit;
-        }
-    }
+            if (!isset($_SESSION['id_user'])) {
+                header('Location:' . BASEURL . '/login'); 
+                exit;
+            }
+}
     public function isAdmin() {
         if (isset($_SESSION['role']) && $_SESSION['role'] != 'Admin') {  
             if ($_SESSION['role'] == 'Asisten') {
