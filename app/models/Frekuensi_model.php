@@ -320,4 +320,78 @@ class Frekuensi_model{
 
         return $this->db->resultSet();
     }
+
+    public function getAllFrekuensi() {
+        $this->db->query("SELECT
+                            trs_frekuensi.id_frekuensi,
+                            trs_frekuensi.frekuensi, 
+                            mst_matakuliah.kode_matkul, 
+                            mst_matakuliah.nama_matkul,  
+                            mst_tahun_ajaran.tahun_ajaran, 
+                            mst_kelas.kelas, 
+                            trs_frekuensi.hari, 
+                            trs_frekuensi.jam_mulai, 
+                            trs_frekuensi.jam_selesai, 
+                            mst_ruangan.nama_ruangan, 
+                            mst_dosen.nama_dosen, 
+                            a1.nama_asisten AS asisten_1, 
+                            a2.nama_asisten AS asisten_2
+                        FROM
+                            trs_frekuensi
+                        JOIN
+                            mst_dosen ON trs_frekuensi.id_dosen = mst_dosen.id_dosen
+                        JOIN
+                            mst_asisten a1 ON trs_frekuensi.id_asisten1 = a1.id_asisten
+                        JOIN
+                            mst_asisten a2 ON trs_frekuensi.id_asisten2 = a2.id_asisten
+                        JOIN
+                            mst_jurusan ON trs_frekuensi.id_jurusan = mst_jurusan.id_jurusan
+                        JOIN
+                            mst_matakuliah ON trs_frekuensi.id_matkul = mst_matakuliah.id_matkul
+                        JOIN
+                            mst_tahun_ajaran ON trs_frekuensi.id_tahun = mst_tahun_ajaran.id_tahun
+                        JOIN
+                            mst_kelas ON trs_frekuensi.id_kelas = mst_kelas.id_kelas
+                        JOIN
+                            mst_ruangan ON trs_frekuensi.id_ruangan = mst_ruangan.id_ruangan");
+        return $this->db->resultSet();
+    }
+
+    public function getFrekuensiByTahun($id_tahun) {
+        $this->db->query("SELECT
+                            trs_frekuensi.id_frekuensi,
+                            trs_frekuensi.frekuensi, 
+                            mst_matakuliah.kode_matkul, 
+                            mst_matakuliah.nama_matkul,  
+                            mst_tahun_ajaran.tahun_ajaran, 
+                            mst_kelas.kelas, 
+                            trs_frekuensi.hari, 
+                            trs_frekuensi.jam_mulai, 
+                            trs_frekuensi.jam_selesai, 
+                            mst_ruangan.nama_ruangan, 
+                            mst_dosen.nama_dosen, 
+                            a1.nama_asisten AS asisten_1, 
+                            a2.nama_asisten AS asisten_2
+                        FROM
+                            trs_frekuensi
+                        JOIN
+                            mst_dosen ON trs_frekuensi.id_dosen = mst_dosen.id_dosen
+                        JOIN
+                            mst_asisten a1 ON trs_frekuensi.id_asisten1 = a1.id_asisten
+                        JOIN
+                            mst_asisten a2 ON trs_frekuensi.id_asisten2 = a2.id_asisten
+                        JOIN
+                            mst_jurusan ON trs_frekuensi.id_jurusan = mst_jurusan.id_jurusan
+                        JOIN
+                            mst_matakuliah ON trs_frekuensi.id_matkul = mst_matakuliah.id_matkul
+                        JOIN
+                            mst_tahun_ajaran ON trs_frekuensi.id_tahun = mst_tahun_ajaran.id_tahun
+                        JOIN
+                            mst_kelas ON trs_frekuensi.id_kelas = mst_kelas.id_kelas
+                        JOIN
+                            mst_ruangan ON trs_frekuensi.id_ruangan = mst_ruangan.id_ruangan
+                        WHERE trs_frekuensi.id_tahun = :id_tahun");
+        $this->db->bind('id_tahun', $id_tahun);
+        return $this->db->resultSet();
+    }
 }

@@ -61,3 +61,58 @@ $('.close-btn').on('click', function () {
     $('.sidebar').removeClass('active');
 
 })
+
+// ...existing code...
+
+document.addEventListener('DOMContentLoaded', function() {
+    const tahunFilter = document.getElementById('tahunAjaranFilter');
+    if (tahunFilter) {
+        tahunFilter.addEventListener('change', function() {
+            const tahunId = this.value;
+            fetch(BASEURL + '/Frekuensi/filterAjax', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ id_tahun: tahunId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateFrekuensiTable(data);
+            })
+            .catch(error => {
+                alert('Gagal mengambil data!');
+            });
+        });
+    }
+
+    function updateFrekuensiTable(data) {
+        const tbody = document.querySelector('#myTable tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        let no = 1;
+        data.forEach(frekuensi => {
+            const aksi = `
+                <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Frekuensi', '${frekuensi.id_frekuensi}')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Frekuensi', '${frekuensi.id_frekuensi}')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
+                <a class="btn btn-primary btn-sm button-style text-center" href="${BASEURL}/frekuensi/detail/${frekuensi.id_frekuensi}" role="button"><i class="fa fa-list"></i></a>
+            `;
+            const row = `<tr>
+                <td class="text-center">${no++}</td>
+                <td class="text-center">${frekuensi.frekuensi}</td>
+                <td class="text-center">${frekuensi.kode_matkul}</td>
+                <td>${frekuensi.nama_matkul}</td>
+                <td class="text-center">${frekuensi.tahun_ajaran}</td>
+                <td class="text-center">${frekuensi.kelas}</td>
+                <td>${frekuensi.hari}/${frekuensi.jam_mulai}-${frekuensi.jam_selesai}</td>
+                <td>${frekuensi.nama_ruangan}</td>
+                <td>${frekuensi.nama_dosen}</td>
+                <td>${frekuensi.asisten_1}</td>
+                <td>${frekuensi.asisten_2}</td>
+                <td align="center">${aksi}</td>
+            </tr>`;
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+});

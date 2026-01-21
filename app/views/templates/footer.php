@@ -56,6 +56,9 @@
 <!-- AdminLTE App -->
 <script src="<?= BASEURL?>/public/template/dist/js/adminlte.js"></script>
 
+<script> const BASEURL = "<?= BASEURL ?>"; </script>
+<script src="<?= BASEURL?>/public/js/script.js"></script>
+
 <!-- PAGE PLUGINS -->
 <!-- jQuery Mapael -->
 <script src="<?= BASEURL?>/public/template/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
