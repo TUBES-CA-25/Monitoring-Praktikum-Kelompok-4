@@ -62,8 +62,11 @@
                                 <i class="fas fa-plus"></i> Tambah
                             </a>
                             <?php if ($_SESSION['role'] == 'Admin') : ?>
-                                <a href="<?= BASEURL; ?>/mentoring/export/<?= $data['frekuensi']['id_frekuensi']; ?>" class="btn btn-success shadow-sm ml-2">
+                                <!-- <a href="<?= BASEURL; ?>/mentoring/export_excel/<?= $data['frekuensi']['id_frekuensi']; ?>" class="btn btn-success shadow-sm ml-2">
                                     <i class="fas fa-file-excel"></i> Export Excel
+                                </a> -->
+                                <a href="<?= BASEURL; ?>/mentoring/export_pdf/<?= $data['detail']['id_frekuensi']; ?>" target="_blank" class="btn btn-danger shadow-sm ml-2">
+                                    <i class="fas fa-file-pdf"></i> Export PDF
                                 </a>
                             <?php endif; ?>
                         </div>

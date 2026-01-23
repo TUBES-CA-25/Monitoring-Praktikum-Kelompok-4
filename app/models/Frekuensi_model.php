@@ -394,4 +394,23 @@ class Frekuensi_model{
         $this->db->bind('id_tahun', $id_tahun);
         return $this->db->resultSet();
     }
+
+    public function getDetailFrekuensi($id) {
+        // Ganti 'mst_frekuensi' menjadi nama tabel yang benar di database kamu (misal: 'frekuensi')
+        $this->db->query("SELECT f.*, m.nama_matkul, m.kode_matkul, r.nama_ruangan, 
+                                d.nama_dosen, d.photo_path,
+                                a1.nama_asisten as asisten1, a1.photo_path as photo_path_asisten1,
+                                a2.nama_asisten as asisten2, a2.photo_path as photo_path_asisten2,
+                                t.tahun_ajaran
+                        FROM trs_frekuensi f
+                        JOIN mst_matakuliah m ON f.id_matkul = m.id_matkul
+                        JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
+                        JOIN mst_dosen d ON f.id_dosen = d.id_dosen
+                        LEFT JOIN mst_asisten a1 ON f.id_asisten1 = a1.id_asisten
+                        LEFT JOIN mst_asisten a2 ON f.id_asisten2 = a2.id_asisten
+                        JOIN mst_tahun_ajaran t ON f.id_tahun = t.id_tahun
+                        WHERE f.id_frekuensi = :id");
+        $this->db->bind('id', $id);
+        return $this->db->single();
+    }
 }

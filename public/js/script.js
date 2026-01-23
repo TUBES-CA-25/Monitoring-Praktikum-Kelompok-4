@@ -132,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
             e.preventDefault(); 
             $('.modal-title').html('Konfirmasi Keluar');
             $('.modal-body').html(`
-                <div class="text-center mb-3">Anda yakin akan keluar?</div>
+                <div class="text-center mb-3">Apakah anda yakin ingin keluar?</div>
                 <div class="text-center">
                     <a href="${BASEURL}/Login/logout" class="btn btn-primary">Keluar</a>
                     <button type="button" class="btn btn-secondary ml-2" data-bs-dismiss="modal">Batal</button>

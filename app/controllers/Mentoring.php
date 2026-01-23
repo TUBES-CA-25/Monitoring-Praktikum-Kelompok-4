@@ -162,21 +162,28 @@ class Mentoring extends Controller {
         exit;
     }
 
-    public function export($id_frekuensi) {
-        // 1. Ambil data detail frekuensi dan daftar mentoring
-        $data['frekuensi'] = $this->model('Frekuensi_model')->detailFrekuensi($id_frekuensi);
+    public function export_excel($id_frekuensi) {
+        $data['detail'] = $this->model('Frekuensi_model')->getDetailFrekuensi($id_frekuensi);
         $data['mentoring'] = $this->model('Frekuensi_model')->getMentoringByFrekuensiId($id_frekuensi);
 
-        // 2. Tentukan nama file
-        $filename = "Monitoring_" . $data['frekuensi']['nama_matkul'] . "_" . $data['frekuensi']['frekuensi'] . ".xls";
+        $filename = "Monitoring_" . str_replace(' ', '_', $data['detail']['nama_matkul']) . ".xls";
 
-        // 3. Set Header untuk download Excel
         header("Content-Type: application/vnd.ms-excel");
         header("Content-Disposition: attachment; filename=\"$filename\"");
         header("Pragma: no-cache");
         header("Expires: 0");
 
-        // 4. Load View khusus export (berupa tabel HTML murni)
         $this->view('mentoring/export_excel', $data);
+    }
+
+    public function export_pdf($id_frekuensi) {
+        $data['detail'] = $this->model('Frekuensi_model')->getDetailFrekuensi($id_frekuensi);
+        $data['mentoring'] = $this->model('Frekuensi_model')->getMentoringByFrekuensiId($id_frekuensi);
+        $data['title'] = 'Laporan Monitoring Praktikum';
+
+        // Memanggil template standar aplikasi kamu
+        $this->view('templates/header', $data);
+        $this->view('mentoring/export_pdf', $data);
+        $this->view('templates/footer', $data);
     }
 }
