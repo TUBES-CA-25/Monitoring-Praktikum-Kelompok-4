@@ -11,3 +11,5 @@ public/template/build/
 public/template/.github/
 
 public/template/pages/
+
+*.sql
