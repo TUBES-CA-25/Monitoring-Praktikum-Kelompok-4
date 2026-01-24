@@ -93,9 +93,3 @@ Aplikasi ini memiliki 2 jenis user dengan hak akses berbeda:
 **LINK WIREFRAME, UI/UX** : https://www.figma.com/design/4NRVbxZMbC3GH0vDGgKXw1/Tubes-Monitoring-Praktikum?node-id=0-1&p=f&t=wp3gnwP24i3hwVg0-0
 
 **LINK FLOWCHART, USE CASE, ACTIVITY DIAGRAM, ERD** : https://app.diagrams.net/?src=about#G1STQ8m5rozE-dUxZWm64ATBabYVF9YJAM#%7B%22pageId%22%3A%22Sj3gRpXGsk_He88CJsHY%22%7D
-
-
-
-
-
-
