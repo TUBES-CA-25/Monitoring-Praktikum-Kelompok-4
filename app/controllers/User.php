@@ -18,27 +18,36 @@ class User extends Controller {
         $this->view('user/index', $data);
         $this->view('templates/footer');
     }
-       
+    
     public function modalTambah(){
         $this->isAdmin();
         $this->view('user/tambah_user');
     }
-    public function tambah(){
+
+    public function tambah() {
         $this->isAdmin();
-        if($this->model('User_model')->tambah($_POST) > 0){
+        $data = $_POST;
+        if (!empty($data['password'])) {
+            $data['password'] = hash('sha256', $data['password']);
+        }
+
+        if ($this->model('User_model')->tambah($data) > 0) {
             Flasher::setFlash(' berhasil ditambahkan', '', 'success');
-        }else{
+        } else {
             Flasher::setFlash(' tidak berhasil ditambahkan', '', 'danger');
         }
-        header('Location: '.BASEURL. '/user');
+        
+        header('Location: ' . BASEURL . '/user');
         exit;
     }
+
     public function ubahModal(){
         $id = $_POST['id'];
         $data['ubahdata'] = $this->model('User_model')->ubah($id);
 
         $this->view('user/ubah_user', $data);
     }
+    
     public function prosesUbah(){
         $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
         if($this->model('User_model')->prosesUbah($_POST) > 0){
@@ -53,6 +62,7 @@ class User extends Controller {
         }
         exit;
     }
+
     public function hapus($id){
         $this->isAdmin();
         if($this->model('User_model')->prosesHapus($id)){

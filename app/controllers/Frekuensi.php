@@ -149,4 +149,28 @@ class Frekuensi extends Controller {
         echo json_encode($data['matakuliahOptions']);
     }
     
+    public function filterAjax()
+    {
+        // Pastikan request adalah AJAX
+        if ($_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+            http_response_code(403);
+            exit('Forbidden');
+        }
+
+        // Ambil data POST (JSON)
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id_tahun = isset($input['id_tahun']) ? $input['id_tahun'] : '';
+
+        // Ambil data dari model
+        if ($id_tahun) {
+            $data = $this->model('Frekuensi_model')->getFrekuensiByTahun($id_tahun);
+        } else {
+            $data = $this->model('Frekuensi_model')->getAllFrekuensi();
+        }
+
+        // Set header dan kirim data JSON
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
 }

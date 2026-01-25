@@ -7,7 +7,7 @@ define('BASEURL', 'http://localhost/monitoring-praktikum');
 // 2. Setting Database (Default XAMPP)
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
-define('DB_PASS', ''); // Password default XAMPP biasanya kosong
+define('DB_PASS', ''); 
 define('DB_NAME', 'db_monitoring_praktikum');
 
 // 3. Koneksi Manual (Bawaan kodingan aslinya)

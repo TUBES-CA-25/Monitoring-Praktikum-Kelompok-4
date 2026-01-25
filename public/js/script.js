@@ -15,36 +15,7 @@
       $('#close').html('Batal');
 
     }
-    $('#logout').on('click', function() {
-      let keluar = '<a href="<?= BASEURL?>/LogIn/logout">Keluar</a>';
-      var confirmation = window.confirm('Anda Yakin Akan Keluar');
-      if (confirmation) {
-          window.alert('Keluar');
-          keluar;
-      } else {
-          window.alert('Batal');
-      }
-    });
-    $('#logoutLink').on('click', function() {
-    var confirmation = window.confirm('Anda Yakin Akan Keluar');
-
-    if (confirmation) {
-        // Proses logout dengan AJAX
-        $.ajax({
-            url: '<?= BASEURL ?>/LogIn/logout',
-            type: 'GET',
-            success: function(response) {
-                window.alert('Keluar');
-                window.location.href = response.redirect;
-            },
-            error: function() {
-                window.alert('Gagal Keluar');
-            }
-        });
-    } else {
-        window.alert('Batal');
-    }
-  });
+   
 
 // BAGIAN SIDEBAR
 $(".sidebar ul li").on('click', function () {
@@ -61,3 +32,207 @@ $('.close-btn').on('click', function () {
     $('.sidebar').removeClass('active');
 
 })
+
+document.addEventListener('DOMContentLoaded', function() {
+    const tahunFilter = document.getElementById('tahunAjaranFilter');
+    if (tahunFilter) {
+        tahunFilter.addEventListener('change', function() {
+            const tahunId = this.value;
+            fetch(BASEURL + '/Frekuensi/filterAjax', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                body: JSON.stringify({ id_tahun: tahunId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                updateFrekuensiTable(data);
+            })
+            .catch(error => {
+                alert('Gagal mengambil data!');
+            });
+        });
+    }
+
+    function updateFrekuensiTable(data) {
+        const tbody = document.querySelector('#myTable tbody');
+        if (!tbody) return;
+        tbody.innerHTML = '';
+        let no = 1;
+        data.forEach(frekuensi => {
+            const aksi = `
+                <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Frekuensi', '${frekuensi.id_frekuensi}')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Frekuensi', '${frekuensi.id_frekuensi}')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
+                <a class="btn btn-primary btn-sm button-style text-center" href="${BASEURL}/frekuensi/detail/${frekuensi.id_frekuensi}" role="button"><i class="fa fa-list"></i></a>
+            `;
+            const row = `<tr>
+                <td class="text-center">${no++}</td>
+                <td class="text-center">${frekuensi.frekuensi}</td>
+                <td class="text-center">${frekuensi.kode_matkul}</td>
+                <td>${frekuensi.nama_matkul}</td>
+                <td class="text-center">${frekuensi.tahun_ajaran}</td>
+                <td class="text-center">${frekuensi.kelas}</td>
+                <td>${frekuensi.hari}/${frekuensi.jam_mulai}-${frekuensi.jam_selesai}</td>
+                <td>${frekuensi.nama_ruangan}</td>
+                <td>${frekuensi.nama_dosen}</td>
+                <td>${frekuensi.asisten_1}</td>
+                <td>${frekuensi.asisten_2}</td>
+                <td align="center">${aksi}</td>
+            </tr>`;
+            tbody.insertAdjacentHTML('beforeend', row);
+        });
+    }
+});
+
+    $(document).ready(function() {
+        // --- 1. INISIALISASI DATATABLES ---
+        if ($('#example2').length) {
+            $('#example2').DataTable();
+        }
+
+        if ($('#myTable').length) {
+            $('#myTable').DataTable();
+        }
+
+        if ($('#example').length) {
+            $('#example').DataTable({
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 
+                    {
+                        extend: 'pdfHtml5',
+                        orientation: 'landscape',
+                        pageSize: 'A4',
+                        text: 'PDF',
+                        titleAttr: 'Export PDF',
+                        customize: function (doc) {
+                            let objLayout = {
+                                hLineWidth: (i) => .5,
+                                vLineWidth: (i) => .5,
+                                hLineColor: (i) => '#000000',
+                                vLineColor: (i) => '#000000',
+                                paddingLeft: (i) => 4,
+                                paddingRight: (i) => 4,
+                                paddingTop: (i) => 4,
+                                paddingBottom: (i) => 4,
+                                fillColor: (i) => null
+                            };
+                            doc.content[1].layout = objLayout;
+                        }
+                    }, 
+                    'print'
+                ]
+            });
+        }
+
+        // --- 2. LOGOUT HANDLER (Event Delegation) ---
+        $(document).on('click', '#logoutLink', function(e) {
+            e.preventDefault(); 
+            $('.modal-title').html('Konfirmasi Keluar');
+            $('.modal-body').html(`
+                <div class="text-center mb-3">Apakah anda yakin ingin keluar?</div>
+                <div class="text-center">
+                    <a href="${BASEURL}/Login/logout" class="btn btn-primary">Keluar</a>
+                    <button type="button" class="btn btn-secondary ml-2" data-bs-dismiss="modal">Batal</button>
+                </div>
+            `);
+            $('#myModal').modal('show');
+        });
+
+        // --- 3. DARK MODE TOGGLE ---
+        const toggleButton = $('#dark-mode-toggle');
+        const body = $('body');
+        const icon = toggleButton.find('i');
+
+        // Cek tema saat load
+        if (localStorage.getItem('theme') === 'dark') {
+            body.addClass('dark-mode');
+            icon.removeClass('fa-moon').addClass('fa-sun');
+            $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
+        }
+
+        toggleButton.on('click', function(e) {
+            e.preventDefault();
+            body.toggleClass('dark-mode');
+            
+            const isDark = body.hasClass('dark-mode');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            
+            // Update Ikon & Navbar
+            icon.toggleClass('fa-moon fa-sun');
+            if (isDark) {
+                $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
+            } else {
+                $('.main-header').addClass('navbar-white navbar-light').removeClass('navbar-dark');
+            }
+        });
+
+        // --- 4. FULL CALENDAR ---
+        const calendarEl = document.getElementById('calendar-monitoring');
+        if (calendarEl) {
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'id',
+                height: 420,
+                firstDay: 1,
+                events: `${BASEURL}/dashboard/calendarAsisten`,
+                eventDidMount: function(info) {
+                    info.el.setAttribute('title', `${info.event.title} | ${info.event.extendedProps.ruangan}`);
+                },
+                eventClick: function(info) {
+                    const idFrekuensi = info.event.extendedProps.id_frekuensi;
+                    window.location.href = `${BASEURL}/monitoring/isi/${idFrekuensi}`;
+                }
+            });
+            calendar.render();
+        }
+    });
+
+// --- 5. FUNGSI GLOBAL (Bisa dipanggil dari atribut onclick di HTML) ---
+
+    function add(jenis, id = null) {
+        $('.modal-title').html('Tambah Data');
+        let url = `${BASEURL}/${jenis}/modalTambah${id ? '/' + id : ''}`;
+
+        $.get(url, function(data) {
+            $('.modal-body').html(data);
+            const formID = `#formTambahData${jenis}`;
+            $(formID).append(`
+                <div class="text-center mt-3">
+                    <button type="submit" class="btn btn-primary">Tambah</button>
+                    <button type="button" class="btn btn-secondary ml-2" data-bs-dismiss="modal">Batal</button>
+                </div>
+            `);
+        }).fail(() => console.error("Gagal memuat modal tambah"));
+    }
+
+    function change(jenis, id) {
+        $('.modal-title').html('Ubah Data');
+        $.post(`${BASEURL}/${jenis}/ubahModal`, { id: id }, function(data) {
+            $('.modal-body').html(data);
+        }).fail(() => console.error("Gagal memuat modal ubah"));
+    }
+
+    function deleteData(jenis, id) {
+        $('.modal-title').html('Hapus Data');
+        $('.modal-body').html(`
+        <div class="text-center mb-3">Hapus Data?</div>
+        <div class="text-center">
+            <a href="${BASEURL}/${jenis}/hapus/${id}" class="btn btn-danger">Hapus</a>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+        </div>
+        `);
+    }
+
+    function hapusMentoring(idMentoring, idFrekuensi) {
+        $('.modal-title').html('Hapus Data Mentoring');
+        $('.modal-body').html(`
+            <div class="text-center mb-3"><p>Hapus data mentoring ini?</p></div>
+            <div class="text-center">
+                <a href="${BASEURL}/Mentoring/prosesHapus/${idMentoring}/${idFrekuensi}" class="btn btn-danger">Hapus</a>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+            </div>
+        `);
+    }
