@@ -4,14 +4,8 @@ class User extends Controller {
     public function index() {
         $this->isAdmin();
         $data['title'] = 'Data User';
-        // $id_user = isset($_SESSION['id_user']) ? $_SESSION['id_user'] : null;
-        // $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
-    
-        // if ($role == 'Asisten') {
-        //     $data['user'] = $this->model('User_model')->getUserDetails($id_user);
-        // } else {
-            $data['user'] = $this->model('User_model')->tampil();
-        // }
+        $data['user'] = $this->model('User_model')->tampil();
+        
         $this->view('templates/header', $data);
         $this->view('templates/topbar');
         $this->view('templates/sidebar');
@@ -44,17 +38,27 @@ class User extends Controller {
     public function ubahModal(){
         $id = $_POST['id'];
         $data['ubahdata'] = $this->model('User_model')->ubah($id);
-
+        $asistenData = $this->model('Asisten_model')->cariDataAsistenByUserId($id);
+        $data['foto_asisten'] = $asistenData; 
         $this->view('user/ubah_user', $data);
     }
     
     public function prosesUbah(){
         $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
-        if($this->model('User_model')->prosesUbah($_POST) > 0){
-            Flasher::setFlash(' berhasil diubah', '', 'success');
-        }else{
-            Flasher::setFlash(' tidak berhasil diubah', '', 'danger');
+        if ($_FILES['photo_profil']['error'] === 4) {
+            $foto_baru = $_POST['foto_lama'];
+        } else {
+            $foto_baru = $this->uploadFoto();
+            if (!$foto_baru) {
+                return false; 
+            }
         }
+
+        if($this->model('User_model')->prosesUbah($_POST) >= 0){
+        }
+        if ($this->model('Asisten_model')->updateFotoViaUser($_POST['id_user'], $foto_baru) > 0) {
+        }
+        Flasher::setFlash(' berhasil diubah', '', 'success');
         if ($role == 'Asisten') {
             header('Location: '.BASEURL. '/asisten');
         } else {
@@ -72,6 +76,40 @@ class User extends Controller {
         }
         header('Location: '.BASEURL. '/user');
         exit;
+    }
+
+    public function uploadFoto()
+    {
+        $namaFile = $_FILES['photo_profil']['name'];
+        $ukuranFile = $_FILES['photo_profil']['size'];
+        $error = $_FILES['photo_profil']['error'];
+        $tmpName = $_FILES['photo_profil']['tmp_name'];
+
+        $ekstensiGambarValid = ['jpg', 'jpeg', 'png'];
+        $ekstensiGambar = explode('.', $namaFile);
+        $ekstensiGambar = strtolower(end($ekstensiGambar));
+
+        if (!in_array($ekstensiGambar, $ekstensiGambarValid)) {
+            Flasher::setFlash('gagal', 'upload! Format harus jpg/jpeg/png', 'danger');
+            $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
+            header('Location: ' . BASEURL . ($role == 'Asisten' ? '/asisten' : '/user'));
+            exit;
+        }
+
+        if ($ukuranFile > 2000000) {
+            Flasher::setFlash('gagal', 'upload! Ukuran max 2MB', 'danger');
+            $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
+            header('Location: ' . BASEURL . ($role == 'Asisten' ? '/asisten' : '/user'));
+            exit;
+        }
+
+        $namaFileBaru = uniqid();
+        $namaFileBaru .= '.';
+        $namaFileBaru .= $ekstensiGambar;
+
+        move_uploaded_file($tmpName, 'public/img/uploads/' . $namaFileBaru);
+
+        return 'public/img/uploads/' . $namaFileBaru;
     }
 
 }
