@@ -28,6 +28,7 @@ Dashboard : Read
 Monitoring : CRUD
 
 ## Struktur Folder (MVC)
+```
 monitoring-praktikum/
 ├── app/
 │   ├── config/
@@ -64,6 +65,7 @@ monitoring-praktikum/
 ├── index.php
 ├── README.md
 └── temp.sql
+```
 
 ## Penjelasan Mengenai MVC
 <img width="3999" height="1999" alt="image" src="https://github.com/user-attachments/assets/5f539f9e-14ff-4b3b-aac2-4e770fb1e54b" />
