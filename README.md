@@ -13,6 +13,7 @@ ADMIN:
 Profil : Edit
 Dashboard : Read
 Monitoring : CRUD
+Laporan : Read
 Data Dosen : CRUD
 Data Asisten : CRUD
 Data User : CRUD (Terhubung ke Data Asisten dan Dosen)
@@ -33,35 +34,104 @@ monitoring-praktikum/
 │   ├── config/
 │   │   └── config.php
 │   ├── controllers/
-│   │   ├── Home.php
+│   │   ├── Ajaran.php
+│   │   ├── Asisten.php
+│   │   ├── Dosen.php
 │   │   ├── Frekuensi.php
-│   │   └── Login.php
+│   │   ├── Home.php
+│   │   ├── Jurusan.php
+│   │   ├── Kelas.php
+│   │   ├── Laporan.php
+│   │   ├── Login.php
+│   │   ├── Matakuliah.php
+│   │   ├── Mentoring.php
+│   │   ├── Ruangan.php
+│   │   └── User.php
 │   ├── core/
 │   │   ├── App.php
 │   │   ├── Controller.php
-│   │   └── Database.php
+│   │   ├── Database.php
+│   │   ├── Flasher.php
+│   │   └── IIController.php
 │   ├── models/
+│   │   ├── Ajaran_model.php
+│   │   ├── Asisten_model.php
+│   │   ├── Dosen_model.php
 │   │   ├── Frekuensi_model.php
-│   │   ├── User_model.php
-│   │   └── Matakuliah_model.php
+│   │   ├── Jadwal_model.php
+│   │   ├── Jurusan_model.php
+│   │   ├── Kelas_model.php
+│   │   ├── Laporan_model.php
+│   │   ├── Login_model.php
+│   │   ├── Matakuliah_model.php
+│   │   ├── Mentoring_model.php
+│   │   ├── Ruangan_model.php
+│   │   └── User_model.php
 │   └── views/
+│       ├── Ajaran/
+│       │   ├── index.php
+│       │   ├── tambah_ajaran.php
+│       │   └── ubah_ajaran.php
+│       ├── asisten/
+│       │   ├── index.php
+│       │   ├── tambah_asisten.php
+│       │   └── ubah_asisten.php
+│       ├── dosen/
+│       │   ├── index.php
+│       │   ├── tambah_dosen.php
+│       │   └── ubah_dosen.php
 │       ├── frekuensi/
 │       │   ├── index.php
-│       │   └── detail.php
-│       └── templates/
-│           ├── header.php
-│           ├── sidebar.php
-│           ├── topbar.php
-│           └── footer.php
+│       │   ├── tambah_frekuensi.php
+│       │   └── ubah_frekuensi.php
+│       ├── home/
+│       │   ├── index.php
+│       ├── jurusan/
+│       │   ├── index.php
+│       │   ├── tambah_jurusan.php
+│       │   └── ubah_jurusan.php
+│       ├── kelas/
+│       │   ├── index.php
+│       │   ├── tambah_kelas.php
+│       │   └── ubah_kelas.php
+│       ├── laporan/
+│       │   ├── export_excel_action.php
+│       │   └── index.php
+│       ├── login/
+│       │   ├── index.php
+│       │   └── index1.php
+│       ├── matakuliah/
+│       │   ├── index.php
+│       │   ├── tambah_matakuliah.php
+│       │   └── ubah_matakuliah.php
+│       ├── mentoring/
+│       │   ├── detail.php
+│       │   ├── index.php
+│       │   ├── tambah_mentoring.php
+│       │   └── ubah_mentoring.php
+│       ├── ruangan/
+│       │   ├── index.php
+│       │   ├── tambah_ruangan.php
+│       │   └── ubah_ruangan.php
+│       ├── templates/
+│       │   ├── footer.php
+│       │   ├── header.php
+│       │   ├── sidebar.php
+│       │   └── topbar.php
+│       └── user/
+│       │   ├── index.php
+│       │   ├── tambah_user.php
+│       │   ├── ubah_user.php
 ├── public/
 │   ├── css/
-│   ├── js/
 │   ├── img/
-│   └── index.php
+│   ├── js/
+│   └── template/
 ├── .gitinitcore
 ├── .htaccess
 ├── db_monitoring_praktikum-new.sql
 ├── index.php
+├── monitoring_praktikum.sql
 ├── README.md
 └── temp.sql
 
