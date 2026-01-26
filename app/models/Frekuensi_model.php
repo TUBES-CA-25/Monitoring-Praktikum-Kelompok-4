@@ -396,7 +396,6 @@ class Frekuensi_model{
     }
 
     public function getDetailFrekuensi($id) {
-        // Ganti 'mst_frekuensi' menjadi nama tabel yang benar di database kamu (misal: 'frekuensi')
         $this->db->query("SELECT f.*, m.nama_matkul, m.kode_matkul, r.nama_ruangan, 
                                 d.nama_dosen, d.photo_path,
                                 a1.nama_asisten as asisten1, a1.photo_path as photo_path_asisten1,

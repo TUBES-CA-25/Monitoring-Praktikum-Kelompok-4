@@ -170,6 +170,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // --- 4. FULL CALENDAR ---
+        // --- 4. FULL CALENDAR ---
         const calendarEl = document.getElementById('calendar-monitoring');
         if (calendarEl) {
             const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -179,11 +180,26 @@ document.addEventListener('DOMContentLoaded', function() {
                 firstDay: 1,
                 events: `${BASEURL}/dashboard/calendarAsisten`,
                 eventDidMount: function(info) {
-                    info.el.setAttribute('title', `${info.event.title} | ${info.event.extendedProps.ruangan}`);
+                    info.el.setAttribute(
+                        'title',
+                        `${info.event.title} | ${info.event.extendedProps.ruangan}`
+                    );
                 },
                 eventClick: function(info) {
-                    const idFrekuensi = info.event.extendedProps.id_frekuensi;
-                    window.location.href = `${BASEURL}/monitoring/isi/${idFrekuensi}`;
+                    if (!info.event.extendedProps.clickable) {
+                        return;
+                    }
+
+                    document.getElementById('md-matkul').innerText = info.event.title;
+                    document.getElementById('md-ruangan').innerText = info.event.extendedProps.ruangan;
+                    document.getElementById('md-status').innerText = info.event.extendedProps.status;
+                    document.getElementById('md-tanggal').innerText =
+                        info.event.start.toLocaleDateString('id-ID');
+
+                    document.getElementById('md-link').href =
+                        `${BASEURL}/frekuensi/detail/${info.event.extendedProps.id_frekuensi}`;
+
+                    $('#eventDetailModal').modal('show');
                 }
             });
             calendar.render();

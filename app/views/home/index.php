@@ -141,12 +141,44 @@
 
                   <!-- LEGEND -->
                   <div class="mt-3">
-                    <span class="badge bg-success">Monitoring Selesai</span>
-                    <span class="badge bg-warning">Hari Ini</span>
+                    <div class="mt-3">
+                      <?php if (!empty($data['calendarLegend'])) : ?>
+                        <div class="mt-3">
+                          <?php foreach ($data['calendarLegend'] as $l) : ?>
+                            <span class="badge mr-1"
+                                  style="background-color:<?= $l['color'] ?>;color:#fff">
+                                  <?= $l['label'] ?>
+                            </span>
+                          <?php endforeach; ?>
+                        </div>
+                        <?php endif; ?>
+                      </div>
                   </div>
                 </div>
               </div>
             </div>
+            <!-- MODAL DETAIL EVENT -->
+            <div class="modal fade" id="eventDetailModal" tabindex="-1">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header bg-primary">
+                    <h5 class="modal-title">Detail Monitoring</h5>
+                    <button type="button" class="close text-white" data-dismiss="modal">&times;</button>
+                  </div>
+                  <div class="modal-body">
+                    <p><strong>Mata Kuliah:</strong> <span id="md-matkul"></span></p>
+                    <p><strong>Ruangan:</strong> <span id="md-ruangan"></span></p>
+                    <p><strong>Status:</strong> <span id="md-status"></span></p>
+                    <p><strong>Tanggal:</strong> <span id="md-tanggal"></span></p>
+                  </div>
+                  <div class="modal-footer">
+                    <a href="#" id="md-link" class="btn btn-success btn-sm">Isi Monitoring</a>
+                    <button class="btn btn-secondary btn-sm" data-dismiss="modal">Tutup</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
 
             <div class="col-md-4">
               <div class="card">

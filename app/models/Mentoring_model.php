@@ -182,23 +182,26 @@ class Mentoring_model{
 
     public function getCalendarAsisten($id_asisten)
     {
-        // Mengambil SEMUA jadwal frekuensi milik asisten, 
-        // dan menggabungkannya dengan data mentoring jika sudah ada.
-        $this->db->query("SELECT
-                            f.id_frekuensi,
-                            f.hari,
-                            mk.nama_matkul,
-                            r.nama_ruangan,
-                            tm.id_mentoring,
-                            tm.tanggal,
-                            tm.id_asisten_pengganti
-                        FROM trs_frekuensi f
-                        JOIN mst_matakuliah mk ON f.id_matkul = mk.id_matkul
-                        JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
-                        LEFT JOIN trs_mentoring tm ON f.id_frekuensi = tm.id_frekuensi
-                        WHERE f.id_asisten1 = :id_asisten 
-                        OR f.id_asisten2 = :id_asisten
-                        ORDER BY tm.tanggal ASC");
+        $this->db->query("
+            SELECT
+                f.id_frekuensi,
+                f.hari,
+                mk.nama_matkul,
+                r.nama_ruangan,
+
+                MIN(tm.tanggal) AS tanggal_mulai,
+                GROUP_CONCAT(DATE(tm.tanggal)) AS tanggal_absen
+
+            FROM trs_frekuensi f
+            JOIN mst_matakuliah mk ON f.id_matkul = mk.id_matkul
+            JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
+            LEFT JOIN trs_mentoring tm ON f.id_frekuensi = tm.id_frekuensi
+
+            WHERE f.id_asisten1 = :id_asisten
+            OR f.id_asisten2 = :id_asisten
+
+            GROUP BY f.id_frekuensi
+        ");
 
         $this->db->bind('id_asisten', $id_asisten);
         return $this->db->resultSet();
