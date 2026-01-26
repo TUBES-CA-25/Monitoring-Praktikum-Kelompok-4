@@ -1,26 +1,31 @@
 <div class="container">
-    <form id="formUbahUser" action="<?= BASEURL?>/User/prosesUbah" method="post" autocomplete="off">
+    <form id="formUbahUser" action="<?= BASEURL?>/User/prosesUbah" method="post" autocomplete="off" enctype="multipart/form-data">
+        
         <input type="hidden" value="<?= $data['ubahdata']['id_user']?>" name="id_user">
-        <input type="hidden" value="<?= $data['ubahdata']['role']?>" name="role"> <!-- Menyertakan role sebagai hidden field -->
+        <input type="hidden" value="<?= $data['ubahdata']['role']?>" name="role">
+        
+        <input type="hidden" name="foto_lama" value="<?= isset($data['foto_asisten']['photo_profil']) ? $data['foto_asisten']['photo_profil'] : ''; ?>">
+
         <div class="row">
             <div class="col-12">
                 <div class="form-group mb-1">
                     <label for="nama_user" class="form-label">Nama User</label>
-                    <input type="text" name="nama_user" class="form-control " value="<?= $data['ubahdata']['nama_user']?>" >
+                    <input type="text" name="nama_user" class="form-control" value="<?= $data['ubahdata']['nama_user']?>" >
                 </div>
                 <div class="form-group mb-1">
                     <label for="username" class="form-label">Username</label>
-                    <input type="text" name="username" class="form-control " value="<?= $data['ubahdata']['username']?>" >
+                    <input type="text" name="username" class="form-control" value="<?= $data['ubahdata']['username']?>" >
                 </div>
                 <div class="form-group mb-1">
                     <label for="password" class="form-label">Password</label>
                     <div class="input-group">
-                        <input id="passwordInput" type="password" name="password" class="form-control " value="">
+                        <input id="passwordInput" type="password" name="password" class="form-control" value="" placeholder="(Kosongkan jika tidak ingin ganti password)">
                         <div class="input-group-append">
                             <button id="togglePassword" type="button" class="btn btn-outline-secondary"><i class="fa fa-eye"></i></button>
                         </div>
                     </div>
                 </div>
+
                 <?php if ($_SESSION['role'] == 'Admin') : ?>
                 <div class="form-group mb-1">
                     <label for="role" class="form-label">Role</label>
@@ -31,17 +36,30 @@
                     </select>
                 </div>
                 <?php endif; ?>
-                <br>
-                    <div class="text-center">
-                        <button type="submit" class="btn btn-primary">Ubah</button>
-                        <button type="button" class="btn btn-secondary ml-2" data-bs-dismiss="modal">Batal</button>
+
+                <div class="form-group mb-3 mt-2">
+                    <label for="foto" class="form-label">Foto Profil</label>
+                    <div class="input-group">
+                        <input type="file" class="form-control" id="foto" name="photo_profil"> 
                     </div>
+                    <small class="text-muted">Format: jpg/jpeg/png. Max: 2MB</small>
+                    
+                    <div class="mt-2">
+                        <img src="" class="img-thumbnail" id="img-preview" width="100" style="display:none;">
+                    </div>
+                </div>
+
+                <br>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary">Ubah</button>
+                    <button type="button" class="btn btn-secondary ml-2" data-bs-dismiss="modal">Batal</button>
+                </div>
             </div>
         </div>
     </form>
 </div>
+
 <script>
-    // PENGATURAN PASSWORD
     document.getElementById('togglePassword').addEventListener('click', function () {
         var passwordInput = document.getElementById('passwordInput');
         if (passwordInput.type === 'password') {

@@ -169,12 +169,26 @@ class Asisten_model {
     }
 
     public function getAsistenDetails($id_user) {
-        // PERBAIKAN: Gunakan SELECT biasa, JANGAN pakai CALL
         $this->db->query("SELECT * FROM mst_asisten 
                           JOIN mst_user ON mst_asisten.id_user = mst_user.id_user 
                           WHERE mst_user.id_user = :id_user");
         
         $this->db->bind('id_user', $id_user);
         return $this->db->resultSet(); 
+    }
+
+    public function cariDataAsistenByUserId($id_user) {
+        $this->db->query("SELECT * FROM mst_asisten WHERE id_user = :id_user");
+        $this->db->bind(':id_user', $id_user);
+        return $this->db->single();
+    }
+
+    public function updateFotoViaUser($id_user, $foto_baru) {
+        $this->db->query("UPDATE mst_asisten SET photo_profil = :photo_profil WHERE id_user = :id_user");
+        $this->db->bind(':photo_profil', $foto_baru);
+        $this->db->bind(':id_user', $id_user);
+        
+        $this->db->execute();
+        return $this->db->rowCount();
     }
 }

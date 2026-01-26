@@ -184,21 +184,24 @@
                                                         </td>
                                                         
                                                         <td class="text-center"><?= $mentoring['nama_asisten_pengganti']; ?></td>
-                                                        <td class="text-center d-print-none">
+                                                        <td class="text-center d-print-none" style="white-space: nowrap;">
                                                             <a href="javascript:void(0);" 
-                                                                class="badge badge-success modalUbah"
-                                                                data-bs-toggle="modal" 
-                                                                data-bs-target="#myModal"
-                                                                data-id="<?= $mentoring['id_mentoring']; ?>"
-                                                                onclick="change('Mentoring', <?= $mentoring['id_mentoring']; ?>)"> Edit
+                                                            class="btn btn-success btn-sm modalUbah me-1 mb-1"
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#myModal"
+                                                            data-id="<?= $mentoring['id_mentoring']; ?>"
+                                                            onclick="change('Mentoring', <?= $mentoring['id_mentoring']; ?>)"
+                                                            title="Edit">
+                                                            <i class="fas fa-edit"></i>
                                                             </a>
-                                                            <br>
+
                                                             <a href="javascript:void(0);" 
-                                                                class="badge badge-danger"
-                                                                data-bs-toggle="modal" 
-                                                                data-bs-target="#myModal"
-                                                                onclick="hapusMentoring('<?= $mentoring['id_mentoring']; ?>', '<?= $data['detail']['id_frekuensi']; ?>')"> 
-                                                                Hapus
+                                                            class="btn btn-danger btn-sm me-1 mb-1"
+                                                            data-bs-toggle="modal" 
+                                                            data-bs-target="#myModal"
+                                                            onclick="hapusMentoring('<?= $mentoring['id_mentoring']; ?>', '<?= $data['detail']['id_frekuensi']; ?>')"
+                                                            title="Hapus"> 
+                                                            <i class="fas fa-trash"></i>
                                                             </a>
                                                         </td>
                                                     </tr>
