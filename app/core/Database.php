@@ -1,10 +1,10 @@
 <?php
 
 class Database {
-    private $host       = DB_HOST;
-    private $user       = DB_USER;
-    private $pass       = DB_PASS;
-    private $db_name    = DB_NAME;
+    private $host      = DB_HOST;
+    private $user      = DB_USER;
+    private $pass      = DB_PASS;
+    private $db_name   = DB_NAME;
 
     private $dbh;
     private $stmt;
@@ -13,10 +13,8 @@ class Database {
         $dsn = 'mysql:host=' .$this->host. ';dbname='.$this->db_name;
 
         $option = [
-
             PDO::ATTR_PERSISTENT => true,
-            PDO::ATTR_ERRMODE =>PDO::ERRMODE_EXCEPTION 
-
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION 
         ];
 
         try {
@@ -48,18 +46,37 @@ class Database {
         }
         $this->stmt->bindValue($param, $value, $type);
     }
+
     public function execute(){
         $this->stmt->execute();
     }
+
     public function resultSet(){
         $this->execute();
         return $this->stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
     public function single(){
         $this->execute();
         return $this->stmt->fetch(PDO::FETCH_ASSOC);
     }
+
     public function rowCount(){
         return $this->stmt->rowCount();
+    }
+
+    public function beginTransaction()
+    {
+        return $this->dbh->beginTransaction();
+    }
+
+    public function commit()
+    {
+        return $this->dbh->commit();
+    }
+
+    public function rollBack()
+    {
+        return $this->dbh->rollBack();
     }
 }

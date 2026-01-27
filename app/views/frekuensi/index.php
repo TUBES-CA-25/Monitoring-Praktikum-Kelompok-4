@@ -165,10 +165,10 @@
                                       <td><?= $frekuensi['asisten_2']; ?></td>
                                       <td align="center">
                                         <?php if ($_SESSION['role'] == 'Admin') : ?>
-                                        <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Frekuensi', '<?= $frekuensi['id_frekuensi']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
-                                        <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Frekuensi', '<?= $frekuensi['id_frekuensi']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
+                                        <a class="btn btn-primary btn-sm button-style text-center me-1 mb-1" onclick="change('Frekuensi', '<?= $frekuensi['id_frekuensi']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                                        <a class="btn btn-danger btn-sm button-style text-center me-1 mb-1" onclick="deleteData('Frekuensi', '<?= $frekuensi['id_frekuensi']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
                                         <?php endif; ?>
-                                        <a class="btn btn-primary btn-sm button-style text-center" href="<?= BASEURL ?>/frekuensi/detail/<?= $frekuensi['id_frekuensi']; ?>" role="button"><i class="fa fa-list"></i></a>
+                                        <a class="btn btn-primary btn-sm button-style text-center me-1 mb-1" href="<?= BASEURL ?>/frekuensi/detail/<?= $frekuensi['id_frekuensi']; ?>" role="button"><i class="fa fa-list"></i></a>
                                       </td>
                                     </tr>
                                   <?php endforeach; ?>
@@ -198,7 +198,6 @@
                                 <?php foreach ($data['ajaranOptions'] as $ajaran) : ?>
                                     <option value="<?= $ajaran['id_tahun']; ?>" 
                                         <?php 
-                                            // Logika agar pilihan tetap 'selected' setelah halaman reload
                                             if(isset($_POST['id_tahun_filter']) && $_POST['id_tahun_filter'] == $ajaran['id_tahun']) {
                                                 echo 'selected';
                                             } 

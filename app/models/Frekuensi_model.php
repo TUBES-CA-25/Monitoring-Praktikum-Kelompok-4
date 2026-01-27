@@ -1,44 +1,46 @@
 <?php
-
 class Frekuensi_model{
     private $db;
     public function __construct(){
         $this->db = new Database;
     }
+    
     public function tambah($data) {
-        // list($jam_mulai, $jam_selesai) = explode('-', $data['jam']);
+    $query = "INSERT INTO trs_frekuensi
+                (frekuensi, id_jurusan, id_matkul, id_tahun, id_kelas, 
+                hari, jam_mulai, jam_selesai, id_ruangan, 
+                id_dosen, id_asisten1, id_asisten2) 
+              VALUES 
+                (:frekuensi, :id_jurusan, :id_matkul, :id_tahun, :id_kelas, 
+                :hari, :jam_mulai, :jam_selesai, :id_ruangan, 
+                :id_dosen, :id_asisten1, :id_asisten2)";
     
-        $this->db->query("INSERT INTO trs_frekuensi
-                            (frekuensi, id_jurusan, id_matkul, id_tahun, id_kelas, 
-                            haVALUESri, jam_mulai, jam_selesai, id_ruangan, 
-                            id_dosen, id_asisten1, id_asisten2) 
-                         
-                            (:frekuensi, :id_jurusan, :id_matkul, :id_tahun, :id_kelas, 
-                            :hari, :jam_mulai, :jam_selesai, :id_ruangan, 
-                            :id_dosen, :id_asisten1, :id_asisten2)");
+    $this->db->query($query);
+
+    $this->db->bind('frekuensi', $data['frekuensi']);
+    $this->db->bind('id_jurusan', $data['id_jurusan']);
+    $this->db->bind('id_matkul', $data['id_matkul']);
+    $this->db->bind('id_tahun', $data['id_tahun']);
+    $this->db->bind('id_kelas', $data['id_kelas']);
+    $this->db->bind('hari', $data['hari']);
+    $this->db->bind('jam_mulai', $data['jam_mulai']);
+    $this->db->bind('jam_selesai', $data['jam_selesai']);
+    $this->db->bind('id_ruangan', $data['id_ruangan']);
+    $this->db->bind('id_dosen', $data['id_dosen']);
+    $asisten1 = !empty($data['id_asisten1']) ? $data['id_asisten1'] : null;
+    $asisten2 = !empty($data['id_asisten2']) ? $data['id_asisten2'] : null;
     
-        $this->db->bind('frekuensi', $data['frekuensi']);
-        $this->db->bind('id_jurusan', $data['id_jurusan']);
-        $this->db->bind('id_matkul', $data['id_matkul']);
-        $this->db->bind('id_tahun', $data['id_tahun']);
-        $this->db->bind('id_kelas', $data['id_kelas']);
-        $this->db->bind('hari', $data['hari']);
-        $this->db->bind('jam_mulai', $data['jam_mulai']);
-        $this->db->bind('jam_selesai', $data['jam_selesai']);
-        // $this->db->bind('jam_mulai', $jam_mulai);
-        // $this->db->bind('jam_selesai', $jam_selesai);
-        $this->db->bind('id_ruangan', $data['id_ruangan']);
-        $this->db->bind('id_dosen', $data['id_dosen']);
-        $this->db->bind('id_asisten1', $data['id_asisten1']);
-        $this->db->bind('id_asisten2', $data['id_asisten2']);
-    
-        try {
-            $this->db->execute();
-            return $this->db->rowCount();
-        } catch (Exception $e) {
-            return false;
-        }
+    $this->db->bind('id_asisten1', $asisten1);
+    $this->db->bind('id_asisten2', $asisten2);
+
+    try {
+        $this->db->execute();
+        return $this->db->rowCount();
+    } catch (PDOException $e) {
+        return false;
     }
+}
+
     public function prosesUbah($data){   
         $this->db->query("UPDATE trs_frekuensi 
                           SET 
@@ -116,7 +118,7 @@ class Frekuensi_model{
         return $this->db->resultSet();
     }
     
-// Menampilkan data frekuensi berdasarkan filter tahun ajaran
+
     public function tampilBerdasarkanTahun($id_tahun) {
         $this->db->query("SELECT trs_frekuensi.*, mst_matakuliah.kode_matkul, mst_matakuliah.nama_matkul, 
                           mst_tahun_ajaran.tahun_ajaran, mst_kelas.kelas, mst_ruangan.nama_ruangan, 
@@ -175,14 +177,28 @@ class Frekuensi_model{
 
         return $this->db->single(); 
     }
+
     public function prosesHapus($id){
-        // $this->db->query("DELETE FROM trs_frekuensi WHERE id_frekuensi = :id");
-        $this->db->query("CALL delete_frekuensi_with_mentoring(:id)");
+    try {
+        $this->db->beginTransaction();
+
+        $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi = :id");
         $this->db->bind("id", $id);
         $this->db->execute();
 
+        $this->db->query("DELETE FROM trs_frekuensi WHERE id_frekuensi = :id");
+        $this->db->bind("id", $id);
+        $this->db->execute();
+
+        $this->db->commit();
         return $this->db->rowCount(); 
-    }    
+
+    } catch (PDOException $e) {
+        $this->db->rollBack();
+        return 0;
+    }
+}
+
     public function detailFrekuensi($id) {
         $this->db->query("SELECT
                             trs_frekuensi.id_frekuensi,
