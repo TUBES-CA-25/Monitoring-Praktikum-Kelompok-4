@@ -15,46 +15,45 @@
       $('#close').html('Batal');
 
     }
-   
 
-// BAGIAN SIDEBAR
-$(".sidebar ul li").on('click', function () {
-    $(".sidebar ul li.active").removeClass('active');
-    $(this).addClass('active');
-});
+    // BAGIAN SIDEBAR
+    $(".sidebar ul li").on('click', function () {
+        $(".sidebar ul li.active").removeClass('active');
+        $(this).addClass('active');
+    });
 
-$('.open-btn').on('click', function () {
-    $('.sidebar').addClass('active');
+    $('.open-btn').on('click', function () {
+        $('.sidebar').addClass('active');
 
-});
+    });
 
-$('.close-btn').on('click', function () {
-    $('.sidebar').removeClass('active');
+    $('.close-btn').on('click', function () {
+        $('.sidebar').removeClass('active');
 
-})
+    })
 
-document.addEventListener('DOMContentLoaded', function() {
-    const tahunFilter = document.getElementById('tahunAjaranFilter');
-    if (tahunFilter) {
-        tahunFilter.addEventListener('change', function() {
-            const tahunId = this.value;
-            fetch(BASEURL + '/Frekuensi/filterAjax', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest'
-                },
-                body: JSON.stringify({ id_tahun: tahunId })
-            })
-            .then(response => response.json())
-            .then(data => {
-                updateFrekuensiTable(data);
-            })
-            .catch(error => {
-                alert('Gagal mengambil data!');
+    document.addEventListener('DOMContentLoaded', function() {
+        const tahunFilter = document.getElementById('tahunAjaranFilter');
+        if (tahunFilter) {
+            tahunFilter.addEventListener('change', function() {
+                const tahunId = this.value;
+                fetch(BASEURL + '/Frekuensi/filterAjax', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: JSON.stringify({ id_tahun: tahunId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    updateFrekuensiTable(data);
+                })
+                .catch(error => {
+                    alert('Gagal mengambil data!');
+                });
             });
-        });
-    }
+        }
 
     function updateFrekuensiTable(data) {
         const tbody = document.querySelector('#myTable tbody');
@@ -170,7 +169,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
         // --- 4. FULL CALENDAR ---
-        // --- 4. FULL CALENDAR ---
         const calendarEl = document.getElementById('calendar-monitoring');
         if (calendarEl) {
             const calendar = new FullCalendar.Calendar(calendarEl, {
@@ -179,35 +177,64 @@ document.addEventListener('DOMContentLoaded', function() {
                 height: 420,
                 firstDay: 1,
                 events: `${BASEURL}/dashboard/calendarAsisten`,
-                eventDidMount: function(info) {
-                    info.el.setAttribute(
-                        'title',
-                        `${info.event.title} | ${info.event.extendedProps.ruangan}`
-                    );
+
+                headerToolbar: {
+                    left: 'datepicker',
+                    center: 'title',
+                    right: 'today prev,next'
                 },
-                eventClick: function(info) {
-                    if (!info.event.extendedProps.clickable) {
-                        return;
+
+                customButtons: {
+                    datepicker: {
+                        text: 'Pilih Tanggal',
+                        click: function () {
+                            document.getElementById('fc-date-picker').showPicker();
+                        }
                     }
+                },
 
-                    document.getElementById('md-matkul').innerText = info.event.title;
-                    document.getElementById('md-ruangan').innerText = info.event.extendedProps.ruangan;
-                    document.getElementById('md-status').innerText = info.event.extendedProps.status;
-                    document.getElementById('md-tanggal').innerText =
-                        info.event.start.toLocaleDateString('id-ID');
+                eventClick(info) {
+                    if (!info.event.extendedProps.clickable) return;
 
-                    document.getElementById('md-link').href =
-                        `${BASEURL}/frekuensi/detail/${info.event.extendedProps.id_frekuensi}`;
+                    const dateObj = info.event.start;
+                    const hari = dateObj.toLocaleDateString('id-ID', { weekday: 'long' });
+                    const tanggal = dateObj.toLocaleDateString('id-ID', {
+                        day: '2-digit',
+                        month: 'long',
+                        year: 'numeric'
+                    });
+
+                    $('#md-matkul').text(info.event.title);
+                    $('#md-ruangan').text(info.event.extendedProps.ruangan);
+                    $('#md-status').text(info.event.extendedProps.status);
+                    $('#md-tanggal').text(`${hari}, ${tanggal}`);
+                    $('#md-link').attr(
+                        'href',
+                        `${BASEURL}/frekuensi/detail/${info.event.extendedProps.id_frekuensi}`
+                    );
 
                     $('#eventDetailModal').modal('show');
                 }
             });
+
             calendar.render();
+
+            const toolbar = calendarEl.querySelector('.fc-toolbar-chunk:first-child');
+            const dateInput = document.createElement('input');
+            dateInput.type = 'date';
+            dateInput.id = 'fc-date-picker';
+            dateInput.style.position = 'absolute';
+            dateInput.style.opacity = '0';
+            dateInput.style.pointerEvents = 'none';
+
+            dateInput.addEventListener('change', function () {
+                calendar.gotoDate(this.value);
+            });
+            toolbar.appendChild(dateInput);
         }
     });
 
 // --- 5. FUNGSI GLOBAL (Bisa dipanggil dari atribut onclick di HTML) ---
-
     function add(jenis, id = null) {
         $('.modal-title').html('Tambah Data');
         let url = `${BASEURL}/${jenis}/modalTambah${id ? '/' + id : ''}`;
