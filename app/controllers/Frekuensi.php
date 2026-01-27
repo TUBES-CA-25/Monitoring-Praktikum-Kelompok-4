@@ -121,6 +121,7 @@ class Frekuensi extends Controller {
         $data['title'] = 'Detail Jadwal Praktikum';
         $data['detail'] = $this->model('Frekuensi_model')->detailFrekuensi($id);
         $data['mentoring'] = $this->model('Frekuensi_model')->getMentoringByFrekuensiId($id);
+        $data['frekuensi'] = $this->model('Frekuensi_model')->detailFrekuensi($id);
 
         if ($data['detail']) {
             $this->view('templates/header', $data);
@@ -134,14 +135,7 @@ class Frekuensi extends Controller {
             exit;
         }
     }    
-    // public function getFrekuensiCount() {
-    //     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //         $input = json_decode(file_get_contents('php://input'), true);
-    //         $singkatan = $input['singkatan'];
-    //         $count = $this->model('Frekuensi_model')->getFrekuensiCount($singkatan);
-    //         echo json_encode(['count' => $count]);
-    //     }
-    // }  
+    
     public function getFrekuensiCount() {
         $input = json_decode(file_get_contents('php://input'), true);
         $singkatan = $input['singkatan'];
@@ -155,4 +149,28 @@ class Frekuensi extends Controller {
         echo json_encode($data['matakuliahOptions']);
     }
     
+    public function filterAjax()
+    {
+        // Pastikan request adalah AJAX
+        if ($_SERVER['HTTP_X_REQUESTED_WITH'] !== 'XMLHttpRequest') {
+            http_response_code(403);
+            exit('Forbidden');
+        }
+
+        // Ambil data POST (JSON)
+        $input = json_decode(file_get_contents('php://input'), true);
+        $id_tahun = isset($input['id_tahun']) ? $input['id_tahun'] : '';
+
+        // Ambil data dari model
+        if ($id_tahun) {
+            $data = $this->model('Frekuensi_model')->getFrekuensiByTahun($id_tahun);
+        } else {
+            $data = $this->model('Frekuensi_model')->getAllFrekuensi();
+        }
+
+        // Set header dan kirim data JSON
+        header('Content-Type: application/json');
+        echo json_encode($data);
+        exit;
+    }
 }

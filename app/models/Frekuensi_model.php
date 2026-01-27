@@ -289,4 +289,127 @@ class Frekuensi_model{
         $result = $this->db->resultSet();
         return $result;
     }
+
+    public function getJadwalHariIniAsisten($id_asisten) {
+        date_default_timezone_set('Asia/Jakarta');
+
+        $daftar_hari = [
+            1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 
+            4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'
+        ];
+        $hari_ini = $daftar_hari[date('N')];
+
+        $this->db->query("SELECT
+                            f.id_frekuensi AS id_jadwal,
+                            f.frekuensi,
+                            f.jam_mulai,
+                            f.jam_selesai,
+                            mk.nama_matkul,
+                            r.nama_ruangan AS ruangan,
+                            k.kelas
+                        FROM trs_frekuensi f
+                        JOIN mst_matakuliah mk ON f.id_matkul = mk.id_matkul
+                        JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
+                        JOIN mst_kelas k ON f.id_kelas = k.id_kelas
+                        WHERE (f.id_asisten1 = :id_asisten OR f.id_asisten2 = :id_asisten)
+                        AND f.hari = :hari_ini
+                        ORDER BY f.jam_mulai ASC");
+
+        $this->db->bind('id_asisten', $id_asisten);
+        $this->db->bind('hari_ini', $hari_ini);
+
+        return $this->db->resultSet();
+    }
+
+    public function getAllFrekuensi() {
+        $this->db->query("SELECT
+                            trs_frekuensi.id_frekuensi,
+                            trs_frekuensi.frekuensi, 
+                            mst_matakuliah.kode_matkul, 
+                            mst_matakuliah.nama_matkul,  
+                            mst_tahun_ajaran.tahun_ajaran, 
+                            mst_kelas.kelas, 
+                            trs_frekuensi.hari, 
+                            trs_frekuensi.jam_mulai, 
+                            trs_frekuensi.jam_selesai, 
+                            mst_ruangan.nama_ruangan, 
+                            mst_dosen.nama_dosen, 
+                            a1.nama_asisten AS asisten_1, 
+                            a2.nama_asisten AS asisten_2
+                        FROM
+                            trs_frekuensi
+                        JOIN
+                            mst_dosen ON trs_frekuensi.id_dosen = mst_dosen.id_dosen
+                        JOIN
+                            mst_asisten a1 ON trs_frekuensi.id_asisten1 = a1.id_asisten
+                        JOIN
+                            mst_asisten a2 ON trs_frekuensi.id_asisten2 = a2.id_asisten
+                        JOIN
+                            mst_jurusan ON trs_frekuensi.id_jurusan = mst_jurusan.id_jurusan
+                        JOIN
+                            mst_matakuliah ON trs_frekuensi.id_matkul = mst_matakuliah.id_matkul
+                        JOIN
+                            mst_tahun_ajaran ON trs_frekuensi.id_tahun = mst_tahun_ajaran.id_tahun
+                        JOIN
+                            mst_kelas ON trs_frekuensi.id_kelas = mst_kelas.id_kelas
+                        JOIN
+                            mst_ruangan ON trs_frekuensi.id_ruangan = mst_ruangan.id_ruangan");
+        return $this->db->resultSet();
+    }
+
+    public function getFrekuensiByTahun($id_tahun) {
+        $this->db->query("SELECT
+                            trs_frekuensi.id_frekuensi,
+                            trs_frekuensi.frekuensi, 
+                            mst_matakuliah.kode_matkul, 
+                            mst_matakuliah.nama_matkul,  
+                            mst_tahun_ajaran.tahun_ajaran, 
+                            mst_kelas.kelas, 
+                            trs_frekuensi.hari, 
+                            trs_frekuensi.jam_mulai, 
+                            trs_frekuensi.jam_selesai, 
+                            mst_ruangan.nama_ruangan, 
+                            mst_dosen.nama_dosen, 
+                            a1.nama_asisten AS asisten_1, 
+                            a2.nama_asisten AS asisten_2
+                        FROM
+                            trs_frekuensi
+                        JOIN
+                            mst_dosen ON trs_frekuensi.id_dosen = mst_dosen.id_dosen
+                        JOIN
+                            mst_asisten a1 ON trs_frekuensi.id_asisten1 = a1.id_asisten
+                        JOIN
+                            mst_asisten a2 ON trs_frekuensi.id_asisten2 = a2.id_asisten
+                        JOIN
+                            mst_jurusan ON trs_frekuensi.id_jurusan = mst_jurusan.id_jurusan
+                        JOIN
+                            mst_matakuliah ON trs_frekuensi.id_matkul = mst_matakuliah.id_matkul
+                        JOIN
+                            mst_tahun_ajaran ON trs_frekuensi.id_tahun = mst_tahun_ajaran.id_tahun
+                        JOIN
+                            mst_kelas ON trs_frekuensi.id_kelas = mst_kelas.id_kelas
+                        JOIN
+                            mst_ruangan ON trs_frekuensi.id_ruangan = mst_ruangan.id_ruangan
+                        WHERE trs_frekuensi.id_tahun = :id_tahun");
+        $this->db->bind('id_tahun', $id_tahun);
+        return $this->db->resultSet();
+    }
+
+    public function getDetailFrekuensi($id) {
+        $this->db->query("SELECT f.*, m.nama_matkul, m.kode_matkul, r.nama_ruangan, 
+                                d.nama_dosen, d.photo_path,
+                                a1.nama_asisten as asisten1, a1.photo_path as photo_path_asisten1,
+                                a2.nama_asisten as asisten2, a2.photo_path as photo_path_asisten2,
+                                t.tahun_ajaran
+                        FROM trs_frekuensi f
+                        JOIN mst_matakuliah m ON f.id_matkul = m.id_matkul
+                        JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
+                        JOIN mst_dosen d ON f.id_dosen = d.id_dosen
+                        LEFT JOIN mst_asisten a1 ON f.id_asisten1 = a1.id_asisten
+                        LEFT JOIN mst_asisten a2 ON f.id_asisten2 = a2.id_asisten
+                        JOIN mst_tahun_ajaran t ON f.id_tahun = t.id_tahun
+                        WHERE f.id_frekuensi = :id");
+        $this->db->bind('id', $id);
+        return $this->db->single();
+    }
 }

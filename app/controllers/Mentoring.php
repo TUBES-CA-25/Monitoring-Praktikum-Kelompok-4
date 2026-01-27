@@ -161,4 +161,29 @@ class Mentoring extends Controller {
         header('Location: '.BASEURL. '/frekuensi/detail/' . $id_frekuensi);
         exit;
     }
+
+    public function export_excel($id_frekuensi) {
+        $data['detail'] = $this->model('Frekuensi_model')->getDetailFrekuensi($id_frekuensi);
+        $data['mentoring'] = $this->model('Frekuensi_model')->getMentoringByFrekuensiId($id_frekuensi);
+
+        $filename = "Monitoring_" . str_replace(' ', '_', $data['detail']['nama_matkul']) . ".xls";
+
+        header("Content-Type: application/vnd.ms-excel");
+        header("Content-Disposition: attachment; filename=\"$filename\"");
+        header("Pragma: no-cache");
+        header("Expires: 0");
+
+        $this->view('mentoring/export_excel', $data);
+    }
+
+    public function export_pdf($id_frekuensi) {
+        $data['detail'] = $this->model('Frekuensi_model')->getDetailFrekuensi($id_frekuensi);
+        $data['mentoring'] = $this->model('Frekuensi_model')->getMentoringByFrekuensiId($id_frekuensi);
+        $data['title'] = 'Laporan Monitoring Praktikum';
+
+        // Memanggil template standar aplikasi kamu
+        $this->view('templates/header', $data);
+        $this->view('mentoring/export_pdf', $data);
+        $this->view('templates/footer', $data);
+    }
 }

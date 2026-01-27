@@ -66,7 +66,7 @@
 <script src="<?= BASEURL?>/public/template/plugins/chart.js/Chart.min.js"></script>
 
 <!-- AdminLTE for demo purposes -->
-<script src="<?= BASEURL?>/public/template/dist/js/demo.js"></script>
+<!-- <script src="<?= BASEURL?>/public/template/dist/js/demo.js"></script> -->
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 <script src="<?= BASEURL?>/public/template/dist/js/pages/dashboard2.js"></script>
 <script src="//cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
@@ -82,179 +82,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 <script src="https://cdn.datatables.net/buttons/3.1.0/js/buttons.html5.min.js"></script>
 <script src="https://cdn.datatables.net/buttons/3.1.0/js/buttons.print.min.js"></script>
+
+<!-- Calender -->
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
-<script>
-    $(document).ready(function() {
-      $('#example2').DataTable();
-    });
-    
-    new DataTable('#example', {
-    dom: 'Bfrtip', // Aktifkan tombol
-    buttons: [
-        'copy', 
-        'csv', 
-        'excel', 
-        {
-            extend: 'pdfHtml5',
-            orientation: 'landscape', // Mengatur orientasi menjadi landscape
-            pageSize: 'A4', // Mengatur ukuran halaman
-            text: 'PDF', // Mengatur teks tombol
-            titleAttr: 'PDF', // Menambahkan judul untuk tooltip
-            customize: function (doc) {
-                // Menghapus warna abu-abu pada field
-                var objLayout = {};
-                objLayout['hLineWidth'] = function (i) { return .5; };
-                objLayout['vLineWidth'] = function (i) { return .5; };
-                objLayout['hLineColor'] = function (i) { return '#000000'; };
-                objLayout['vLineColor'] = function (i) { return '#000000'; };
-                objLayout['paddingLeft'] = function (i) { return 4; };
-                objLayout['paddingRight'] = function (i) { return 4; };
-                objLayout['paddingTop'] = function (i) { return 4; };
-                objLayout['paddingBottom'] = function (i) { return 4; };
-                objLayout['fillColor'] = function (i) { return null; };
-                doc.content[1].layout = objLayout;
-            }
-        }, 
-        'print'
-    ]
-});
+<script> const BASEURL = "<?= BASEURL ?>"; </script>
+<script src="<?= BASEURL?>/public/js/script.js"></script>
 
-
-    // new DataTable('#example', {
-    //   layout: {
-    //       topStart: {
-    //         orientation: 'landscape',
-    //           buttons: ['copy', 'csv', 'excel', 'pdf', 'print']
-    //       }
-    //   }
-    // });
-
-    // new DataTable('#example', {
-    // dom: 'Bfrtip',
-    // buttons: [
-    //     {
-    //         extend: 'pdfHtml5',
-    //         orientation: 'landscape',
-    //         // pageSize: 'A4',
-    //         // text: 'PDF',
-    //         // titleAttr: 'Export to PDF',
-    //     },
-    //     'copy', 'csv', 'excel', 'print'
-    //     ]
-    // });
-
-    let table = new DataTable('#myTable')
-    function add(jenis, id = null) {
-        console.log("Function add called with type:", jenis, "and id:", id);
-        $('.modal-title').html('Tambah Data');
-        
-        let url = '<?= BASEURL ?>/' + jenis + '/modalTambah';
-        if (id) {
-            url += '/' + id;  // Tambahkan id jika tersedia
-        }
-
-        $.get(url, function(data, success) {
-            console.log("Data loaded successfully");
-            $('.modal-body').html(data);
-
-            let formID = '#formTambahData' + jenis;
-            let tombolHTML = `
-                <div class="text-center">
-                    <button type="submit" class="btn btn-primary">Tambah</button>
-                    <button type="button" class="btn btn-secondary ml-2" data-bs-dismiss="modal">Batal</button>
-                </div>
-            `;
-            $(formID).append(tombolHTML);
-        }).fail(function() {
-            console.log("Error loading data");
-        });
-    }
-
-    // Change
-    function change(jenis, id) {
-        $('.modal-title').html('Ubah Data');
-        let url = '<?= BASEURL?>/' + jenis + '/ubahModal';
-        $.post(url, {
-            id: id
-        }, function(data, success) {
-            $('.modal-body').html(data);
-        });
-    }
-    // Delete
-    function deleteData(jenis, id) {
-    $('.modal-title').html('Hapus Data');
-    $('.modal-body').html(`
-      <div class="text-center mb-3">
-        Hapus Data?
-      </div>
-      <div class="text-center">
-        <a href="<?= BASEURL ?>/${jenis}/hapus/${id}" class="btn btn-danger">Hapus</a>
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-      </div>
-    `);
-  }
-  $('#logoutLink').on('click', function(event) {
-    event.preventDefault(); 
-    
-    $('.modal-title').html('Konfirmasi Keluar');
-    $('.modal-body').html(`
-        <div class="text-center mb-3">
-            Anda yakin akan keluar?
-        </div>
-        <div class="text-center">
-            <a href="<?= BASEURL ?>/Login/logout" class="btn btn-primary">Keluar</a>
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-        </div>
-    `);
-    $('#myModal').modal('show');
-});
-
-function hapusMentoring(idMentoring, idFrekuensi) {
-        $('.modal-title').html('Hapus Data Mentoring');
-        $('.modal-body').html(`
-            <div class="text-center mb-3">
-                <p>Apakah Anda yakin ingin menghapus data mentoring ini?</p>
-            </div>
-            <div class="text-center">
-                <a href="<?= BASEURL ?>/Mentoring/prosesHapus/${idMentoring}/${idFrekuensi}" class="btn btn-danger">Hapus</a>
-                
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-            </div>
-        `);
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-
-      const calendarEl = document.getElementById('calendar-monitoring');
-      if (!calendarEl) return;
-
-      const calendar = new FullCalendar.Calendar(calendarEl, {
-        initialView: 'dayGridMonth',
-        locale: 'id',
-        height: 420,
-        firstDay: 1,
-
-        events: "<?= BASEURL ?>/dashboard/calendarAsisten",
-
-      eventDidMount: function(info) {
-        info.el.setAttribute(
-        'title',
-          info.event.title + ' | ' + info.event.extendedProps.ruangan
-          );
-        },
-
-      eventClick: function(info) {
-          const idFrekuensi = info.event.extendedProps.id_frekuensi;
-            window.location.href =
-          "<?= BASEURL ?>/monitoring/isi/" + idFrekuensi;
-        }
-      });
-
-      calendar.render();
-    });
-</script>
 </body>
 </html>
