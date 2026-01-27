@@ -43,7 +43,7 @@
           </a>
       </li>
       <li class="nav-item">
-          <a class="nav-link" href="<?= BASEURL; ?>/asisten">
+          <a class="nav-link" href="<?= BASEURL; ?>/<?= ($_SESSION['role'] == 'Admin') ? 'user' : 'asisten'; ?>">
               <i class="fas fa-user"></i> Profil
           </a>
       </li>

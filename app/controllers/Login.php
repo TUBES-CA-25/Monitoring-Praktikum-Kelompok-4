@@ -1,58 +1,61 @@
 <?php
-session_start();
 
 class Login extends Controller {
     public function index()
     {
-        $data['title'] = 'Login';
+        $data['title'] = 'Login Page';
 
         if (isset($_SESSION['id_user'])) {
-            header('Location: ' . BASEURL);
+            header('Location: ' . BASEURL . '/home');
             exit;
         }
 
         $this->view('login/index', $data);
     }
 
-    public function login(){
+    public function login() {
         $username = $_POST['username'];
         $password = $_POST['password'];
 
-        $role = $this->model("Login_model")->getRole($username);
-        $nama_user = $this->model("Login_model")->getNamaUser($username);
+        $user = $this->model('Login_model')->getUser($username);
 
-        $id_user = $this->model('Login_model')->validateLogin($username, $password);
+        if ($user) {
+            if (hash('sha256', $password) == $user['password']) {
+                $_SESSION['id_user'] = $user['id_user'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['nama_user'] = $user['nama_user'];
 
-        if ($id_user) {
-            $is_password_default = $this->model('Login_model')->isDefaultPassword($password);
-            session_start();
-            $_SESSION['id_user'] = $id_user;
-            $_SESSION['role'] = $role['role'];
-            $_SESSION['nama_user'] = $nama_user;
+                $is_password_default = $this->model('Login_model')->isDefaultPassword($password);
 
-            if (!$is_password_default) {
-                if ($_SESSION['role'] === 'Asisten') {
-                    header('Location: ' . BASEURL . '/home');
+                if (!$is_password_default) {
+                    if ($_SESSION['role'] === 'Asisten') {
+                        header('Location: ' . BASEURL . '/home');
+                    } else {
+                        header('Location: ' . BASEURL . '/home'); 
+                    }
                 } else {
-                    header('Location: ' . BASEURL . '/login');
+                    header('Location: ' . BASEURL . '/home');
                 }
+                exit;
+
             } else {
-                header('Location: ' . BASEURL . '/home');
+                Flasher::setFlash('Gagal Login', 'Password yang anda masukkan salah', 'danger');
+                header('Location: ' . BASEURL . '/Login');
+                exit;
             }
-            exit();
+
         } else {
-            header('Location: ' . BASEURL . '/login');
-            exit();
+            Flasher::setFlash('Gagal Login', 'Username tidak ditemukan', 'danger');
+            header('Location: ' . BASEURL . '/Login');
+            exit;
         }
     }
 
     public function logout(){
-        session_start();
         session_unset();
         session_destroy();
-
         header('Location: ' . BASEURL . '/login');
         exit;
     }
 }
-?>

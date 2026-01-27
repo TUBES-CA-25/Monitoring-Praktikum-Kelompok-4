@@ -61,12 +61,36 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!tbody) return;
         tbody.innerHTML = '';
         let no = 1;
+
         data.forEach(frekuensi => {
             const aksi = `
-                <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Frekuensi', '${frekuensi.id_frekuensi}')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
-                <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Frekuensi', '${frekuensi.id_frekuensi}')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
-                <a class="btn btn-primary btn-sm button-style text-center" href="${BASEURL}/frekuensi/detail/${frekuensi.id_frekuensi}" role="button"><i class="fa fa-list"></i></a>
+                <a class="btn btn-success btn-sm button-style text-center me-1 mb-1" 
+                   onclick="change('Frekuensi', '${frekuensi.id_frekuensi}')" 
+                   role="button" 
+                   data-bs-toggle="modal" 
+                   data-bs-target="#myModal"
+                   title="Edit">
+                    <i class="fa fa-edit"></i>
+                </a>
+                <a class="btn btn-danger btn-sm button-style text-center me-1 mb-1" 
+                   onclick="deleteData('Frekuensi', '${frekuensi.id_frekuensi}')" 
+                   role="button" 
+                   data-bs-toggle="modal" 
+                   data-bs-target="#myModal"
+                   title="Hapus">
+                    <i class="fa fa-trash"></i>
+                </a>
+                <a class="btn btn-info btn-sm button-style text-center me-1 mb-1" 
+                   href="${BASEURL}/frekuensi/detail/${frekuensi.id_frekuensi}" 
+                   role="button"
+                   title="Detail">
+                    <i class="fa fa-list"></i>
+                </a>
             `;
+
+            const jamMulai = frekuensi.jam_mulai ? frekuensi.jam_mulai.substring(0, 5) : '';
+            const jamSelesai = frekuensi.jam_selesai ? frekuensi.jam_selesai.substring(0, 5) : '';
+
             const row = `<tr>
                 <td class="text-center">${no++}</td>
                 <td class="text-center">${frekuensi.frekuensi}</td>
@@ -74,16 +98,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 <td>${frekuensi.nama_matkul}</td>
                 <td class="text-center">${frekuensi.tahun_ajaran}</td>
                 <td class="text-center">${frekuensi.kelas}</td>
-                <td>${frekuensi.hari}/${frekuensi.jam_mulai}-${frekuensi.jam_selesai}</td>
+                <td>${frekuensi.hari}/${jamMulai}-${jamSelesai}</td>
                 <td>${frekuensi.nama_ruangan}</td>
                 <td>${frekuensi.nama_dosen}</td>
-                <td>${frekuensi.asisten_1}</td>
-                <td>${frekuensi.asisten_2}</td>
-                <td align="center">${aksi}</td>
+                <td>${frekuensi.asisten_1 || '-'}</td>
+                <td>${frekuensi.asisten_2 || '-'}</td>
+                <td align="center" style="white-space: nowrap;">${aksi}</td>
             </tr>`;
+            
             tbody.insertAdjacentHTML('beforeend', row);
         });
     }
+
 });
 
     $(document).ready(function() {
