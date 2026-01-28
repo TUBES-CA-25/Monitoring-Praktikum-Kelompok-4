@@ -12,11 +12,13 @@ class Matakuliah extends Controller {
         $this->view('matakuliah/index', $data);
         $this->view('templates/footer');
     }
+
     public function modalTambah(){
         $this->isAdmin();
         $data['jurusanOptions'] = $this->model('Matakuliah_model')->tampilJurusan();
         $this->view('matakuliah/tambah_matakuliah', $data);
     }
+
     public function tambah(){
         $this->isAdmin();
         $data['jurusanOptions'] = $this->model('Matakuliah_model')->tampilJurusan();
@@ -28,6 +30,7 @@ class Matakuliah extends Controller {
         header('Location: '.BASEURL. '/matakuliah');
         exit;
     }
+
     public function ubahModal(){
         $this->isAdmin();
         $data['jurusanOptions'] = $this->model('Matakuliah_model')->tampilJurusan();
@@ -36,6 +39,7 @@ class Matakuliah extends Controller {
 
         $this->view('matakuliah/ubah_matakuliah', $data);
     }
+
     public function prosesUbah(){
         $this->isAdmin();
         if($this->model('Matakuliah_model')->prosesUbah($_POST) > 0){
@@ -46,6 +50,7 @@ class Matakuliah extends Controller {
         header('Location: '.BASEURL. '/matakuliah');
         exit;
     }
+
     public function hapus($id){
         $this->isAdmin();
         if($this->model('Matakuliah_model')->prosesHapus($id)){
@@ -56,6 +61,7 @@ class Matakuliah extends Controller {
         header('Location: '.BASEURL. '/matakuliah');
         exit;
     }
+    
     public function getMatakuliahByJurusan(){
         $id_jurusan = $_POST['id_jurusan'];
         $data['matakuliahOptions'] = $this->model('Matakuliah_model')->getMatakuliahByJurusan($id_jurusan);

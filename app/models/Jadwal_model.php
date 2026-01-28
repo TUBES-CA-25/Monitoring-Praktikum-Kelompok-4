@@ -50,7 +50,6 @@ class Jadwal_model {
                 'id_jadwal' => $r['id_jadwal']
             ];
         }
-
         return $events;
     }
 }

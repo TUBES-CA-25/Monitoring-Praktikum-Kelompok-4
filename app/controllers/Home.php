@@ -103,8 +103,6 @@ class Home extends Controller {
             $startDate = clone $baseDate;
             $startDate->modify("+{$diff} day");
 
-
-            // GENERATE 12 MINGGU
             for ($i = 0; $i < 12; $i++) {
 
                 $eventDate = clone $startDate;
@@ -130,7 +128,6 @@ class Home extends Controller {
                     }
                 }
 
-                // TENTUKAN WARNA & STATUS (PRIORITAS FIX)
                 if ($hasSameDay) {
                     $color  = '#28a745';
                     $status = 'Sudah Mengisi';
@@ -162,9 +159,7 @@ class Home extends Controller {
                 ];
             }
         }
-
         echo json_encode($events);
         exit;
     }
-
-    }
+}

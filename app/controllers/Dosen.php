@@ -12,10 +12,12 @@ class Dosen extends Controller {
         $this->view('dosen/index', $data);
         $this->view('templates/footer');
     }
+    
     public function modalTambah(){
         $this->isAdmin();
         $this->view('dosen/tambah_dosen');
     }
+
     public function tambah(){
         $this->isAdmin();
         $this->view('dosen/index');
@@ -28,6 +30,7 @@ class Dosen extends Controller {
         header('Location: '.BASEURL. '/dosen');
         exit;
     }
+
     public function ubahModal(){
         $this->isAdmin();
         $id = $_POST['id'];
@@ -35,6 +38,7 @@ class Dosen extends Controller {
 
         $this->view('dosen/ubah_dosen', $data);
     }
+
     public function prosesUbah(){
         $this->isAdmin();
         if($this->model('Dosen_model')->prosesUbah($_POST) > 0){
@@ -45,6 +49,7 @@ class Dosen extends Controller {
         header('Location: '.BASEURL. '/dosen');
         exit;
     }
+
     public function hapus($id){
         $this->isAdmin();
         if($this->model('Dosen_model')->prosesHapus($id)){

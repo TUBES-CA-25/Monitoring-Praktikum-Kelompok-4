@@ -2,9 +2,11 @@
 
 class Dosen_model{
     private $db;
+
     public function __construct(){
         $this->db = new Database;
     }
+
     public function tambah($data){
         $this->db->query("INSERT INTO mst_dosen (nip, nama_dosen, photo_path) 
                         VALUES (:nip, :nama_dosen, :photo_path)");
@@ -19,6 +21,7 @@ class Dosen_model{
 
         return $this->db->rowCount();
     }
+
     public function prosesUbah($data){
         if ($_FILES['photo_path']['error'] === UPLOAD_ERR_NO_FILE) {
             $photo_path = $this->getPhotoPathByID($data['id_asisten']);
@@ -42,6 +45,7 @@ class Dosen_model{
     
         return $this->db->rowCount();
     }
+
     private function getPhotoPathByID($userID) {
         $this->db->query("SELECT photo_path FROM mst_dosen WHERE id_dosen = :id_dosen");
         $this->db->bind(':id_dosen', $userID);
@@ -67,16 +71,19 @@ class Dosen_model{
             return null;
         }
     }
+
     public function tampil(){
         $this->db->query("SELECT * FROM mst_dosen;");
         return $this->db->resultSet();
     }
+
     public function ubah($id){
         $this->db->query("SELECT * FROM mst_dosen WHERE id_dosen = :id");
         $this->db->bind("id", $id);
 
         return $this->db->single(); 
     }
+
     public function prosesHapus($id){
         // $this->db->query("DELETE FROM mst_dosen WHERE id_dosen = :id");
         $this->db->query("CALL delete_dosen_with_references(:id)");
@@ -85,12 +92,14 @@ class Dosen_model{
 
         return $this->db->rowCount(); 
     }
+
     public function detailDosen($id){
         $this->db->query("SELECT * FROM mst_dosen WHERE id_dosen = :id");
         $this->db->bind("id", $id);
         
         return $this->db->single(); 
-    }   
+    }
+    
     public function jumlahDataDosen() {
         $this->db->query("SELECT COUNT(*) as jumlah FROM mst_dosen");
         $result = $this->db->single();

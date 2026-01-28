@@ -56,12 +56,14 @@ class User_model{
         
         return $this->db->resultSet();
     }
+
     public function ubah($id){
         $this->db->query("SELECT * FROM mst_user WHERE id_user = :id");
         $this->db->bind("id", $id);
 
         return $this->db->single(); 
     }
+
     public function prosesHapus($id){
         // $this->db->query("DELETE FROM mst_user WHERE id_user = :id");
         $this->db->query("CALL delete_user_with_references(:id)");
@@ -70,12 +72,14 @@ class User_model{
 
         return $this->db->rowCount(); 
     }
+
     public function detailUser($id){
         $this->db->query("SELECT * FROM mst_user WHERE id_user = :id");
         $this->db->bind("id", $id);
         
         return $this->db->single(); 
     }   
+    
     public function jumlahDataUser() {
         $this->db->query("SELECT COUNT(*) as jumlah FROM mst_user");
         $result = $this->db->single();

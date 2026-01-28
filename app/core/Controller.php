@@ -11,9 +11,9 @@ class Controller{
         } else {
             $this->id_asisten = null;
         }
-
         $this->db = new Database();
     }
+
     public function view($view, $data = []){
         if(!isset($_SESSION['id_user'])){
             require_once 'app/views/login/index.php';
@@ -21,16 +21,19 @@ class Controller{
             require_once 'app/views/' . $view . '.php';
         }
     }
+
     public function model($model){
         require_once 'app/models/' . $model . '.php';
         return new $model;
     }
+
     public function isLogin() {
             if (!isset($_SESSION['id_user'])) {
                 header('Location:' . BASEURL . '/login'); 
                 exit;
             }
-}
+    }
+
     public function isAdmin() {
         if (isset($_SESSION['role']) && $_SESSION['role'] != 'Admin') {  
             if ($_SESSION['role'] == 'Asisten') {
@@ -40,6 +43,7 @@ class Controller{
             exit;
         }
     }
+
     public function isAsisten() {
         if (isset($_SESSION['role']) && $_SESSION['role'] != 'Asisten') {  
             if ($_SESSION['role'] == 'Admin') {
@@ -49,26 +53,5 @@ class Controller{
             exit;
         }
     }
-    // public function isNot() {
-    //     if (!($_SESSION['role'] == 'admin' || $_SESSION['role'] == 'korlab')) {  
-    //         header('Location:' . BASEURL . '/pelanggaran');
-    //         exit;
-    //     }
-    // }
-    // public function isAsistenOrKorlab() {
-    //     $allowedRoles = ['asisten', 'korlab'];    
-    //     if (!in_array($_SESSION['role'], $allowedRoles)) {  
-    //         header('Location:' . BASEURL);
-    //         exit;
-    //     }
-    // }
-    // public function isAdminOrKorlab() {
-    //     $allowedRoles = ['admin', 'korlab'];
-    
-    //     if (!in_array($_SESSION['role'], $allowedRoles)) {  
-    //         header('Location:' . BASEURL . '/pelanggaran');
-    //         exit;
-    //     }
-    // }
 }
 ?>

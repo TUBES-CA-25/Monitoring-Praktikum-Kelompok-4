@@ -12,10 +12,12 @@ class Ruangan extends Controller {
         $this->view('ruangan/index', $data);
         $this->view('templates/footer');
     }
+
     public function modalTambah(){
         $this->isAdmin();
         $this->view('ruangan/tambah_ruangan');
     }
+
     public function tambah(){
         $this->isAdmin();
         if($this->model('Ruangan_model')->tambah($_POST) > 0){
@@ -26,6 +28,7 @@ class Ruangan extends Controller {
         header('Location: '.BASEURL. '/ruangan');
         exit;
     }
+
     public function ubahModal(){
         $this->isAdmin();
         $id = $_POST['id'];
@@ -33,6 +36,7 @@ class Ruangan extends Controller {
 
         $this->view('ruangan/ubah_ruangan', $data);
     }
+
     public function prosesUbah(){
         $this->isAdmin();
         if($this->model('Ruangan_model')->prosesUbah($_POST) > 0){
@@ -43,6 +47,7 @@ class Ruangan extends Controller {
         header('Location: '.BASEURL. '/ruangan');
         exit;
     }
+    
     public function hapus($id){
         $this->isAdmin();
         if($this->model('Ruangan_model')->prosesHapus($id)){

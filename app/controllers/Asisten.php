@@ -1,16 +1,6 @@
 <?php
 
 class Asisten extends Controller {
-    // public function index(){
-    //     $data['title'] = 'Data Asisten';
-    //     $data['asisten'] = $this->model('Asisten_model')->tampil();
-        
-    //     $this->view('templates/header', $data);
-    //     $this->view('templates/topbar');
-    //     $this->view('templates/sidebar');
-    //     $this->view('asisten/index', $data);
-    //     $this->view('templates/footer');
-    // }
     public function index(){
         $data['title'] = 'Data Asisten';
         $id_user = isset($_SESSION['id_user']) ? $_SESSION['id_user'] : null;

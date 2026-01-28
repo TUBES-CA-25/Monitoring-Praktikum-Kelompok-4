@@ -6,40 +6,40 @@ class Frekuensi_model{
     }
     
     public function tambah($data) {
-    $query = "INSERT INTO trs_frekuensi
-                (frekuensi, id_jurusan, id_matkul, id_tahun, id_kelas, 
-                hari, jam_mulai, jam_selesai, id_ruangan, 
-                id_dosen, id_asisten1, id_asisten2) 
-              VALUES 
-                (:frekuensi, :id_jurusan, :id_matkul, :id_tahun, :id_kelas, 
-                :hari, :jam_mulai, :jam_selesai, :id_ruangan, 
-                :id_dosen, :id_asisten1, :id_asisten2)";
-    
-    $this->db->query($query);
+        $query = "INSERT INTO trs_frekuensi
+                    (frekuensi, id_jurusan, id_matkul, id_tahun, id_kelas, 
+                    hari, jam_mulai, jam_selesai, id_ruangan, 
+                    id_dosen, id_asisten1, id_asisten2) 
+                VALUES 
+                    (:frekuensi, :id_jurusan, :id_matkul, :id_tahun, :id_kelas, 
+                    :hari, :jam_mulai, :jam_selesai, :id_ruangan, 
+                    :id_dosen, :id_asisten1, :id_asisten2)";
+        
+        $this->db->query($query);
 
-    $this->db->bind('frekuensi', $data['frekuensi']);
-    $this->db->bind('id_jurusan', $data['id_jurusan']);
-    $this->db->bind('id_matkul', $data['id_matkul']);
-    $this->db->bind('id_tahun', $data['id_tahun']);
-    $this->db->bind('id_kelas', $data['id_kelas']);
-    $this->db->bind('hari', $data['hari']);
-    $this->db->bind('jam_mulai', $data['jam_mulai']);
-    $this->db->bind('jam_selesai', $data['jam_selesai']);
-    $this->db->bind('id_ruangan', $data['id_ruangan']);
-    $this->db->bind('id_dosen', $data['id_dosen']);
-    $asisten1 = !empty($data['id_asisten1']) ? $data['id_asisten1'] : null;
-    $asisten2 = !empty($data['id_asisten2']) ? $data['id_asisten2'] : null;
-    
-    $this->db->bind('id_asisten1', $asisten1);
-    $this->db->bind('id_asisten2', $asisten2);
+        $this->db->bind('frekuensi', $data['frekuensi']);
+        $this->db->bind('id_jurusan', $data['id_jurusan']);
+        $this->db->bind('id_matkul', $data['id_matkul']);
+        $this->db->bind('id_tahun', $data['id_tahun']);
+        $this->db->bind('id_kelas', $data['id_kelas']);
+        $this->db->bind('hari', $data['hari']);
+        $this->db->bind('jam_mulai', $data['jam_mulai']);
+        $this->db->bind('jam_selesai', $data['jam_selesai']);
+        $this->db->bind('id_ruangan', $data['id_ruangan']);
+        $this->db->bind('id_dosen', $data['id_dosen']);
+        $asisten1 = !empty($data['id_asisten1']) ? $data['id_asisten1'] : null;
+        $asisten2 = !empty($data['id_asisten2']) ? $data['id_asisten2'] : null;
+        
+        $this->db->bind('id_asisten1', $asisten1);
+        $this->db->bind('id_asisten2', $asisten2);
 
-    try {
-        $this->db->execute();
-        return $this->db->rowCount();
-    } catch (PDOException $e) {
-        return false;
+        try {
+            $this->db->execute();
+            return $this->db->rowCount();
+        } catch (PDOException $e) {
+            return false;
+        }
     }
-}
 
     public function prosesUbah($data){   
         $this->db->query("UPDATE trs_frekuensi 
@@ -136,41 +136,49 @@ class Frekuensi_model{
         $this->db->bind('id_tahun', $id_tahun); 
         return $this->db->resultSet(); 
     }
+
         public function tampilDosen(){
         $this->db->query("SELECT id_dosen, nama_dosen FROM mst_dosen");
 
         return $this->db->resultSet();
     }
+
     public function tampilAsisten(){
         $this->db->query("SELECT id_asisten, nama_asisten FROM mst_asisten");
 
         return $this->db->resultSet();
     }
+
     public function tampilMatakuliah(){
         $this->db->query("SELECT id_matkul, nama_matkul, kode_matkul, semester, singkatan FROM mst_matakuliah");
 
         return $this->db->resultSet();
     }
+
     public function tampilFrekuensi(){
         $this->db->query("SELECT id_kelas, kelas, angkatan FROM mst_kelas");
 
         return $this->db->resultSet();
     }
+
     public function tampilJurusan(){
         $this->db->query("SELECT id_jurusan, jurusan, singkatan_jurusan FROM mst_jurusan");
 
         return $this->db->resultSet();
     }
+
     public function tampilAjaran(){
         $this->db->query("SELECT id_tahun, tahun_ajaran FROM mst_tahun_ajaran");
 
         return $this->db->resultSet();
     }
+
     public function tampilRuangan(){
         $this->db->query("SELECT id_ruangan, nama_ruangan FROM mst_ruangan");
 
         return $this->db->resultSet();
     }
+
     public function ubah($id){
         $this->db->query("SELECT * FROM trs_frekuensi WHERE id_frekuensi = :id");
         $this->db->bind("id", $id);
@@ -227,7 +235,8 @@ class Frekuensi_model{
                           WHERE trs_frekuensi.id_frekuensi = :id");
         $this->db->bind("id", $id);
         return $this->db->single();
-    }      
+    }
+
     public function getMentoringByFrekuensiId($id_frekuensi) {
         $this->db->query("SELECT
                             trs_mentoring.id_mentoring,
@@ -248,23 +257,27 @@ class Frekuensi_model{
                             trs_mentoring.id_frekuensi = :id_frekuensi");
         $this->db->bind('id_frekuensi', $id_frekuensi);
         return $this->db->resultSet();
-    }    
+    }
+
     public function jumlahDataFrekuensi() {
         $this->db->query("SELECT COUNT(*) as jumlah FROM trs_frekuensi");
         $result = $this->db->single();
         return $result['jumlah'];
-    }     
+    }
+
     public function getFrekuensiCount($singkatan) {
         $this->db->query("SELECT COUNT(*) as count FROM trs_frekuensi WHERE frekuensi LIKE :singkatan");
         $this->db->bind('singkatan', $singkatan . '%');
         $result = $this->db->single();
         return $result['count'];
-    }   
+    }
+    
     public function getAsistenIdByUserId($id_user) {
         $this->db->query("SELECT id_asisten FROM mst_asisten WHERE id_user = :id_user");
         $this->db->bind('id_user', $id_user);
         return $this->db->single();
     }
+    
     public function getFrekuensiByAsistenId($id_asisten) {
         $this->db->query("SELECT
                             trs_frekuensi.id_frekuensi,

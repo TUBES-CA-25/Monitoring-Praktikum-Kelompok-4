@@ -34,7 +34,6 @@ class Laporan_model {
                   LEFT JOIN mst_asisten a1 ON f.id_asisten1 = a1.id_asisten
                   LEFT JOIN mst_asisten a2 ON f.id_asisten2 = a2.id_asisten";
 
-        // Tambahkan filter jika user memilih tahun ajaran tertentu
         if ($id_tahun) {
             $query .= " WHERE f.id_tahun = :id_tahun";
         }

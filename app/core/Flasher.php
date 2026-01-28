@@ -8,6 +8,7 @@ class Flasher {
             'tipe' => $tipe
         ];
     }
+    
     public static function flash() {
         if (isset($_SESSION['flash'])) {
             echo '<div id="flash-message" class="alert alert-' . $_SESSION['flash']['tipe'] . ' alert-dismissible fade show" role="alert">

@@ -41,69 +41,7 @@ class Mentoring extends Controller {
             exit;
         }
     }
-    // public function tambah() {
-    //     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //         $data = [
-    //             'id_frekuensi' => $_POST['id_frekuensi'],
-    //             'tanggal' => $_POST['tanggal'],
-    //             'uraian_materi' => $_POST['uraian_materi'],
-    //             'uraian_tugas' => $_POST['uraian_tugas'],
-    //             'status_dosen' => $_POST['status_dosen'],
-    //             'status_asisten1' => $_POST['status_asisten1'],
-    //             'status_asisten2' => $_POST['status_asisten2'],
-    //             'id_asisten_pengganti' => !empty($_POST['id_asisten_pengganti']) ? $_POST['id_asisten_pengganti'] : null
-    //         ];
-    
-    //         $mentoringModel = $this->model('Mentoring_model'); 
 
-    //         $result = $mentoringModel->tambah($data);
-            
-    //         $id_frekuensi = $this->model('Mentoring_model')->tambah($_POST);
-    
-    //         if ($result === 'Batas maksimum data mentoring untuk frekuensi ini sudah tercapai.') {
-    //             $_SESSION['message'] = 'Batas maksimum data mentoring untuk frekuensi ini sudah tercapai.';
-    //             header('Location: '.BASEURL. '/frekuensi/detail/' . $id_frekuensi);
-    //         } else if ($result) {
-    //             $_SESSION['message'] = 'Data mentoring berhasil ditambahkan.';
-    //             header('Location: '.BASEURL. '/frekuensi/detail/' . $id_frekuensi);
-    //         } else {
-    //             $_SESSION['message'] = 'Terjadi kesalahan saat menambahkan data mentoring.';
-    //             header('Location: '.BASEURL. '/frekuensi/detail/' . $id_frekuensi);
-    //         }
-    //     }
-    // }    
-    // public function tambah() {
-    //     $id_frekuensi = $_POST['id_frekuensi'];
-        
-    //     $mentoringModel = $this->model('Mentoring_model');
-    //     $jumlahMentoring = $mentoringModel->getCountByFrekuensi($id_frekuensi);
-
-    //     $id_frekuensi2 = $this->model('Mentoring_model')->tambah($_POST);
-        
-    //     if ($jumlahMentoring >= 10) {
-    //         $_SESSION['message'] = 'Batas maksimum data mentoring untuk frekuensi ini sudah tercapai.';
-    //         header('Location: ' . BASEURL . '/frekuensi/detail/' . $id_frekuensi2);
-    //         exit;
-    //     }
-        
-    //     $data = [
-    //         'id_frekuensi' => $id_frekuensi,
-    //         'tanggal' => $_POST['tanggal'],
-    //         'uraian_materi' => $_POST['uraian_materi'],
-    //         'uraian_tugas' => $_POST['uraian_tugas'],
-    //         'status_dosen' => $_POST['status_dosen'],
-    //         'status_asisten1' => $_POST['status_asisten1'],
-    //         'status_asisten2' => $_POST['status_asisten2'],
-    //         'id_asisten_pengganti' => !empty($_POST['id_asisten_pengganti']) ? $_POST['id_asisten_pengganti'] : null
-    //     ];
-        
-    //     $mentoringModel->tambah($data);
-        
-    //     $_SESSION['message'] = 'Data mentoring berhasil ditambahkan.';
-    //     header('Location: ' . BASEURL . '/frekuensi/detail/' . $id_frekuensi2);
-    //     exit;
-    // }
-    
     public function ubahModal(){
         $id = $_POST['id'];
         $data['dosenOptions'] = $this->model('Mentoring_model')->tampilDosen();
@@ -114,8 +52,8 @@ class Mentoring extends Controller {
         $data['ubahdata'] = $this->model('Mentoring_model')->ubah($id);
 
         $this->view('mentoring/ubah_mentoring', $data);
-
     }
+
     public function prosesUbah(){
         // Cek apakah ada baris yang berubah
         if($this->model('Mentoring_model')->prosesUbah($_POST) > 0){
@@ -141,17 +79,7 @@ class Mentoring extends Controller {
         }
         header('Location: '.BASEURL. '/mentoring');
     }
-    // public function prosesHapus($id){
-    //     if($this->model('Mentoring_model')->prosesHapus($id)){
-    //         Flasher::setFlash(' berhasil dihapus', '', 'success');
-    //     }else{
-    //         Flasher::setFlash(' tidak berhasil dihapus', '', 'danger');
-    //     }
-    //     header('Location: '.BASEURL. '/mentoring');
-    //     exit;
-    // }
 
-    // Terima dua parameter: $id (untuk dihapus) dan $id_frekuensi (untuk redirect)
     public function prosesHapus($id, $id_frekuensi){
         if($this->model('Mentoring_model')->prosesHapus($id)){
             Flasher::setFlash('berhasil dihapus', '', 'success');

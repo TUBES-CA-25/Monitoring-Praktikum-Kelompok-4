@@ -5,6 +5,7 @@ class Matakuliah_model{
     public function __construct(){
         $this->db = new Database;
     }
+
     public function tambah($data){
         $this->db->query("INSERT INTO mst_matakuliah (kode_matkul, nama_matkul, singkatan, semester, sks, id_jurusan) 
                         VALUES (:kode_matkul, :nama_matkul, :singkatan, :semester, :sks, :id_jurusan)");
@@ -19,6 +20,7 @@ class Matakuliah_model{
 
         return $this->db->rowCount();
     }
+
     public function prosesUbah($data){
         $this->db->query("UPDATE mst_matakuliah 
                         SET 
@@ -43,6 +45,7 @@ class Matakuliah_model{
     
         return $this->db->rowCount();
     }
+
     public function tampil(){
         $this->db->query("SELECT mst_matakuliah.id_matkul, 
                             mst_matakuliah.kode_matkul, 
@@ -57,17 +60,20 @@ class Matakuliah_model{
                             mst_jurusan ON mst_matakuliah.id_jurusan = mst_jurusan.id_jurusan;");
         return $this->db->resultSet();
     }
+
     public function tampilJurusan(){
         $this->db->query("SELECT id_jurusan, jurusan FROM mst_jurusan");
 
         return $this->db->resultSet();
     }
+
     public function ubah($id){
         $this->db->query("SELECT * FROM mst_matakuliah WHERE id_matkul = :id");
         $this->db->bind("id", $id);
 
         return $this->db->single(); 
     }
+
     public function prosesHapus($id){
         // $this->db->query("DELETE FROM mst_matakuliah WHERE id_matkul = :id");
         $this->db->query("CALL delete_matakuliah_with_references(:id)");
@@ -76,15 +82,16 @@ class Matakuliah_model{
 
         return $this->db->rowCount(); 
     }
+
     public function jumlahDataMatakuliah() {
         $this->db->query("SELECT COUNT(*) as jumlah FROM mst_matakuliah");
         $result = $this->db->single();
         return $result['jumlah'];
-    } 
+    }
+
     public function getMatakuliahByJurusan($id_jurusan){
         $this->db->query("SELECT id_matkul, nama_matkul FROM mst_matakuliah WHERE id_jurusan = :id_jurusan");
         $this->db->bind('id_jurusan', $id_jurusan);
         return $this->db->resultSet();
     }
-    
 }

@@ -5,6 +5,7 @@ class Kelas_model{
     public function __construct(){
         $this->db = new Database;
     }
+
     public function tambah($data){
         $this->db->query("INSERT INTO mst_kelas (id_jurusan, kelas, angkatan) 
                         VALUES (:id_jurusan, :kelas, :angkatan)");
@@ -17,6 +18,7 @@ class Kelas_model{
 
         return $this->db->rowCount();
     }
+
     public function prosesUbah($data){
         $this->db->query("UPDATE mst_kelas 
                         SET 
@@ -35,6 +37,7 @@ class Kelas_model{
     
         return $this->db->rowCount();
     }
+
     public function tampil(){
         $this->db->query("SELECT mst_kelas.id_kelas, 
                             mst_jurusan.jurusan, 
@@ -52,12 +55,14 @@ class Kelas_model{
 
         return $this->db->resultSet();
     }
+
     public function ubah($id){
         $this->db->query("SELECT * FROM mst_kelas WHERE id_kelas = :id");
         $this->db->bind("id", $id);
 
         return $this->db->single(); 
     }
+
     public function prosesHapus($id){
         // $this->db->query("DELETE FROM mst_kelas WHERE id_kelas = :id");
         $this->db->query("CALL delete_kelas_with_references(:id)");
@@ -66,12 +71,14 @@ class Kelas_model{
 
         return $this->db->rowCount(); 
     }
+
     public function detailKelas($id){
         $this->db->query("SELECT * FROM mst_kelas WHERE id_kelas = :id");
         $this->db->bind("id", $id);
         
         return $this->db->single(); 
-    }   
+    }
+    
     public function jumlahDataKelas() {
         $this->db->query("SELECT COUNT(*) as jumlah FROM mst_kelas");
         $result = $this->db->single();
