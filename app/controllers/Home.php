@@ -89,13 +89,20 @@ class Home extends Controller {
                 : [];
 
             // TANGGAL AWAL JADWAL
-            if (!empty($row['tanggal_mulai'])) {
-                $startDate = new DateTime($row['tanggal_mulai']);
-            } else {
-                $startDate = new DateTime();
-                $startDate->modify("next sunday");
-                $startDate->modify("+".($hariIndex - 1)." day");
+            $baseDate = !empty($row['tanggal_mulai'])
+                ? new DateTime($row['tanggal_mulai'])
+                : new DateTime('today');
+
+            $baseDay = (int)$baseDate->format('N');
+            $diff = $hariIndex - $baseDay;
+
+            if ($diff < 0) {
+                $diff += 7;
             }
+
+            $startDate = clone $baseDate;
+            $startDate->modify("+{$diff} day");
+
 
             // GENERATE 12 MINGGU
             for ($i = 0; $i < 12; $i++) {
