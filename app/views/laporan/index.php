@@ -64,18 +64,15 @@
                             </thead>
                             <tbody>
                                 <?php $no = 1; foreach ($data['laporan'] as $row) : 
-                                    // Inisialisasi Data dari Model
                                     $total = (int)$row['total_pertemuan'];
                                     $h_dosen = (int)$row['hadir_dosen'];
                                     $h_asis1 = (int)$row['hadir_asisten1'];
                                     $h_asis2 = (int)$row['hadir_asisten2'];
 
-                                    // Hitung Tidak Hadir (TH)
                                     $th_dosen = $total - $h_dosen;
                                     $th_asis1 = $total - $h_asis1;
                                     $th_asis2 = $total - $h_asis2;
 
-                                    // Hitung Persentase (%)
                                     $p_dosen = ($total > 0) ? ($h_dosen / $total) * 100 : 0;
                                     $p_asis1 = ($total > 0) ? ($h_asis1 / $total) * 100 : 0;
                                     $p_asis2 = ($total > 0) ? ($h_asis2 / $total) * 100 : 0;
