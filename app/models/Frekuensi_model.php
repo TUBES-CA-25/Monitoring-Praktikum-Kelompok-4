@@ -319,36 +319,49 @@ class Frekuensi_model{
         return $result;
     }
 
-    public function getJadwalHariIniAsisten($id_asisten) {
+    public function getJadwalHariIniAsisten($id_asisten)
+    {
         date_default_timezone_set('Asia/Jakarta');
 
-        $daftar_hari = [
-            1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 
+        $hariIniIndex = date('N'); // 1–7
+        $hariMap = [
+            1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu',
             4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'
         ];
-        $hari_ini = $daftar_hari[date('N')];
+        $hariIni = $hariMap[$hariIniIndex];
 
-        $this->db->query("SELECT
-                            f.id_frekuensi AS id_jadwal,
-                            f.frekuensi,
-                            f.jam_mulai,
-                            f.jam_selesai,
-                            mk.nama_matkul,
-                            r.nama_ruangan AS ruangan,
-                            k.kelas
-                        FROM trs_frekuensi f
-                        JOIN mst_matakuliah mk ON f.id_matkul = mk.id_matkul
-                        JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
-                        JOIN mst_kelas k ON f.id_kelas = k.id_kelas
-                        WHERE (f.id_asisten1 = :id_asisten OR f.id_asisten2 = :id_asisten)
-                        AND f.hari = :hari_ini
-                        ORDER BY f.jam_mulai ASC");
+        $this->db->query("
+            SELECT
+                f.id_frekuensi,
+                f.frekuensi,
+                f.jam_mulai,
+                f.jam_selesai,
+                mk.nama_matkul,
+                r.nama_ruangan AS ruangan,
+                k.kelas,
+                MIN(m.tanggal) AS first_date
+            FROM trs_frekuensi f
+            JOIN mst_matakuliah mk ON f.id_matkul = mk.id_matkul
+            JOIN mst_ruangan r ON f.id_ruangan = r.id_ruangan
+            JOIN mst_kelas k ON f.id_kelas = k.id_kelas
+            JOIN trs_mentoring m ON m.id_frekuensi = f.id_frekuensi
+            WHERE
+                (f.id_asisten1 = :id_asisten OR f.id_asisten2 = :id_asisten)
+                AND f.hari = :hari_ini
+            GROUP BY f.id_frekuensi
+            HAVING
+                CURDATE() BETWEEN
+                    MIN(m.tanggal)
+                    AND DATE_ADD(MIN(m.tanggal), INTERVAL 11 WEEK)
+            ORDER BY f.jam_mulai ASC
+        ");
 
         $this->db->bind('id_asisten', $id_asisten);
-        $this->db->bind('hari_ini', $hari_ini);
+        $this->db->bind('hari_ini', $hariIni);
 
         return $this->db->resultSet();
     }
+
 
     public function getAllFrekuensi() {
         $this->db->query("SELECT

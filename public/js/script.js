@@ -198,7 +198,6 @@
         const calendarEl = document.getElementById('calendar-monitoring');
         if (calendarEl) {
             const calendar = new FullCalendar.Calendar(calendarEl, {
-                timeZone: 'local',
                 initialView: 'dayGridMonth',
                 locale: 'id',
                 height: 420,

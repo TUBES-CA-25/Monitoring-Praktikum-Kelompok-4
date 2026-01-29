@@ -236,7 +236,7 @@ class Mentoring_model{
                             OR f.id_asisten2 = :id_asisten 
                             OR m.id_asisten_pengganti = :id_asisten
                         ORDER BY m.tanggal DESC, m.id_mentoring DESC 
-                        LIMIT 5");
+                        LIMIT 2");
                         
         $this->db->bind('id_asisten', $id_asisten);
         return $this->db->resultSet();
