@@ -1,6 +1,7 @@
 <?php
 
 class User extends Controller {
+    
     public function index() {
         $this->isAdmin();
         $data['title'] = 'Data User';
@@ -45,10 +46,15 @@ class User extends Controller {
     
     public function prosesUbah(){
         $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
+        
+        $nama_asli = $_POST['nama_user']; 
+        $foto_lama = $_POST['foto_lama'];
+
         if ($_FILES['photo_profil']['error'] === 4) {
-            $foto_baru = $_POST['foto_lama'];
+            $foto_baru = $foto_lama;
         } else {
-            $foto_baru = $this->uploadFoto();
+            $foto_baru = $this->uploadFoto($nama_asli, $foto_lama);
+            
             if (!$foto_baru) {
                 return false; 
             }
@@ -58,6 +64,7 @@ class User extends Controller {
         }
         if ($this->model('Asisten_model')->updateFotoViaUser($_POST['id_user'], $foto_baru) > 0) {
         }
+        
         Flasher::setFlash(' berhasil diubah', '', 'success');
         if ($role == 'Asisten') {
             header('Location: '.BASEURL. '/asisten');
@@ -78,7 +85,7 @@ class User extends Controller {
         exit;
     }
 
-    public function uploadFoto()
+    public function uploadFoto($namaOrang, $fotoLama)
     {
         $namaFile = $_FILES['photo_profil']['name'];
         $ukuranFile = $_FILES['photo_profil']['size'];
@@ -103,13 +110,20 @@ class User extends Controller {
             exit;
         }
 
-        $namaFileBaru = uniqid();
-        $namaFileBaru .= '.';
-        $namaFileBaru .= $ekstensiGambar;
+        $namaBersih = preg_replace('/[^A-Za-z0-9]/', '_', $namaOrang);
+        $namaFileBaru = $namaBersih . '_profil.' . $ekstensiGambar;
 
-        move_uploaded_file($tmpName, 'public/img/uploads/' . $namaFileBaru);
+        $targetPath = 'public/img/uploads/' . $namaFileBaru;
 
-        return 'public/img/uploads/' . $namaFileBaru;
+        if (!empty($fotoLama) && file_exists($fotoLama)) {
+            if ($fotoLama != $targetPath) {
+                unlink($fotoLama);
+            }
+        }
+
+        move_uploaded_file($tmpName, $targetPath);
+
+        return $targetPath;
     }
 
 }
