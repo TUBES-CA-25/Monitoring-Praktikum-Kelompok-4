@@ -12,12 +12,14 @@ class Kelas extends Controller {
         $this->view('kelas/index', $data);
         $this->view('templates/footer');
     }
+
     public function modalTambah(){
         $this->isAdmin();
         $data['jurusanOptions'] = $this->model('Kelas_model')->tampilJurusan();
 
         $this->view('kelas/tambah_kelas', $data);
     }
+
     public function tambah(){
         $this->isAdmin();
         $data['jurusanOptions'] = $this->model('Kelas_model')->tampilJurusan();
@@ -32,6 +34,7 @@ class Kelas extends Controller {
         header('Location: '.BASEURL. '/kelas');
         exit;
     }
+
     public function ubahModal(){
         $this->isAdmin();
         $id = $_POST['id'];
@@ -40,6 +43,7 @@ class Kelas extends Controller {
 
         $this->view('kelas/ubah_kelas', $data);
     }
+
     public function prosesUbah(){
         $this->isAdmin();
         if($this->model('Kelas_model')->prosesUbah($_POST) > 0){
@@ -50,6 +54,7 @@ class Kelas extends Controller {
         header('Location: '.BASEURL. '/kelas');
         exit;
     }
+    
     public function hapus($id){
         $this->isAdmin();
         if($this->model('Kelas_model')->prosesHapus($id)){

@@ -126,6 +126,7 @@
           <?php endif; ?>
           <?php if ($_SESSION['role'] == 'Asisten') : ?>
           <div class="row">
+            
             <!-- ================= LEFT : KALENDER ================= -->
             <div class="col-md-8">
               <div class="card">
@@ -134,20 +135,50 @@
                     <i class="fas fa-calendar-alt"></i> Kalender Monitoring Praktikum
                   </h3>
                 </div>
-
                 <div class="card-body">
-                  <!-- FULLCALENDAR -->
+                  <!-- KALENDER -->
                   <div id="calendar-monitoring" style="min-height:420px;"></div>
-
                   <!-- LEGEND -->
                   <div class="mt-3">
-                    <span class="badge bg-success">Monitoring Selesai</span>
-                    <span class="badge bg-warning">Hari Ini</span>
+                    <div class="mt-3">
+                      <?php if (!empty($data['calendarLegend'])) : ?>
+                        <div class="mt-3">
+                          <?php foreach ($data['calendarLegend'] as $l) : ?>
+                            <span class="badge mr-1"
+                                  style="background-color:<?= $l['color'] ?>;color:#fff">
+                                  <?= $l['label'] ?>
+                            </span>
+                          <?php endforeach; ?>
+                        </div>
+                      <?php endif; ?>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-
+            <!-- MODAL DETAIL EVENT -->
+            <div class="modal fade" id="eventDetailModal" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">Detail Monitoring</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p><strong>Mata Kuliah:</strong> <span id="md-matkul"></span></p>
+                    <p><strong>Ruangan:</strong> <span id="md-ruangan"></span></p>
+                    <p><strong>Status:</strong> <span id="md-status"></span></p>
+                    <p><strong>Tanggal:</strong> <span id="md-tanggal"></span></p>
+                  </div>
+                  <div class="modal-footer">
+                    <a href="#" id="md-link" class="btn btn-success btn-sm">Isi Monitoring</a>
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                      Tutup
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="col-md-4">
               <div class="card">
                   <div class="card-header bg-warning">

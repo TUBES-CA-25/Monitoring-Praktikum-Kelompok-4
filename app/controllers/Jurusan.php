@@ -12,10 +12,12 @@ class Jurusan extends Controller {
         $this->view('jurusan/index', $data);
         $this->view('templates/footer');
     }
+
     public function modalTambah(){
         $this->isAdmin();
         $this->view('jurusan/tambah_jurusan');
     }
+
     public function tambah(){
         $this->isAdmin();
         if($this->model('Jurusan_model')->tambah($_POST) > 0){
@@ -26,6 +28,7 @@ class Jurusan extends Controller {
         header('Location: '.BASEURL. '/jurusan');
         exit;
     }
+
     public function ubahModal(){
         $this->isAdmin();
         $id = $_POST['id'];
@@ -33,6 +36,7 @@ class Jurusan extends Controller {
 
         $this->view('jurusan/ubah_jurusan', $data);
     }
+
     public function prosesUbah(){
         $this->isAdmin();
         if($this->model('Jurusan_model')->prosesUbah($_POST) > 0){
@@ -43,6 +47,7 @@ class Jurusan extends Controller {
         header('Location: '.BASEURL. '/jurusan');
         exit;
     }
+    
     public function hapus($id){
         $this->isAdmin();
         if($this->model('Jurusan_model')->prosesHapus($id)){

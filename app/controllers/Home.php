@@ -3,7 +3,7 @@
 class Home extends Controller {
     public function index(){
         $data['title'] = 'Dashboard'; 
-        
+
         // --- DATA STATISTIK ---
         $data['jumlahDataRuangan'] = $this->model('Ruangan_model')->jumlahDataRuangan();
         $data['jumlahDataMatakuliah'] = $this->model('Matakuliah_model')->jumlahDataMatakuliah();
@@ -14,6 +14,13 @@ class Home extends Controller {
         $data['jumlahDataAsisten'] = $this->model('Asisten_model')->jumlahDataAsisten();
         $data['jumlahDataMentoring'] = $this->model('Mentoring_model')->jumlahDataMentoring();
         
+        $data['calendarLegend'] = [
+            ['label' => 'Sesuai Jadwal', 'color' => '#6c757d'],
+            ['label' => 'Belum Mengisi', 'color' => '#dc3545'],
+            ['label' => 'Sudah Mengisi', 'color' => '#28a745'],
+            ['label' => 'Kelas Pengganti', 'color' => '#0d6efd']
+        ];
+
         // --- LOGIKA ASISTEN ---
         if (isset($_SESSION['role']) && $_SESSION['role'] === 'Asisten') {
         $frekuensiModel = $this->model('Frekuensi_model');
@@ -45,55 +52,114 @@ class Home extends Controller {
 
     public function calendarAsisten()
     {
-        date_default_timezone_set('Asia/Jakarta');
-        
         header('Content-Type: application/json');
-        
+        date_default_timezone_set('Asia/Jakarta');
+
         $frekuensiModel = $this->model('Frekuensi_model');
         $mentoringModel = $this->model('Mentoring_model');
 
-        // 1. Dapatkan ID Asisten asli dari user session
         $asisten = $frekuensiModel->getAsistenIdByUserId($_SESSION['id_user']);
-        $id_asisten = $asisten['id_asisten'];
-
-        // 2. Ambil semua data jadwal & mentoring
-        $rows = $mentoringModel->getCalendarAsisten($id_asisten);
-
-        $events = [];
-        foreach ($rows as $row) {
-            // Logika penentuan tanggal: 
-            // Jika belum ada mentoring, kalender mungkin butuh logika plotting tanggal berdasarkan hari.
-            // Namun jika kita mengikuti data trs_mentoring yang sudah ada:
-            if (empty($row['tanggal'])) continue; 
-
-            // Warna Merah (Default: Belum diisi)
-            $color = '#dc3545'; 
-
-            // Warna Hijau (Selesai diisi)
-            if (!empty($row['id_mentoring'])) {
-                $color = '#28a745'; 
-            }
-
-            // Warna Oranye (Jika ada asisten pengganti)
-            if (!empty($row['id_asisten_pengganti'])) {
-                $color = '#fd7e14';
-            }
-
-            $events[] = [
-                'title' => $row['nama_matkul'],
-                'start' => $row['tanggal'],
-                'backgroundColor' => $color,
-                'borderColor' => '#343a40',
-                'extendedProps' => [
-                    'id_frekuensi' => $row['id_frekuensi'],
-                    'ruangan' => $row['nama_ruangan'],
-                    'status' => !empty($row['id_mentoring']) ? 'Selesai' : 'Belum Diisi'
-                ]
-            ];
+        if (!$asisten) {
+            echo json_encode([]);
+            exit;
         }
 
+        $rows = $mentoringModel->getCalendarAsisten($asisten['id_asisten']);
+
+        $hariMap = [
+            'senin' => 1,
+            'selasa' => 2,
+            'rabu' => 3,
+            'kamis' => 4,
+            'jumat' => 5,
+            'sabtu' => 6,
+            'minggu' => 7
+        ];
+
+        $events = [];
+        $today = new DateTime('today');
+
+        foreach ($rows as $row) {
+
+            $hariIndex = $hariMap[strtolower($row['hari'])] ?? null;
+            if (!$hariIndex) continue;
+
+            $absenDates = !empty($row['tanggal_absen'])
+                ? explode(',', $row['tanggal_absen'])
+                : [];
+
+            // TANGGAL AWAL JADWAL
+            $baseDate = !empty($row['tanggal_mulai'])
+                ? new DateTime($row['tanggal_mulai'])
+                : new DateTime('today');
+
+            $baseDay = (int)$baseDate->format('N');
+            $diff = $hariIndex - $baseDay;
+
+            if ($diff < 0) {
+                $diff += 7;
+            }
+
+            $startDate = clone $baseDate;
+            $startDate->modify("+{$diff} day");
+
+            for ($i = 0; $i < 12; $i++) {
+
+                $eventDate = clone $startDate;
+                $eventDate->modify("+{$i} week");
+
+                $eventDateStr = $eventDate->format('Y-m-d');
+                $jadwalWeek   = $eventDate->format('oW');
+
+                // FLAG ABSEN
+                $hasSameDay  = false;
+                $hasOtherDay = false;
+
+                foreach ($absenDates as $absen) {
+                    $absenDT = new DateTime($absen);
+
+                    // MINGGU YANG SAMA
+                    if ($absenDT->format('oW') === $jadwalWeek) {
+                        if ($absenDT->format('N') == $hariIndex) {
+                            $hasSameDay = true;
+                        } else {
+                            $hasOtherDay = true;
+                        }
+                    }
+                }
+
+                if ($hasSameDay) {
+                    $color  = '#28a745';
+                    $status = 'Sudah Mengisi';
+                }
+                elseif ($hasOtherDay) {
+                    $color  = '#0d6efd';
+                    $status = 'Kelas Pengganti';
+                }
+                elseif ($eventDate < $today) {
+                    $color  = '#dc3545';
+                    $status = 'Belum Mengisi';
+                }
+                else {
+                    $color  = '#6c757d';
+                    $status = 'Belum Waktunya';
+                }
+
+                $events[] = [
+                    'title' => $row['nama_matkul'],
+                    'start' => $eventDateStr,
+                    'backgroundColor' => $color,
+                    'borderColor' => '#343a40',
+                    'extendedProps' => [
+                        'id_frekuensi' => $row['id_frekuensi'],
+                        'ruangan' => $row['nama_ruangan'],
+                        'status' => $status,
+                        'clickable' => $color !== '#6c757d'
+                    ]
+                ];
+            }
+        }
         echo json_encode($events);
         exit;
     }
-
 }

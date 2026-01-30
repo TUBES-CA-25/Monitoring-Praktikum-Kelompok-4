@@ -13,10 +13,12 @@ class Ajaran extends Controller {
         $this->view('ajaran/index', $data);
         $this->view('templates/footer');
     }
+
     public function modalTambah(){
         $this->isAdmin();
         $this->view('ajaran/tambah_ajaran');
     }
+
     public function tambah(){
         $this->isAdmin();
         $this->view('ajaran/index');
@@ -29,6 +31,7 @@ class Ajaran extends Controller {
         header('Location: '.BASEURL. '/ajaran');
         exit;
     }
+
     public function ubahModal(){
         $this->isAdmin();
         $id = $_POST['id'];
@@ -36,6 +39,7 @@ class Ajaran extends Controller {
 
         $this->view('ajaran/ubah_ajaran', $data);
     }
+
     public function prosesUbah(){
         $this->isAdmin();
         if($this->model('Ajaran_model')->prosesUbah($_POST) > 0){
@@ -46,6 +50,7 @@ class Ajaran extends Controller {
         header('Location: '.BASEURL. '/ajaran');
         exit;
     }
+    
     public function hapus($id){
         $this->isAdmin();
         if($this->model('Ajaran_model')->prosesHapus($id)){

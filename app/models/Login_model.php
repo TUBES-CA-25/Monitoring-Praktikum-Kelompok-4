@@ -14,8 +14,6 @@ class Login_model {
         return $this->db->single();
     }
 
-    // --- Helper Lainnya (Tetap dipertahankan) ---
-
     public function getRole($username) {
         $this->db->query('SELECT role FROM ' . $this->table . ' WHERE username = :username');
         $this->db->bind('username', $username);        
