@@ -85,11 +85,47 @@ class User extends Controller {
         exit;
     }
 
+    // --- FITUR PROFIL SAYA (ADMIN) ---
+
+    public function profil() {
+        // Cek login
+        if (!isset($_SESSION['id_user'])) {
+            header('Location: ' . BASEURL . '/login');
+            exit;
+        }
+
+        $data['title'] = 'Profil Saya';
+        $id_user = $_SESSION['id_user']; 
+        $data['user'] = $this->model('User_model')->getUserById($id_user);
+
+        $this->view('templates/header', $data);
+        $this->view('templates/topbar');
+        $this->view('templates/sidebar');
+        $this->view('user/profil', $data); 
+        $this->view('templates/footer');
+    }
+
+public function updateProfil() {
+    $id_user = $_SESSION['id_user'];
+    $data = [
+        'id_user'  => $id_user,
+        'username' => $_POST['username'], 
+        'password' => $_POST['password']
+    ];
+
+    if ($this->model('User_model')->updateDataUser($data) > 0) {
+        Flasher::setFlash('berhasil', 'diperbarui', 'success', 'Password');
+    }
+    header('Location: ' . BASEURL . '/user/profil');
+    exit;
+}
+
+    // --- HELPER FUNCTIONS ---
+
     public function uploadFoto($namaOrang, $fotoLama)
     {
         $namaFile = $_FILES['photo_profil']['name'];
         $ukuranFile = $_FILES['photo_profil']['size'];
-        $error = $_FILES['photo_profil']['error'];
         $tmpName = $_FILES['photo_profil']['tmp_name'];
 
         $ekstensiGambarValid = ['jpg', 'jpeg', 'png'];
@@ -98,15 +134,13 @@ class User extends Controller {
 
         if (!in_array($ekstensiGambar, $ekstensiGambarValid)) {
             Flasher::setFlash('gagal', 'upload! Format harus jpg/jpeg/png', 'danger');
-            $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
-            header('Location: ' . BASEURL . ($role == 'Asisten' ? '/asisten' : '/user'));
+            header('Location: ' . BASEURL . '/user');
             exit;
         }
 
         if ($ukuranFile > 2000000) {
             Flasher::setFlash('gagal', 'upload! Ukuran max 2MB', 'danger');
-            $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
-            header('Location: ' . BASEURL . ($role == 'Asisten' ? '/asisten' : '/user'));
+            header('Location: ' . BASEURL . '/user');
             exit;
         }
 
@@ -122,8 +156,6 @@ class User extends Controller {
         }
 
         move_uploaded_file($tmpName, $targetPath);
-
         return $targetPath;
     }
-
 }
