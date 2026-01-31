@@ -19,14 +19,29 @@ class User_model{
         return $this->db->rowCount();
     }
 
-    /**
-     * Method untuk Update Profil Admin Sendiri (Hanya Username/Email & Password)
-     * Tanpa merombak struktur database (tanpa kolom foto)
-     */
+    public function tambahByAsisten($data){
+        $query = "INSERT INTO mst_user (nama_user, username, password, role) 
+                  VALUES (:nama_user, :username, :password, :role)";
+        
+        $this->db->query($query);
+        
+        // PERBAIKAN: Tambahkan titik dua (:)
+        $this->db->bind(':nama_user', $data['nama_user']);
+        $this->db->bind(':username', $data['username']);
+        $this->db->bind(':password', $data['password']);
+        $this->db->bind(':role', $data['role']);
+
+        try {
+            $this->db->execute();
+            return $this->db->rowCount();
+        } catch (PDOException $e) {
+            return 0;
+        }
+    }
+
     public function updateDataUser($data) {
         $query = "UPDATE mst_user SET username = :username";
         
-        // Hanya tambahkan update password jika diisi oleh user
         if (!empty($data['password'])) {
             $query .= ", password = :password";
         }
@@ -38,7 +53,6 @@ class User_model{
         $this->db->bind('id_user', $data['id_user']);
         
         if (!empty($data['password'])) {
-            // Menggunakan sha256 agar sinkron dengan sistem login & tambah user
             $this->db->bind('password', hash('sha256', $data['password']));
         }
 
@@ -46,9 +60,6 @@ class User_model{
         return $this->db->rowCount();
     }
 
-    /**
-     * Mengambil satu data user berdasarkan ID
-     */
     public function getUserById($id) {
         $this->db->query("SELECT * FROM mst_user WHERE id_user = :id");
         $this->db->bind('id', $id);
@@ -78,10 +89,8 @@ class User_model{
         $this->db->bind('id_user', $data['id_user']);
 
         if (!empty($data['password'])) {
-            $password_terenkripsi = hash('sha256', $data['password']); 
-            $this->db->bind('password', $password_terenkripsi);
+            $this->db->bind('password', $data['password']);
         }
-
         try {
             $this->db->execute();
             return true; 
@@ -131,5 +140,12 @@ class User_model{
         
         $this->db->bind(':id_user', $id_user);
         return $this->db->resultSet();
+    }
+
+    public function getUserByUsername($username)
+    {
+        $this->db->query('SELECT * FROM mst_user WHERE username = :username');
+        $this->db->bind(':username', $username);
+        return $this->db->single();
     }
 }
