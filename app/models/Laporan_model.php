@@ -12,16 +12,12 @@ class Laporan_model {
                          j.jurusan as prodi, d.nama_dosen, 
                          a1.nama_asisten as asisten1, a2.nama_asisten as asisten2,
                          
-                         -- 1. Hitung total input logbook di monitoring untuk jadwal ini
                          (SELECT COUNT(*) FROM trs_mentoring WHERE id_frekuensi = f.id_frekuensi) as total_pertemuan,
                          
-                         -- 2. Hitung jumlah kehadiran Dosen (Berdasarkan teks 'Hadir')
                          (SELECT COUNT(*) FROM trs_mentoring WHERE id_frekuensi = f.id_frekuensi AND status_dosen = 'Hadir') as hadir_dosen,
                          
-                         -- 3. Hitung jumlah kehadiran Asisten 1 (Berdasarkan teks 'Hadir')
                          (SELECT COUNT(*) FROM trs_mentoring WHERE id_frekuensi = f.id_frekuensi AND status_asisten1 = 'Hadir') as hadir_asisten1,
                          
-                         -- 4. Hitung jumlah kehadiran Asisten 2 (Berdasarkan teks 'Hadir')
                          (SELECT COUNT(*) FROM trs_mentoring WHERE id_frekuensi = f.id_frekuensi AND status_asisten2 = 'Hadir') as hadir_asisten2
 
                   FROM trs_frekuensi f
@@ -46,4 +42,4 @@ class Laporan_model {
 
         return $this->db->resultSet();
     }
-}
+}  

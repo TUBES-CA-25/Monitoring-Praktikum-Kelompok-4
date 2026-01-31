@@ -1,12 +1,16 @@
 <?php
 
+// 1. Setting URL 
+// Jika nama folder di htdocs adalah 'monitoring', maka:
 define('BASEURL', 'http://localhost/monitoring-praktikum');
 
+// 2. Setting Database (Default XAMPP)
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', ''); 
 define('DB_NAME', 'db_monitoring_praktikum');
 
+// 3. Koneksi Manual (Bawaan kodingan aslinya)
 $connect = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 if (!$connect) {
