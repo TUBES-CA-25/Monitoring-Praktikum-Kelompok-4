@@ -19,10 +19,6 @@ class User_model{
         return $this->db->rowCount();
     }
 
-    /**
-     * Method untuk Update Profil Admin Sendiri (Hanya Username/Email & Password)
-     * Tanpa merombak struktur database (tanpa kolom foto)
-     */
     public function updateDataUser($data) {
         $query = "UPDATE mst_user SET username = :username";
         
@@ -46,9 +42,6 @@ class User_model{
         return $this->db->rowCount();
     }
 
-    /**
-     * Mengambil satu data user berdasarkan ID
-     */
     public function getUserById($id) {
         $this->db->query("SELECT * FROM mst_user WHERE id_user = :id");
         $this->db->bind('id', $id);
