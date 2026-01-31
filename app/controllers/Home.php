@@ -76,90 +76,127 @@ class Home extends Controller {
             'minggu' => 7
         ];
 
-        $events = [];
-        $today = new DateTime('today');
+    $events = [];
+    
+    $today = new DateTime('today');
+    $endOfThisWeek = clone $today;
+    $endOfThisWeek->modify('sunday this week');
+    $todayWeek = $today->format('oW');
+    $todayDayIndex = (int) $today->format('N');
 
-        foreach ($rows as $row) {
+    foreach ($rows as $row) {
 
-            $hariIndex = $hariMap[strtolower($row['hari'])] ?? null;
-            if (!$hariIndex) continue;
+        // ===== VALIDASI HARI =====
+        $hariIndex = $hariMap[strtolower($row['hari'])] ?? null;
+        if (!$hariIndex) continue;
 
-            $absenDates = !empty($row['tanggal_absen'])
-                ? explode(',', $row['tanggal_absen'])
-                : [];
+        // ===== VALIDASI TANGGAL MULAI =====
+        if (empty($row['tanggal_mulai'])) continue;
+        $baseDate = new DateTime($row['tanggal_mulai']);
 
-            // TANGGAL AWAL JADWAL
-            $baseDate = !empty($row['tanggal_mulai'])
-                ? new DateTime($row['tanggal_mulai'])
-                : new DateTime('today');
+        // ===== CARI TANGGAL PERTAMA SESUAI HARI =====
+        $diff = $hariIndex - (int)$baseDate->format('N');
+        if ($diff < 0) $diff += 7;
 
-            $baseDay = (int)$baseDate->format('N');
-            $diff = $hariIndex - $baseDay;
+        $startDate = clone $baseDate;
+        $startDate->modify("+{$diff} day");
 
-            if ($diff < 0) {
-                $diff += 7;
-            }
+        // ===== SIMPAN JADWAL DEFAULT =====
+        $jadwal = [];
 
-            $startDate = clone $baseDate;
-            $startDate->modify("+{$diff} day");
+        for ($i = 0; $i < 12; $i++) {
 
-            for ($i = 0; $i < 12; $i++) {
+            $d = clone $startDate;
+            $d->modify("+{$i} week");
 
-                $eventDate = clone $startDate;
-                $eventDate->modify("+{$i} week");
 
-                $eventDateStr = $eventDate->format('Y-m-d');
-                $jadwalWeek   = $eventDate->format('oW');
+            $weekKey = $d->format('oW');
 
-                // FLAG ABSEN
-                $hasSameDay  = false;
-                $hasOtherDay = false;
-
-                foreach ($absenDates as $absen) {
-                    $absenDT = new DateTime($absen);
-
-                    // MINGGU YANG SAMA
-                    if ($absenDT->format('oW') === $jadwalWeek) {
-                        if ($absenDT->format('N') == $hariIndex) {
-                            $hasSameDay = true;
-                        } else {
-                            $hasOtherDay = true;
-                        }
-                    }
-                }
-
-                if ($hasSameDay) {
-                    $color  = '#28a745';
-                    $status = 'Sudah Mengisi';
-                }
-                elseif ($hasOtherDay) {
-                    $color  = '#0d6efd';
-                    $status = 'Kelas Pengganti';
-                }
-                elseif ($eventDate < $today) {
-                    $color  = '#dc3545';
-                    $status = 'Belum Mengisi';
-                }
-                else {
-                    $color  = '#6c757d';
-                    $status = 'Belum Waktunya';
-                }
-
-                $events[] = [
-                    'title' => $row['nama_matkul'],
-                    'start' => $eventDateStr,
-                    'backgroundColor' => $color,
-                    'borderColor' => '#343a40',
-                    'extendedProps' => [
-                        'id_frekuensi' => $row['id_frekuensi'],
-                        'ruangan' => $row['nama_ruangan'],
-                        'status' => $status,
-                        'clickable' => $color !== '#6c757d'
-                    ]
-                ];
-            }
+            $jadwal[$weekKey] = [
+                'date'  => $d,
+                'shown' => true
+            ];
         }
-        echo json_encode($events);
-        exit;
+
+        // ===== PROSES ABSENSI =====
+        $absenDates = !empty($row['tanggal_absen'])
+            ? explode(',', $row['tanggal_absen'])
+            : [];
+
+        foreach ($absenDates as $absen) {
+
+            $absenDT = new DateTime($absen);
+            $weekKey = $absenDT->format('oW');
+
+            if (!isset($jadwal[$weekKey])) continue;
+
+            // HAPUS JADWAL DEFAULT
+            $jadwal[$weekKey]['shown'] = false;
+
+            // 🔵 KELAS PENGGANTI
+            if ((int)$absenDT->format('N') !== $hariIndex) {
+
+                $color  = '#0d6efd';
+                $status = 'Kelas Pengganti';
+
+            }
+            // 🟢 SESUAI JADWAL
+            else {
+
+                $color  = '#28a745';
+                $status = 'Sudah Mengisi';
+            }
+
+            $events[] = [
+                'title' => $row['nama_matkul'],
+                'start' => $absenDT->format('Y-m-d'),
+                'backgroundColor' => $color,
+                'borderColor' => '#343a40',
+                'extendedProps' => [
+                    'id_frekuensi' => $row['id_frekuensi'],
+                    'id_mentoring' => $row['id_mentoring'] ?? null,
+                    'ruangan' => $row['nama_ruangan'],
+                    'status' => $status,
+                    'clickable' => true
+                ]
+            ];
+        }
+
+        // ===== TAMPILKAN JADWAL DEFAULT =====
+        foreach ($jadwal as $j) {
+
+            if (!$j['shown']) continue;
+
+            if ($j['date'] < $today) {
+                $color  = '#dc3545';
+                $status = 'Belum Mengisi';
+                $clickable = true;
+
+            } elseif ($j['date'] <= $endOfThisWeek) {
+                $color  = '#6c757d';
+                $status = 'Belum Waktunya';
+                $clickable = false;
+
+            } else {
+                continue;
+            }
+
+            $events[] = [
+                'title' => $row['nama_matkul'],
+                'start' => $j['date']->format('Y-m-d'),
+                'backgroundColor' => $color,
+                'borderColor' => '#343a40',
+                'extendedProps' => [
+                    'id_frekuensi' => $row['id_frekuensi'],
+                    'id_mentoring' => $row['id_mentoring'] ?? null,
+                    'ruangan' => $row['nama_ruangan'],
+                    'status' => $status,
+                    'clickable' => $clickable
+                ]
+            ];
+        }
+    }
+    echo json_encode($events);
+    exit;
     }
 }

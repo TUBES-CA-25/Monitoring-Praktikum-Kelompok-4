@@ -137,7 +137,7 @@
                 </div>
                 <div class="card-body">
                   <!-- KALENDER -->
-                  <div id="calendar-monitoring" style="min-height:420px;"></div>
+                  <div id="calendar-monitoring"></div>
                   <!-- LEGEND -->
                   <div class="mt-3">
                     <div class="mt-3">
@@ -185,29 +185,48 @@
                       <h3 class="card-title"><i class="fas fa-clock"></i> Monitoring Hari Ini</h3>
                   </div>
                   <div class="card-body">
-                      <?php if (!empty($data['monitoringHariIni'])) : ?>
-                          <?php foreach ($data['monitoringHariIni'] as $index => $jadwal) : ?>
-                              <div class="monitoring-item <?= $index > 0 ? 'mt-3 pt-3 border-top' : ''; ?>">
-                                  <p class="mb-1">
-                                      <strong>Mata Kuliah:</strong><br>
-                                      <?= $jadwal['nama_matkul']; ?> (<?= $jadwal['kelas']; ?> - <?= $jadwal['frekuensi']; ?>)
-                                  </p>
-                                  
-                                  <p class="mb-1"><strong>Jam:</strong><br>
-                                      <span class="badge badge-secondary">
-                                          <i class="fas fa-clock"></i> <?= substr($jadwal['jam_mulai'], 0, 5); ?> - <?= substr($jadwal['jam_selesai'], 0, 5); ?>
-                                      </span>
-                                  </p>
-                                  
-                                  <p class="mb-2"><strong>Laboratorium:</strong><br>
-                                      <i class="fas fa-map-marker-alt"></i> <?= $jadwal['ruangan']; ?>
-                                  </p>
+                    <?php if (!empty($data['monitoringHariIni'])) : ?>
+                      <div id="monitoringCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
+                          <div class="carousel-inner">
+                              <?php foreach ($data['monitoringHariIni'] as $index => $jadwal) : ?>
+                                  <div class="carousel-item <?= $index === 0 ? 'active' : ''; ?>">
+                                      <div class="monitoring-card p-3">
 
-                                  <a href="<?= BASEURL; ?>/frekuensi/detail/<?= $jadwal['id_jadwal']; ?>" class="btn btn-primary btn-sm btn-block">
-                                      <i class="fas fa-edit"></i> Isi Monitoring
-                                  </a>
-                              </div>
-                          <?php endforeach; ?>
+                                          <p class="mb-1">
+                                              <strong>Mata Kuliah:</strong><br>
+                                              <?= $jadwal['nama_matkul']; ?>
+                                              (<?= $jadwal['kelas']; ?> - <?= $jadwal['frekuensi']; ?>)
+                                          </p>
+
+                                          <p class="mb-1"><strong>Jam:</strong><br>
+                                              <span class="badge badge-secondary">
+                                                  <i class="fas fa-clock"></i>
+                                                  <?= substr($jadwal['jam_mulai'], 0, 5); ?> - <?= substr($jadwal['jam_selesai'], 0, 5); ?>
+                                              </span>
+                                          </p>
+
+                                          <p class="mb-2"><strong>Laboratorium:</strong><br>
+                                              <i class="fas fa-map-marker-alt"></i> <?= $jadwal['ruangan']; ?>
+                                          </p>
+
+                                          <a href="<?= BASEURL; ?>/frekuensi/detail/<?= $jadwal['id_frekuensi']; ?>"
+                                            class="btn btn-primary btn-sm btn-block">
+                                              <i class="fas fa-edit"></i> Isi Monitoring
+                                          </a>
+
+                                      </div>
+                                  </div>
+                              <?php endforeach; ?>
+                          </div>
+                          <?php if (count($data['monitoringHariIni']) > 1) : ?>
+                              <a class="carousel-control-prev" href="#monitoringCarousel" role="button" data-slide="prev">
+                                  <span class="carousel-control-prev-icon"></span>
+                              </a>
+                              <a class="carousel-control-next" href="#monitoringCarousel" role="button" data-slide="next">
+                                  <span class="carousel-control-next-icon"></span>
+                              </a>
+                          <?php endif; ?>
+                      </div>
                       <?php else : ?>
                           <p class="text-muted text-center py-3">Tidak ada jadwal hari ini</p>
                       <?php endif; ?>

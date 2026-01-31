@@ -10,7 +10,7 @@
                 <input type="text" name="nama_dosen" class="form-control" placeholder="Masukkan Dosen" required>
             </div>
             <div class="form-group mb-3">
-                <label for="formFile" class="form-label">Masukkan Foto</label>
+                <label for="formFile" class="form-label">Masukkan Foto TTD</label>
                 <input class="form-control " type="file" name="photo_path">
             </div><br>
         </div>
