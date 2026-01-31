@@ -40,22 +40,30 @@
                                     <p class="form-control-plaintext"><?= $data['user']['role']; ?></p>
                                 </div>
                             </div>
-                            
-                            <hr>
-                            
-                            <form action="<?= BASEURL; ?>/user/updateProfil" method="post">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-primary">Password Baru</label>
-                                    <div class="col-sm-9">
-                                        <input type="password" name="password" class="form-control" placeholder="Masukkan password baru untuk mengganti">
-                                        <small class="text-muted">Kosongkan jika tidak ingin mengubah password.</small>
-                                        <input type="hidden" name="username" value="<?= $data['user']['username']; ?>">
+
+                            <?php if ($_SESSION['role'] == 'Admin') : ?>
+                                <hr>
+                                <form action="<?= BASEURL; ?>/user/updateProfil" method="post">
+                                    <div class="form-group row">
+                                        <label class="col-sm-3 col-form-label text-primary">Password Baru</label>
+                                        <div class="col-sm-9">
+                                            <input type="password" name="password" class="form-control" placeholder="Masukkan password baru untuk mengganti" required>
+                                            <small class="text-muted">Masukkan password baru Anda untuk meningkatkan keamanan.</small>
+                                            <input type="hidden" name="username" value="<?= $data['user']['username']; ?>">
+                                        </div>
                                     </div>
+                                    <div class="text-right">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-key"></i> Update Password Admin
+                                        </button>
+                                    </div>
+                                </form>
+                            <?php else : ?>
+                                <div class="alert alert-info mt-3">
+                                    <i class="fas fa-info-circle"></i> Untuk perubahan data atau password, silakan hubungi Admin.
                                 </div>
-                                <div class="text-right">
-                                    <button type="submit" class="btn btn-primary"><i class="fas fa-key"></i> Update Password</button>
-                                </div>
-                            </form>
+                            <?php endif; ?>
+
                         </div>
                     </div>
                 </div>

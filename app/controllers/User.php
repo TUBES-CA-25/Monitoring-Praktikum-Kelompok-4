@@ -85,25 +85,30 @@ class User extends Controller {
         exit;
     }
 
-    // --- FITUR PROFIL SAYA (ADMIN) ---
 
-    public function profil() {
-        // Cek login
-        if (!isset($_SESSION['id_user'])) {
-            header('Location: ' . BASEURL . '/login');
-            exit;
-        }
-
-        $data['title'] = 'Profil Saya';
-        $id_user = $_SESSION['id_user']; 
-        $data['user'] = $this->model('User_model')->getUserById($id_user);
-
-        $this->view('templates/header', $data);
-        $this->view('templates/topbar');
-        $this->view('templates/sidebar');
-        $this->view('user/profil', $data); 
-        $this->view('templates/footer');
+public function profil() {
+    if (!isset($_SESSION['id_user'])) {
+        header('Location: ' . BASEURL . '/login');
+        exit;
     }
+
+    $data['title'] = 'Profil Saya';
+    $id_user = $_SESSION['id_user']; 
+    $data['user'] = $this->model('User_model')->getUserById($id_user);
+
+    $this->view('templates/header', $data);
+    $this->view('templates/topbar');
+    $this->view('templates/sidebar');
+
+    if ($_SESSION['role'] == 'Admin') {
+        $this->view('user/profil', $data); 
+    } else {
+        header('Location: ' . BASEURL . '/asisten'); 
+        exit;
+    }
+
+    $this->view('templates/footer');
+}
 
 public function updateProfil() {
     $id_user = $_SESSION['id_user'];
@@ -120,7 +125,6 @@ public function updateProfil() {
     exit;
 }
 
-    // --- HELPER FUNCTIONS ---
 
     public function uploadFoto($namaOrang, $fotoLama)
     {
