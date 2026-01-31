@@ -71,8 +71,10 @@ class User_model{
         $this->db->bind('id_user', $data['id_user']);
 
         if (!empty($data['password'])) {
-            $this->db->bind('password', $data['password']);
+            $password_terenkripsi = hash('sha256', $data['password']); 
+            $this->db->bind('password', $password_terenkripsi);
         }
+
         try {
             $this->db->execute();
             return true; 
