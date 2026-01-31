@@ -5,6 +5,7 @@ class User_model{
     public function __construct(){
         $this->db = new Database;
     }
+
     public function tambah($data){
         $this->db->query("INSERT INTO mst_user (nama_user, username, password, role) 
                         VALUES (:nama_user, :username, :password, :role)");
@@ -16,6 +17,42 @@ class User_model{
         $this->db->execute();
 
         return $this->db->rowCount();
+    }
+
+    /**
+     * Method untuk Update Profil Admin Sendiri (Hanya Username/Email & Password)
+     * Tanpa merombak struktur database (tanpa kolom foto)
+     */
+    public function updateDataUser($data) {
+        $query = "UPDATE mst_user SET username = :username";
+        
+        // Hanya tambahkan update password jika diisi oleh user
+        if (!empty($data['password'])) {
+            $query .= ", password = :password";
+        }
+        
+        $query .= " WHERE id_user = :id_user";
+
+        $this->db->query($query);
+        $this->db->bind('username', $data['username']);
+        $this->db->bind('id_user', $data['id_user']);
+        
+        if (!empty($data['password'])) {
+            // Menggunakan sha256 agar sinkron dengan sistem login & tambah user
+            $this->db->bind('password', hash('sha256', $data['password']));
+        }
+
+        $this->db->execute();
+        return $this->db->rowCount();
+    }
+
+    /**
+     * Mengambil satu data user berdasarkan ID
+     */
+    public function getUserById($id) {
+        $this->db->query("SELECT * FROM mst_user WHERE id_user = :id");
+        $this->db->bind('id', $id);
+        return $this->db->single();
     }
 
     public function prosesUbah($data){
@@ -65,7 +102,6 @@ class User_model{
     }
 
     public function prosesHapus($id){
-        // $this->db->query("DELETE FROM mst_user WHERE id_user = :id");
         $this->db->query("CALL delete_user_with_references(:id)");
         $this->db->bind("id", $id);
         $this->db->execute();
@@ -87,7 +123,6 @@ class User_model{
     } 
 
     public function getUserDetails($id_user) {
-        // PERBAIKAN: Gunakan SELECT biasa dengan LEFT JOIN
         $this->db->query("SELECT * FROM mst_user 
                           LEFT JOIN mst_asisten ON mst_user.id_user = mst_asisten.id_user 
                           WHERE mst_user.id_user = :id_user");

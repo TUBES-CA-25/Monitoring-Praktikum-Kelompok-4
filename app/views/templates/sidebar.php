@@ -19,7 +19,7 @@
         </div>
         <div class="info">
           <?php if ($_SESSION['role'] == 'Admin') : ?>
-            <a href="<?= BASEURL ?>/user" style="text-decoration:none;"><?= $nama_user ?></a>
+            <a href="<?= BASEURL ?>/user/profil" style="text-decoration:none;"><?= $nama_user ?></a>
           <?php elseif ($_SESSION['role'] == 'Asisten') : ?>
             <a href="<?= BASEURL ?>/asisten" style="text-decoration:none;"><?= $nama_user ?></a>
           <?php endif; ?>
@@ -66,12 +66,12 @@
               <p>Data Asisten</p>
             </a>
           </li>
-          <li class="nav-item">
-            <a href="<?= BASEURL ?>/user" class="nav-link <?= strpos($current_page, '/user') !== false ? 'active' : '' ?>">
-              <i class="nav-icon fas fa-user-plus"></i>
-              <p>Data User</p>
-            </a>
-          </li>
+<li class="nav-item">
+    <a href="<?= BASEURL ?>/user" class="nav-link <?= (strpos($current_page, '/user') !== false && strpos($current_page, '/profil') === false) ? 'active' : '' ?>">
+        <i class="nav-icon fas fa-user-plus"></i>
+        <p>Data User</p>
+    </a>
+</li>
 
           <li class="nav-header">MENU LAINNYA</li>
           <li class="nav-item">
