@@ -22,12 +22,6 @@
       </li>
 
       <li class="nav-item">
-          <a class="nav-link" id="dark-mode-toggle" href="#" role="button">
-              <i class="fas fa-moon"></i>
-          </a>
-      </li>
-
-      <li class="nav-item">
         <?php $role = isset($_SESSION['role']) ? $_SESSION['role'] : ''; ?>
         <?php if ($role == 'Asisten') : ?>
             <a class="nav-link" href="<?= BASEURL; ?>/asisten">
