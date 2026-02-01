@@ -1,3 +1,5 @@
+
+
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -43,7 +45,7 @@
                             
                             <hr>
                             
-                            <form action="<?= BASEURL; ?>/user/updateProfil" method="post">
+                            <form action="<?= BASEURL; ?>/admin/updateProfil" method="post">
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label text-primary">Password Baru</label>
                                     <div class="col-sm-9">

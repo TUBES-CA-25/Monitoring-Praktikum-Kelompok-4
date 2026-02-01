@@ -28,9 +28,16 @@
       </li>
 
       <li class="nav-item">
-        <a class="nav-link" href="<?= BASEURL; ?>/user/profil">
-            <i class="fas fa-user-circle"></i> Profil
-        </a>
+        <?php $role = isset($_SESSION['role']) ? $_SESSION['role'] : ''; ?>
+        <?php if ($role == 'Asisten') : ?>
+            <a class="nav-link" href="<?= BASEURL; ?>/asisten">
+                <i class="fas fa-user-circle"></i> Profil Asisten
+            </a>
+        <?php else : ?>
+            <a class="nav-link" href="<?= BASEURL; ?>/user/profil">
+                <i class="fas fa-user-circle"></i> Profil Admin
+            </a>
+        <?php endif; ?>
       </li>
 
       <li class="nav-item">
