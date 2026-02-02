@@ -42,8 +42,6 @@
                                     <p class="form-control-plaintext"><?= $data['user']['role']; ?></p>
                                 </div>
                             </div>
-<<<<<<< HEAD
-
                             <?php if ($_SESSION['role'] == 'Admin') : ?>
                                 <hr>
                                 <form action="<?= BASEURL; ?>/user/updateProfil" method="post">
@@ -54,18 +52,6 @@
                                             <small class="text-muted">Masukkan password baru Anda untuk meningkatkan keamanan.</small>
                                             <input type="hidden" name="username" value="<?= $data['user']['username']; ?>">
                                         </div>
-=======
-                            
-                            <hr>
-                            
-                            <form action="<?= BASEURL; ?>/admin/updateProfil" method="post">
-                                <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label text-primary">Password Baru</label>
-                                    <div class="col-sm-9">
-                                        <input type="password" name="password" class="form-control" placeholder="Masukkan password baru untuk mengganti">
-                                        <small class="text-muted">Kosongkan jika tidak ingin mengubah password.</small>
-                                        <input type="hidden" name="username" value="<?= $data['user']['username']; ?>">
->>>>>>> c53aa501464698e0402b324b68a0c606092a0525
                                     </div>
                                     <div class="text-right">
                                         <button type="submit" class="btn btn-primary">
