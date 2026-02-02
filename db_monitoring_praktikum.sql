@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost
--- Waktu pembuatan: 23 Jan 2026 pada 08.50
+-- Waktu pembuatan: 02 Feb 2026 pada 02.55
 -- Versi server: 10.4.28-MariaDB
 -- Versi PHP: 8.1.17
 
@@ -43,6 +43,101 @@ CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_asisten_with_references` (IN
     -- 3️⃣ Hapus asisten
     DELETE FROM mst_asisten
     WHERE id_asisten = p_id_asisten;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_jurusan_with_references` (IN `p_id_jurusan` INT)   BEGIN
+    -- Hapus mentoring
+    DELETE FROM trs_mentoring
+    WHERE id_frekuensi IN (
+        SELECT id_frekuensi FROM trs_frekuensi
+        WHERE id_jurusan = p_id_jurusan
+    );
+
+    -- Hapus frekuensi
+    DELETE FROM trs_frekuensi
+    WHERE id_jurusan = p_id_jurusan;
+
+    -- Hapus kelas
+    DELETE FROM mst_kelas
+    WHERE id_jurusan = p_id_jurusan;
+
+    -- Hapus matakuliah
+    DELETE FROM mst_matakuliah
+    WHERE id_jurusan = p_id_jurusan;
+
+    -- Terakhir hapus jurusan
+    DELETE FROM mst_jurusan
+    WHERE id_jurusan = p_id_jurusan;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_kelas_with_references` (IN `p_id_kelas` INT)   BEGIN
+    DELETE FROM trs_mentoring
+    WHERE id_frekuensi IN (
+        SELECT id_frekuensi FROM trs_frekuensi
+        WHERE id_kelas = p_id_kelas
+    );
+
+    DELETE FROM trs_frekuensi
+    WHERE id_kelas = p_id_kelas;
+
+    DELETE FROM mst_kelas
+    WHERE id_kelas = p_id_kelas;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_matakuliah_with_references` (IN `p_id_matkul` INT)   BEGIN
+    DELETE FROM trs_mentoring
+    WHERE id_frekuensi IN (
+        SELECT id_frekuensi FROM trs_frekuensi
+        WHERE id_matkul = p_id_matkul
+    );
+
+    DELETE FROM trs_frekuensi
+    WHERE id_matkul = p_id_matkul;
+
+    DELETE FROM mst_matakuliah
+    WHERE id_matkul = p_id_matkul;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_ruangan_with_references` (IN `p_id_ruangan` INT)   BEGIN
+    DELETE FROM trs_mentoring
+    WHERE id_frekuensi IN (
+        SELECT id_frekuensi FROM trs_frekuensi
+        WHERE id_ruangan = p_id_ruangan
+    );
+
+    DELETE FROM trs_frekuensi
+    WHERE id_ruangan = p_id_ruangan;
+
+    DELETE FROM mst_ruangan
+    WHERE id_ruangan = p_id_ruangan;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_tahun_ajaran_with_references` (IN `p_id_tahun` INT)   BEGIN
+    START TRANSACTION;
+
+    DELETE FROM trs_mentoring
+    WHERE id_frekuensi IN (
+        SELECT id_frekuensi FROM trs_frekuensi WHERE id_tahun = p_id_tahun
+    );
+
+    DELETE FROM trs_frekuensi WHERE id_tahun = p_id_tahun;
+    DELETE FROM mst_tahun_ajaran WHERE id_tahun = p_id_tahun;
+
+    COMMIT;
+END$$
+
+CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_tahun_with_references` (IN `p_id_tahun` INT)   BEGIN
+    DELETE FROM trs_mentoring
+    WHERE id_frekuensi IN (
+        SELECT id_frekuensi FROM trs_frekuensi
+        WHERE id_tahun = p_id_tahun
+    );
+
+    DELETE FROM trs_frekuensi
+    WHERE id_tahun = p_id_tahun;
+
+    DELETE FROM mst_tahun_ajaran
+    WHERE id_tahun = p_id_tahun;
 END$$
 
 CREATE DEFINER=`root`@`localhost` PROCEDURE `delete_user_with_references` (IN `p_id_user` INT)   BEGIN
@@ -108,7 +203,7 @@ CREATE TABLE `mst_asisten` (
 --
 
 INSERT INTO `mst_asisten` (`id_asisten`, `stambuk`, `nama_asisten`, `angkatan`, `status`, `jenis_kelamin`, `id_user`, `photo_profil`, `photo_path`) VALUES
-(1, '13020200103', 'Adam Adnan, S.Kom', '2020', 'Asisten', 'Pria', 2, 'public/img/uploads/Adam Adnan.png', 'public/img/signature/Adam Adnan.png'),
+(1, '13020200103', 'Adam Adnan, S.Kom', '2020', 'Asisten', 'Pria', 2, 'public/img/uploads/Adam_Adnan_profil.png', 'public/img/signature/Adam Adnan.png'),
 (2, '13020200318', 'As\'syahrin Nanda, S.Kom', '2020', 'Asisten', 'Pria', 3, 'public/img/uploads/fotoProfile.jpeg', 'public/img/signature/TTDku-As\'syahrinNanda.png'),
 (3, '13020210048', 'Ahmad Rendi', '2021', 'Asisten', 'Pria', 4, 'public/img/uploads/Ahmad Rendi.JPG', 'public/img/signature/Ahmad Rendi.png'),
 (4, '13020210287', 'Athar Fathana Rakasyah', '2021', 'Asisten', 'Pria', 5, 'public/img/uploads/Athar Fathana Rakasyah.jpg', 'TIDAK'),
@@ -129,9 +224,11 @@ INSERT INTO `mst_asisten` (`id_asisten`, `stambuk`, `nama_asisten`, `angkatan`, 
 (21, '13020220081', 'Wahyu Kadri Rahmat Suat', '2022', 'Calon Asisten', 'Pria', 22, 'public/img/uploads/RHM03414.JPG', 'public/img/signature/Wahyu ttd.png'),
 (22, '13020210143', 'Berlian Septiani', '2021', 'Calon Asisten', 'Wanita', 23, NULL, 'public/img/signature/Berlian Septiani.png'),
 (23, '13020220323', 'Dewi Ernita Rahma', '2022', 'Calon Asisten', 'Wanita', 24, NULL, 'public/img/signature/Dewi_Ernita_Rahma.png'),
-(24, '13020220109', 'Tazkirah Amaliah', '2022', 'Calon Asisten', 'Wanita', 25, 'public/img/uploads/RHM03395.JPG', 'public/img/signature/TTD_Tazkirah.png'),
-(26, '13020200141', 'Rizal Rahmadani, S.Kom., MCF', '2020', 'Asisten', 'Pria', 27, NULL, 'public/img/signature/Rizal.png'),
-(30, '13020230253', 'Zaki Falihin Ayyubi', '2023', 'Asisten', 'Pria', 32, NULL, NULL);
+(24, '13020220109', 'Tazkirah Amaliah', '2022', 'Calon Asisten', 'Wanita', 25, 'public/img/uploads/RHM03395.JPG', 'public/img/signature/PHOTO-2024-12-12-14-38-43.jpg'),
+(26, '13020200141', 'Rizal Rahmadani, S.Kom., MCF', '2020', 'Asisten', 'Pria', 27, 'public/img/uploads/PHOTO-2024-12-12-14-38-43.jpg', 'public/img/signature/PHOTO-2024-12-12-14-38-43.jpg'),
+(30, '13020230253', 'Zaki Falihin Ayyubi', '2023', 'Asisten', 'Pria', 32, 'public/img/uploads/Zaki Falihin Ayyubi.jpg', NULL),
+(45, '13020220253', 'Ayyubi M', '2024', 'Asisten', 'Pria', 56, NULL, NULL),
+(47, '13020230244', 'Rizqi Ananda Jalil', '2023', 'Calon Asisten', 'Wanita', 58, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -325,7 +422,8 @@ INSERT INTO `mst_matakuliah` (`id_matkul`, `kode_matkul`, `nama_matkul`, `singka
 (22, '1313KKB401', 'Pemrograman Berorientasi Objek', 'PBO', 'GENAP', 3, 2),
 (23, '1313KKB402', 'Desain Grafis ', 'DG', 'GENAP', 3, 2),
 (24, '1313KKB407', 'Pemrograman Mobile ', 'MOBILE', 'GENAP', 3, 2),
-(25, '1313KKB604', 'Multimedia System', 'MS', 'GENAP', 3, 2);
+(25, '1313KKB604', 'Multimedia System', 'MS', 'GENAP', 3, 2),
+(27, '1303PPA501', 'Bisnis Digital', 'BD', 'GANJIL', 3, NULL);
 
 -- --------------------------------------------------------
 
@@ -352,7 +450,7 @@ INSERT INTO `mst_ruangan` (`id_ruangan`, `nama_ruangan`) VALUES
 (7, 'Laboratorium Microcontroller'),
 (8, 'Laboratorium Riset 1'),
 (9, 'Laboratorium Riset 2'),
-(10, 'Laboratorium Riset 3');
+(39, 'Laboratorium Riset 3');
 
 -- --------------------------------------------------------
 
@@ -398,7 +496,7 @@ CREATE TABLE `mst_user` (
 
 INSERT INTO `mst_user` (`id_user`, `nama_user`, `username`, `password`, `role`) VALUES
 (1, 'Fatima A.R. Tuasamu', 'admin@gmail.com', '41e5653fc7aeb894026d6bb7b2db7f65902b454945fa8fd65a6327047b5277fb', 'Admin'),
-(2, 'Adam Adnan', 'adnan100701@gmail.com', 'c930b3c377e643aeb098073360f0042744f3412aca5bc352aca667da2634fed3', 'Asisten'),
+(2, 'Adam Adnan', 'adnan100701@gmail.com', 'iclabs-umi', 'Asisten'),
 (3, 'As\'syahrin Nanda', 'syahrinnanda@gmail.com', 'dae787a2c11951f8a35b9b79c3ac5c674cbd612e8229d49fe4460ab30815f40b', 'Asisten'),
 (4, 'Ahmad Rendi', 'ahmadrendiajah@gmail.com', 'c930b3c377e643aeb098073360f0042744f3412aca5bc352aca667da2634fed3', 'Asisten'),
 (5, 'Athar Fathana Rakasyah', 'atharfathanarakasyah.iclabs@umi.ac.id', 'c930b3c377e643aeb098073360f0042744f3412aca5bc352aca667da2634fed3', 'Asisten'),
@@ -421,7 +519,10 @@ INSERT INTO `mst_user` (`id_user`, `nama_user`, `username`, `password`, `role`) 
 (24, 'Dewi Ernita Rahma', 'dewiernitarahma@gmail.com', 'c930b3c377e643aeb098073360f0042744f3412aca5bc352aca667da2634fed3', 'Asisten'),
 (25, 'Tazkirah Amaliah', 'tazkirah1804@gmail.com', 'c930b3c377e643aeb098073360f0042744f3412aca5bc352aca667da2634fed3', 'Asisten'),
 (27, 'Rizal Rahmadani', '13020200141@umi.ac.id', 'c930b3c377e643aeb098073360f0042744f3412aca5bc352aca667da2634fed3', 'Asisten'),
-(32, 'Zaki Falihin Ayyubi', '13020230253@gmail.com', 'c930b3c377e643aeb098073360f0042744f3412aca5bc352aca667da2634fed3', 'Asisten');
+(32, 'Zaki Falihin Ayyubi', '13020230253@gmail.com', 'c930b3c377e643aeb098073360f0042744f3412aca5bc352aca667da2634fed3', 'Asisten'),
+(56, 'Ayyubi M', 'zakifalihin05@gmail.com', 'c930b3c377e643aeb098073360f0042744f3412aca5bc352aca667da2634fed3', 'Asisten'),
+(58, 'Rizqi Ananda Jalil', '13020230244@student.umi.ac.id', 'c930b3c377e643aeb098073360f0042744f3412aca5bc352aca667da2634fed3', 'Asisten'),
+(59, 'Zaki Ayyubi', 'zakifalihin79@gmail.com', 'c930b3c377e643aeb098073360f0042744f3412aca5bc352aca667da2634fed3', 'Asisten');
 
 -- --------------------------------------------------------
 
@@ -459,8 +560,6 @@ INSERT INTO `trs_frekuensi` (`id_frekuensi`, `id_jurusan`, `id_matkul`, `frekuen
 (9, 1, 1, 'TI_PTI-8', 2, 8, 'Selasa', '15:40:00', '18:10:00', 3, 27, 1, 21),
 (10, 1, 1, 'TI_PTI-9', 2, 9, 'Sabtu', '13:00:00', '15:30:00', 2, 29, 6, 10),
 (12, 1, 1, 'TI_PTI-11', 2, 11, 'Sabtu', '09:40:00', '12:10:00', 2, 22, 11, 15),
-(14, 1, 1, 'TI_PTI-13', 2, 13, 'Selasa', '15:40:00', '18:10:00', 4, 27, 9, 10),
-(15, 1, 2, 'TI_ALPRO1-1', 2, 1, 'Selasa', '13:00:00', '15:30:00', 2, 24, 9, 5),
 (16, 1, 2, 'TI_ALPRO1-2', 2, 2, 'Selasa', '13:00:00', '15:30:00', 1, 24, 2, 23),
 (17, 1, 2, 'TI_ALPRO1-3', 2, 3, 'Selasa', '15:40:00', '18:10:00', 2, 15, 8, 14),
 (20, 1, 2, 'TI_ALPRO1-6', 2, 6, 'Senin', '09:40:00', '12:10:00', 1, 15, 8, 18),
@@ -484,7 +583,6 @@ INSERT INTO `trs_frekuensi` (`id_frekuensi`, `id_jurusan`, `id_matkul`, `frekuen
 (41, 1, 3, 'TI_SD-14', 2, 30, 'Rabu', '13:00:00', '15:30:00', 3, 32, 3, 11),
 (42, 1, 3, 'TI_SD-10', 2, 32, 'Sabtu', '09:40:00', '12:10:00', 3, 34, 6, 16),
 (43, 1, 4, 'TI_BD2-1', 2, 17, 'Selasa', '13:00:00', '15:30:00', 4, 34, 10, 21),
-(44, 1, 5, 'TI_MICRO-1', 2, 36, 'Jumat', '07:00:00', '09:30:00', 7, 33, 9, 18),
 (45, 1, 4, 'TI_BD2-2', 2, 18, 'Selasa', '13:00:00', '15:30:00', 3, 34, 13, 17),
 (46, 1, 4, 'TI_BD2-3', 2, 19, 'Selasa', '09:40:00', '12:10:00', 4, 34, 6, 3),
 (47, 1, 5, 'TI_MICRO-2', 2, 37, 'Jumat', '09:40:00', '12:10:00', 7, 33, 3, 12),
@@ -501,16 +599,9 @@ INSERT INTO `trs_frekuensi` (`id_frekuensi`, `id_jurusan`, `id_matkul`, `frekuen
 (60, 1, 4, 'TI_BD2-15', 2, 32, 'Sabtu', '15:40:00', '18:10:00', 4, 8, 10, 15),
 (61, 1, 5, 'TI_MICRO-3', 2, 38, 'Sabtu', '13:00:00', '15:30:00', 7, 33, 1, 21),
 (62, 1, 5, 'TI_MICRO-4', 2, 39, 'Kamis', '07:00:00', '21:30:00', 7, 33, 1, 22),
-(63, 1, 5, 'TI_MICRO-5', 2, 40, 'Jumat', '13:00:00', '15:30:00', 7, 31, 1, 9),
-(64, 1, 5, 'TI_MICRO-6', 2, 41, 'Jumat', '15:40:00', '18:10:00', 7, 31, 9, 22),
 (65, 1, 5, 'TI_MICRO-7', 2, 42, 'Rabu', '09:40:00', '12:10:00', 7, 6, 1, 22),
-(66, 1, 5, 'TI_MICRO-8', 2, 43, 'Rabu', '07:00:00', '09:30:00', 7, 6, 9, 11),
 (67, 1, 5, 'TI_MICRO-9', 2, 44, 'Selasa', '07:00:00', '09:30:00', 7, 31, 1, 22),
-(68, 1, 5, 'TI_MICRO-10', 2, 45, 'Selasa', '09:40:00', '12:10:00', 7, 31, 9, 22),
 (69, 1, 5, 'TI_MICRO-11', 2, 46, 'Senin', '09:40:00', '12:10:00', 7, 31, 1, 22),
-(70, 1, 5, 'TI_MICRO-12', 2, 47, 'Kamis', '13:00:00', '15:30:00', 7, 31, 9, 11),
-(71, 1, 5, 'TI_MICRO-13', 2, 48, 'Senin', '07:00:00', '09:30:00', 7, 31, 9, 17),
-(72, 1, 5, 'TI_MICRO-14', 2, 49, 'Sabtu', '09:40:00', '12:10:00', 7, 31, 9, 22),
 (74, 1, 6, 'TI_MOBILE-1', 2, 54, 'Kamis', '09:40:00', '12:10:00', 5, 24, 6, 6),
 (75, 2, 7, 'SI_ALPRO-1', 2, 15, 'Kamis', '07:00:00', '09:30:00', 2, 19, 6, 14),
 (76, 2, 7, 'SI_ALPRO-2', 2, 16, 'Kamis', '07:00:00', '21:30:00', 1, 19, 13, 16),
@@ -522,7 +613,10 @@ INSERT INTO `trs_frekuensi` (`id_frekuensi`, `id_jurusan`, `id_matkul`, `frekuen
 (83, 2, 11, 'SI_BD2-1', 2, 33, 'Kamis', '15:40:00', '18:10:00', 1, 28, 3, 11),
 (86, 2, 12, 'SI_SO-2', 2, 52, 'Kamis', '13:00:00', '15:30:00', 3, 33, 6, 5),
 (87, 2, 13, 'SI_AA-1', 2, 51, 'Senin', '15:40:00', '18:10:00', 2, 38, 7, 18),
-(88, 2, 13, 'SI_AA-2', 2, 52, 'Senin', '15:40:00', '18:10:00', 1, 38, 10, 15);
+(88, 2, 13, 'SI_AA-2', 2, 52, 'Senin', '15:40:00', '18:10:00', 1, 38, 10, 15),
+(96, 1, 1, 'TI_PTI-11', 4, 13, 'Kamis', '14:00:00', '16:00:00', 2, 2, 1, 2),
+(97, 1, 11, 'TI_BD2-15', 4, 13, 'Jumat', '12:00:00', '14:00:00', 4, 8, 1, 2),
+(98, 1, 12, 'TI_SO-1', 4, 1, 'Kamis', '07:00:00', '09:00:00', 5, 2, 1, 3);
 
 -- --------------------------------------------------------
 
@@ -556,7 +650,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (6, 33, '2024-10-07', 'Array and Struct', 'Tugas Pendahuluan I\r\nTugas Evaluasi Praktikum I', 22, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
 (7, 46, '2024-10-08', 'Relationship(ERD), DDL', 'Pengenalan Penggunaan Workbench\r\nStudi Kasus membuat database apotek', 12, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
 (10, 34, '2024-10-07', 'struktur pemrograman pada c++', 'TP1 stack dan queu dan konsep FIFO dan LIFO', 21, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
-(11, 68, '2024-10-08', 'tinkercard, push-button & Buzzer', 'mengerjakan kegiatan praktikum dan soal kasus materi dosen, pemberian tugas tinkercard untuk dikerja dirumah', 21, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (12, 43, '2024-10-08', 'Modul 1 ERD dan DLL serta pengenalan aplikasi Workbench', 'Studi Kasus Modul 1 dan Evaluasi Praktikum 1', 21, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (13, 45, '2024-10-08', 'Relationship (ERD), DDL', 'membuat database dan membuat tabel yang saling berelasi', 22, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
 (15, 50, '2024-10-09', 'Relationship (ERD) dan DDL. (Modul 1)', 'Mengerjakan kegiatan praktikum, yakni membuat schema database sekaligus menginput data ke 2 tabel di database', 19, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -564,33 +657,24 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (17, 49, '2024-10-09', 'Modul 1 ERD dan DLL serta pengenalan aplikasi Workbench', 'Evaluasi Praktikum Modul 1', 22, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (18, 28, '2024-10-09', 'double linklist', 'Tugas Evaluasi stuck and queu', 21, 2, 'Hadir', NULL, 'Hadir', NULL),
 (19, 40, '2024-10-09', 'Stack', '1. Pengerjaan Studi Kasus\r\n2. Tugas Evaluasi Praktikum I', 24, 0, 'Hadir', 'Hadir', 'Hadir', NULL),
-(20, 66, '2024-10-09', 'Pertemuan 5 : Push Button & Buzzer', 'merancang dengan komponen push button dan buzzer', 24, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (21, 65, '2024-10-09', ' Simulator\r\n Tinkercad\r\n Penggunaan Tinkercad\r\n Soal Kasus', 'Merangkai Led berdasarkan tugas praktikum dan studi kasus', 15, 9, 'Hadir', 'Hadir', 'Hadir', NULL),
 (22, 41, '2024-10-09', 'Stack', 'Pengerjaan Studi Kasus Dan Tugas Evaluasi Praktikum I', 20, 0, 'Hadir', 'Hadir', 'Hadir', NULL),
 (24, 67, '2024-10-08', 'Switch\r\nPush Button\r\n Buzzer', 'Merangkai push button, buzzer sesuai tugas praktikum dan studi kasus', 24, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
 (25, 30, '2024-10-10', 'Stack & Queue', 'Implementasi program Stack & Queue', 13, 8, 'Hadir', 'Hadir', 'Hadir', NULL),
 (26, 53, '2024-10-10', 'erd, dan ddl', 'lembar evaluasi praktikum 1, modul 1 mengenai erd dan ddl', 16, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
-(27, 70, '2024-10-10', 'Pertemuan 5 : Push Button dan Buzzer', 'Tugas Pembuatan rangkaian dengan komponen Push Button dan Buzzer', 19, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
-(28, 44, '2024-10-11', 'Pertemuan 5 : Push-Button & BUzzer', 'merangkai dengan komponen push-button & buzzer', 12, 10, 'Hadir', 'Hadir', 'Hadir', NULL),
 (29, 47, '2024-10-11', 'pertemuan 5 : Push-Buttom & Buzzer', 'merangkai menggunakan komponen push button & buzzer', 12, 10, 'Hadir', NULL, 'Hadir', 9),
-(30, 63, '2024-10-11', 'Switch\r\nPush Button\r\nBuzzer', 'Merangkai komponen pushbutton, buzzer, dan led sesuai dengan tugas praktikum dan studi kasus', 13, 9, 'Hadir', 'Hadir', 'Hadir', NULL),
 (31, 62, '2024-10-10', 'Switch Push Button Buzzer', 'Merangkai komponen pushbutton, buzzer, dan led sesuai dengan tugas praktikum dan studi kasus', 5, 20, 'Hadir', 'Hadir', 'Hadir', NULL),
-(32, 64, '2024-10-11', 'pertemuan 5 menjelaskan penggunaan switch, push button dan buzzer serta bagaimana cara merangkainya. Mengerjakan tugas praktikum 1-4 dan studi kasus', 'mengerjakan tugas pertemuan 2 dan 3 pada tingkercard', 3, 14, 'Hadir', 'Hadir', 'Hadir', NULL),
-(33, 72, '2024-10-12', 'Pertemuan 5 : Push-Button & Buzzer', 'merangkai menggunakan komponen push button dan buzzer', 7, 19, 'Hadir', 'Hadir', 'Hadir', NULL),
 (34, 36, '2024-10-12', 'Struct', 'Membuat  struct di dalam function', 13, 7, NULL, NULL, 'Hadir', 1),
-(40, 71, '2024-10-14', 'pertemuan 5 : push button & buzzer', 'merangkai rangkaian dengan komponen push button & buzzer', 11, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
 (41, 69, '2024-10-14', 'pertemuan 5 menjelaskan cara penggunaan switch,push button dan buzzer mengerjakan praktikum 1-4 dan studi kasus dan kelas pengganti dijam 13.00 untuk pertemuan 6 menjelaskan penggunaan seven segmen dan tugas praktikum 1-2 studi kasus 1-2', 'mengerjakan tugas evaluasi 4', 19, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (42, 20, '2024-10-14', 'Modul 1 : Selection Statement (IF Statement)', 'Tugas Evaluasi Praktikum 1\r\n- Studi Kasus A & B', 25, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
 (43, 88, '2024-10-14', 'Cara persiapan dan pembuatan akun SIDEK', 'Data Kasus Simulasi: Akun Dan Daftar Saldo, serta Pembentukan Akun dan Daftar Saldo di Aplikasi', 18, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
 (44, 32, '2024-10-15', 'Pengimplementasian kode array dan queue dalam bahasa pemrograman C++ ', 'Tugas Evaluasi\r\nPengimplementasian stack pada bahasa pemrograman C++\r\nTugas Pendahuluan \r\nPenjelasan Teori menganai konsep kerja stack', 24, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
 (46, 46, '2024-10-15', 'DML, SQL JOIN, VIEW', 'Studi Kasus', 12, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
-(47, 68, '2024-10-15', 'Pertemuan 6 : Seven Segment', 'merangkai menggunakan komponen seven segment', 21, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (48, 67, '2024-10-15', 'pertemuan 6 menjelaskan mengenai seven segmen cara merangkai ', 'mengerjakan tugas praktikum dan studi kasus', 23, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
 (50, 87, '2024-10-15', 'Pembuatan nama akun dan jurnal umum', 'mengerjakan studi kasus pada modul', 15, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
 (52, 79, '2024-10-15', 'Pengenalan Layout Aplikasi Cisco Packet Tracer', 'Membuat Rangkaian Topologi Star', 21, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
 (53, 17, '2024-10-15', 'Modul 1: Selection Statement (IF Selection)', '1. Studi Kasus, 2. Tugas Evaluasi I', 26, 0, 'Hadir', 'Hadir', 'Hadir', NULL),
 (57, 43, '2024-10-15', 'Data Manipulation Language (DML)', 'Studi Kasus dan Evaluasi Praktikum 2', 22, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
-(58, 15, '2024-10-15', 'operator Aritmatika, relational, logika dan bitwise', 'TUGAS EVALUASI 1, if selection', 23, 15, 'Hadir', 'Hadir', 'Hadir', NULL),
 (59, 34, '2024-10-15', 'modul 1, stack and queu', 'TUGAS EVALUASI 1 MODUL 2, singel linked list', 20, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (62, 31, '2024-10-15', 'Stack & Queue	', 'Implementasi program Stack & Queue', 14, 10, 'Hadir', 'Hadir', 'Hadir', NULL),
 (63, 16, '2024-10-16', 'Pengenala sintax input dan output serta implementasi opertator aritmatika', 'Tugas Evaluai Prkatikum\r\nmengimplementasikan kodingan untuk mehitung pajak kendaraan', 20, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -609,10 +693,8 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (77, 51, '2024-10-16', 'Implementasi perintah DDL dan DML dalam membuat database apotik', 'tugas Evaluasi praktikum\r\nmengerjakan studi kasus dalam Implementasi perintah DDL dan DML dalam membuat database ', 19, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
 (78, 30, '2024-10-17', 'SingleLinkedList', 'Studi kasus implementasi SingleLinkedList', 12, 9, 'Hadir', 'Hadir', 'Hadir', NULL),
 (79, 81, '2024-10-17', 'Modul 1 : Elemen Dasar HTML', 'Tugas Evaluasi Praktikum I', 15, 6, 'Hadir', 'Hadir', 'Hadir', NULL),
-(80, 66, '2024-10-17', 'pertemuan 6 : Seven Segment', 'merangkai rangkaian arduino menggunakan seven segment', 16, 11, 'Hadir', 'Hadir', 'Hadir', NULL),
 (81, 82, '2024-10-17', 'Pengenalan tag dasar html', 'tugas evaluasi praktikum\r\nmembuat sebuah web sederhana menggunakan tag dasar html', 31, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
 (82, 62, '2024-10-17', 'menjelaskan mengenai seven segmen dan merangkainya serta mengerjakan tugas praktikum', 'mengerjakan tugas praktikum dan studi kasus\r\n', 18, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
-(84, 70, '2024-10-17', 'pertemuan 6 : seven segment', 'merangkai dengan menggunakan komponen seven segment', 20, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
 (85, 83, '2024-10-17', 'DDL Tingkat Lanjut', 'Kegiatan Praktikum', 23, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (86, 31, '2024-10-17', 'Single Linked List', 'Kegiatan Praktikum', 16, 8, 'Hadir', 'Hadir', NULL, NULL),
 (87, 76, '2024-10-17', 'membuat variabel, input, dan output', 'membuat kalkulator sederhana', 23, 5, NULL, 'Hadir', 'Hadir', NULL),
@@ -631,10 +713,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (101, 34, '2024-10-21', 'Single Linked List', 'Tugas Evaluasi Praktikum TP 2 Single linked list ', 17, 6, 'Hadir', NULL, 'Hadir', NULL),
 (102, 33, '2024-10-14', 'Queue', 'Tugas Pendahuluan II, Tugas Evaluasi Praktikum II', 19, 8, 'Hadir', 'Hadir', 'Hadir', NULL),
 (103, 33, '2024-10-21', 'Stack', 'Tugas Pendahuluan III, Tugas Evaluasi III', 20, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
-(105, 72, '2024-10-22', 'pertemuan 6 : Seven Segment', 'merangkai menggunakan seven segment', 10, 16, 'Hadir', 'Hadir', 'Hadir', NULL),
-(106, 64, '2024-10-22', 'pertemuan 6 : seven segment', 'mernagkai menggunakan seven segment', 6, 11, 'Hadir', 'Hadir', 'Hadir', NULL),
-(107, 71, '2024-10-22', 'pertemuan 6 : seven segment ', 'mernagkai menggunakan seven segment', 9, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
-(108, 71, '2024-10-22', 'pertemuan 7 : melengkapi tugas', 'melengkapi tugas yang belum selesai', 10, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
 (110, 67, '2024-10-22', 'mengerjakan tugas praktikum bagi mahasiswa yang tidak dapat menyelesaikan tugas praktikum pertemuan sebeleumnya ', 'mengerjakan tugas praktikum pekan lalu', 24, 0, 'Hadir', NULL, 'Hadir', 9),
 (111, 8, '2024-10-22', 'Perakitan Personal Komputer', 'Merakit PC Secara Berkelompok', 24, 8, 'Hadir', 'Hadir', 'Hadir', NULL),
 (113, 79, '2024-10-22', 'Transmisi Jaringan', 'Membuat Kabel LAN', 21, 5, NULL, 'Hadir', 'Hadir', NULL),
@@ -643,7 +721,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (117, 43, '2024-10-22', 'Distinct, Group by, dan Having', 'Studi Kasus dan Evaluasi Praktikum 3', 20, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
 (118, 16, '2024-10-22', 'Penerepan Sintax Selection dalam pemrograman c++', 'Membuat program dengan mengimplementasikan selection yakni sintax if else dan switch case', 29, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
 (119, 17, '2024-10-22', 'Modul 2 : Selection Statement (SWITCH-CASE Statement)', 'Studi Kasus, Tugas Evaluasi Praktikum II', 22, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
-(120, 14, '2024-10-22', 'Booting', 'Evaluasi Praktikum 1', 27, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
 (122, 9, '2024-10-22', 'Penjelasan seputar BIOS, penjelasan seputar task manager & komponen PC', 'penggunakan BIOS', 25, 0, 'Hadir', 'Hadir', 'Hadir', NULL),
 (124, 45, '2024-10-22', 'DML', 'Implementasi perintah DML', 21, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (125, 45, '2024-10-22', 'Distinct, Group by, Having', 'Implementasi perintah distinct group by dan having', 17, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -662,7 +739,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (140, 26, '2024-10-23', 'Modul 2 - SELECTION STATEMENT: SWITCH SELECTION', 'Mengerjakan Studi Kasus a pada modul 2 iclabs', 25, 0, 'Hadir', 'Hadir', 'Hadir', NULL),
 (141, 52, '2024-10-23', 'DML', 'latihan DML, View, JOIN', 10, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
 (142, 25, '2024-10-23', 'Modul 2 Switch case', 'studi kasus switch case', 25, 0, 'Hadir', 'Hadir', 'Hadir', NULL),
-(143, 66, '2024-10-23', 'Review materi minggu - minggu sebelumnya', 'Menyelesaikan tugas praktikum bagi praktikan yang belum selesai', 21, 6, 'Hadir', 'Hadir', 'Hadir', NULL),
 (144, 40, '2024-10-23', 'Single Linked List', 'Membuat aplikasi sederhana menggunakan Single Linked List', 18, 6, NULL, 'Hadir', 'Hadir', NULL),
 (145, 24, '2024-10-23', 'Mengimplementasikan penggunaan selection statement pada C++', 'Mengerjakan studi kasus yang ada di modul 1', 24, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
 (146, 31, '2024-10-24', 'Single Linked List', 'Implementasi Stack dan Queue dengan single linked list', 10, 14, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -670,16 +746,10 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (148, 74, '2024-10-24', 'Input Control', 'studi kasus', 2, 9, 'Hadir', 'Hadir', 'Hadir', NULL),
 (149, 62, '2024-10-24', 'mengerjakan tugas pratikum bagi mahasiswa yang tidak dapat menyelesaikan pertemuan sebeleumnya', 'mengerjakan tugas praktikum dan studi kasus sebelumnya', 20, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
 (150, 53, '2024-10-24', 'mempelajari tentang dml, sql, join dan view', 'studi kasus, modul 2 membuat database dengan nama apotik', 11, 9, 'Hadir', 'Hadir', 'Hadir', NULL),
-(151, 53, '2024-10-24', 'modul 3 tentang Distinct, Group by, Having', 'membuat table, mengisi record, memasukkan data, mengupdate, menghapus data, dan melakukan select data', 10, 10, 'Hadir', 'Hadir', 'Hadir', NULL),
-(153, 70, '2024-10-24', 'melanjutkan tugas', 'menyelesaikan tugas praktikum yang belum selesai , dan memeriksa komponen yang rusak', 18, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
 (154, 83, '2024-10-24', 'DML Tingkat Lanjut', 'Kegiatan Praktikum', 20, 6, 'Hadir', 'Hadir', 'Hadir', NULL),
 (155, 21, '2024-10-25', 'Selection If', 'Menghitung BMI dan Rekomendasi vaksin covid', 21, 4, NULL, 'Hadir', 'Hadir', NULL),
 (156, 22, '2024-10-25', 'mempelajari tentang if selection', 'studi kasus  modul 1 membuat kalkulator BMI', 24, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
-(157, 44, '2024-10-25', 'pertemuan 6 : seven segment', 'merangkai menggnuakan seven segment ', 16, 6, 'Hadir', 'Hadir', NULL, NULL),
-(158, 44, '2024-10-25', 'pertemuan 7 : Melengkapi tugas', 'melengkapi tugas yang belum selesai serta belajar persiapan MID', 15, 7, 'Hadir', 'Hadir', NULL, 18),
-(159, 63, '2024-10-25', 'PERTEMUAN 6 : SEVEN SEGMENT ', 'Merangkai menggunakan seven segment', 17, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
 (160, 56, '2024-10-04', 'Modul 1 Pengenala fitur dasar Aplikasi mysql workbench', 'Mebuat Realation Table menggunakan Aplikasi mysql workbench', 24, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
-(161, 63, '2024-10-25', 'pertemuan 7 : melengkapi tugas ', 'melengkapi tugas praktikum yang belum selesai & pengecekan komponen yang rusak , dan belajar persiapan MID', 15, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
 (162, 56, '2024-10-25', 'Membuat Design Database sesuai dengan ide masing', 'Mengimplementasikan Design Database sesuai dengan ide masing', 24, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
 (163, 56, '2024-10-18', 'Modul 2 pengimplementasian dml, sql join, view', 'Tugas Evaluasi membuat sebuah struktur database dengan mengimplementasikan dml, sql join, view', 24, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
 (164, 56, '2024-10-25', 'Asistensi-1', '-', 24, 1, NULL, 'Hadir', 'Hadir', NULL),
@@ -704,8 +774,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (188, 33, '2024-10-28', '-', 'Asistensi ke-1 (Stack & Queue)', 22, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
 (191, 67, '2024-10-29', 'Mengerjakan UTS', 'UTS', 24, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
 (192, 46, '2024-10-29', 'MID', 'soal MID', 15, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
-(193, 68, '2024-10-22', 'Pertemuan 7 : Menyelesaikan materi', 'melengkapi Tugas yang belum selesai ', 22, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
-(194, 68, '2024-10-29', 'MID MICROCONTROLLER', 'MID MICROCONTROLLER', 23, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
 (195, 87, '2024-10-29', 'Melanjutkan penjurnalan umum	', 'Melanjutkan penjurnalan umum yang sebelumnya dikerjakan di pertemuan 2', 11, 8, 'Hadir', 'Hadir', 'Hadir', NULL),
 (196, 79, '2024-10-29', 'Konversi Bilangan IP Address dan Subnetting', 'Subnetting IP kelas C', 20, 6, NULL, 'Hadir', 'Hadir', NULL),
 (198, 45, '2024-10-29', 'Ujian Tengah Semester', 'Ujian Tengah Semester', 20, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -714,7 +782,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (203, 57, '2024-10-02', 'Modul 1 Pengenala fitur dasar Aplikasi mysql workbench', 'Mebuat Realation Table menggunakan Aplikasi mysql workbench', 24, 0, 'Hadir', 'Hadir', 'Hadir', NULL),
 (204, 43, '2024-10-29', 'MID', 'MID TEST', 21, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (205, 57, '2024-10-09', 'Membuat Design Database sesuai dengan ide masing', 'Mengimplementasikan Design Database sesuai dengan ide masing', 24, 0, 'Hadir', 'Hadir', 'Hadir', NULL),
-(206, 14, '2024-10-29', 'Operasi Windows', 'Studi Kasus ', 23, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
 (208, 9, '2024-10-29', 'Membogkar pc', 'membongkar semua komponen yang tertancap pada papan maderbot', 23, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
 (209, 50, '2024-10-30', 'MID Basis Data 2', 'Mengerjakan mid basis data 2', 20, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
 (210, 49, '2024-10-30', 'UTS', 'UTS', 23, 2, NULL, 'Hadir', 'Hadir', NULL),
@@ -727,7 +794,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (217, 24, '2024-10-30', 'mengimplementasikan penggunaan Selection Statement pada C++.', 'studi kasus pada modul 2', 23, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
 (218, 52, '2024-10-30', 'PROCEDURE DAN FUNCTION', 'Latihan Procedure dan Function', 6, 9, NULL, 'Hadir', 'Hadir', NULL),
 (219, 51, '2024-10-30', 'mengimplementasikan perintah procedur, Function.', 'membuat sebuah struktur database dengan mengimplementasikan perintah procedur, Function.', 16, 7, NULL, 'Hadir', 'Hadir', NULL),
-(220, 66, '2024-10-30', 'Pertemuan 8 : UTS/MID Semester', 'UTS/MID Semester', 17, 10, 'Hadir', 'Hadir', 'Hadir', NULL),
 (221, 25, '2024-10-30', 'Looping Statement ', 'membuat studi kasus pengimplementasian for loop', 24, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
 (222, 41, '2024-10-30', 'Double Linked List	', 'Mengerjakan studi kasus double linked list', 19, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
 (223, 31, '2024-10-31', 'Double Linked List', 'Implementasi Double Linked List', 17, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -738,7 +804,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (228, 81, '2024-10-31', 'Modul 2 : Tabel dan Form', 'Membuat sebuah form registrasi pendaftaran osis', 14, 8, 'Hadir', 'Hadir', 'Hadir', NULL),
 (229, 53, '2024-10-31', 'uts', 'uts', 15, 6, NULL, 'Hadir', 'Hadir', NULL),
 (230, 74, '2024-10-31', 'input control', 'studi kasus', 2, 9, 'Hadir', 'Hadir', 'Hadir', NULL),
-(231, 70, '2024-10-31', 'Pertemuan 8 : UTS/MID semester', 'UTS/MID semester', 20, 2, NULL, 'Hadir', 'Hadir', NULL),
 (233, 83, '2024-10-31', 'Procedure dan Function', 'impementasi Procedure dan Function pada studi kasus di modul', 8, 18, 'Hadir', 'Hadir', 'Hadir', NULL),
 (234, 55, '2024-11-01', 'Pertemuan 1 : Relationship (ERD), DDL', 'Kegiatan Praktikum dan tugas evaluasi praktikum', 27, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
 (235, 55, '2024-11-01', 'Pertemuan 3 : Design Database', 'Mengimplementasikan Design Database', 9, 20, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -755,10 +820,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (246, 27, '2024-11-01', 'Switch Selection', 'Studi Kasus dan Evaluasi Praktikum Modul 2', 24, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
 (247, 4, '2024-11-01', 'Modul 3. Sistem Operasi Windows', 'Melakukan instalasi windows pada virtualbox', 23, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (248, 75, '2024-10-31', 'if else dan switch statement', 'Tugas praktikum Evaluasi III', 34, 2, NULL, 'Hadir', 'Hadir', NULL),
-(249, 64, '2024-10-25', 'materi : menyelesaikan materi', 'menyelesaikan tugas yang belum selesai', 9, 8, 'Hadir', 'Hadir', 'Hadir', NULL),
-(250, 64, '2024-11-01', 'MID ', 'MID', 8, 9, 'Hadir', 'Hadir', 'Hadir', NULL),
-(251, 63, '2024-11-01', 'MID MICROCONTROLLER', 'MENYELSAIKAN MID', 16, 6, 'Hadir', 'Hadir', 'Hadir', NULL),
-(252, 44, '2024-11-01', 'MID MICROCONTROLLER', 'MID', 13, 9, 'Hadir', 'Hadir', NULL, 18),
 (253, 7, '2024-11-01', 'Modul 2 PROSES BOOTING SISTEM OPERASI', 'TUGAS EVALUASI PRAKTIKUM\r\n1. Sebutkan dan jelaskan beberapa jenis booting pada sistem operasi!\r\n2. Uraikan secara umum tahapan-tahapan yang terjadi pada proses booting !\r\n3. Jelaskan proses start up booting pada sistem operasi windows!', 25, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
 (254, 2, '2024-11-02', 'Modul 2 : Proses Booting SO', 'Studi kasus', 29, 6, 'Hadir', 'Hadir', 'Hadir', NULL),
 (255, 37, '2024-11-02', 'Single Linked List', 'Studi kasus', 12, 9, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -773,9 +834,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (268, 79, '2024-11-05', 'VLAN mode Acces dan trunk', 'Membuat Vlan ', 19, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
 (270, 45, '2024-11-05', 'SQL Join', 'studi kasus implementasi query join', 21, 1, NULL, 'Hadir', 'Hadir', NULL),
 (271, 87, '2024-11-04', 'Penjurnalan dan Pembuatan Buku Besar', 'Membuat buku besar', 8, 12, 'Hadir', 'Hadir', 'Hadir', NULL),
-(272, 15, '2024-11-05', ' operasi aritmatika ', 'menginput, validasi mebayaran dan menghitung sisa uang', 32, 5, 'Hadir', NULL, 'Hadir', 15),
-(273, 15, '2024-11-05', 'modul 2 switch selection', 'tugas evaluasi 2 modul 2 SELECTION STATEMENT: SWITCH SELECTION', 33, 5, 'Hadir', 'Hadir', NULL, NULL),
-(274, 15, '2024-11-05', 'MID', 'MID', 32, 6, 'Hadir', 'Hadir', 'Hadir', NULL),
 (277, 50, '2024-11-06', 'SQL Join', 'Praktik Menggunakan Perintah SQL Join', 19, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
 (278, 58, '2024-11-06', 'Ujian Tengah Semester', 'Ujian Tengah Semester', 19, 1, 'Hadir', NULL, 'Hadir', 3),
 (279, 16, '2024-11-05', 'MID', '-', 26, 10, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -808,9 +866,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (311, 21, '2024-11-08', 'For loop\r\nwhile\r\ndo while\r\n', '1. Membuat kalkulator sederhana menggunakan do-while yang memiliki menu:\r\n1. Penjumlahan\r\n2. Pengurangan\r\n3. Perkalian\r\n4. Pembagian\r\n\r\nclue : do-while, switch/if-else\r\n\r\n2. Buatlah sebuah program inputan yang di mana ketika inputannya itu == 0 maka program akan berhenti, akan tetapi jika bukan  == 0 maka program akan terus berjalan. Semua angka yang dimasukkan akan dijumlahkan dan ditampilkan setelah program berhenti\r\n\r\n', 22, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (312, 21, '2024-11-08', '1. For loop\r\n2. While\r\n3. Do-While', '1. Membuat kalkulator sederhana menggunakan do-while yang memiliki menu:\r\n1. Penjumlahan\r\n2. Pengurangan\r\n3. Perkalian\r\n4. Pembagian\r\n\r\nclue : do-while, switch/if-else\r\n\r\n2. Buatlah sebuah program inputan yang di mana ketika inputannya itu == 0 maka program akan berhenti, akan tetapi jika bukan  == 0 maka program akan terus berjalan. Semua angka yang dimasukkan akan dijumlahkan dan ditampilkan setelah program berhenti\r\n', 22, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (313, 22, '2024-11-08', 'do while, switch dan if else', 'mengerjakan studi kasus mengenai kalkulator sederhana mengunakan do while dan membuat program inputan dimana prgram akan  jika ==0 program akan berhenti', 21, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
-(314, 66, '2024-11-06', 'Pertemuan 9 : Real Time Clock', 'merangakai menggunakan komponen RTC', 19, 8, 'Hadir', 'Hadir', 'Hadir', NULL),
-(315, 63, '2024-11-08', 'Pertmuan 9 : Real Time Clock', 'merangkai menggunakan komponen RTC', 18, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
-(316, 44, '2024-11-08', 'Pertmuan 9 : Real Time Clock', 'merangkain menggunakan komponen RTC', 14, 8, 'Hadir', 'Hadir', NULL, 18),
 (317, 6, '2024-11-08', 'sistem operasi windows', 'instalasi windows', 16, 9, 'Hadir', 'Hadir', 'Hadir', NULL),
 (318, 4, '2024-11-08', 'Modul 4 Sistem Operasi Linux', 'Melakukan penginstalan sistem operasi linux pada virtualbox', 20, 6, 'Hadir', 'Hadir', 'Hadir', NULL),
 (322, 2, '2024-11-09', 'Modul 3 : Instalasi Windows di Virtual Box', 'Penginstalan windows pada virtual box', 28, 7, 'Hadir', 'Hadir', NULL, NULL),
@@ -832,12 +887,9 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (342, 67, '2024-11-12', 'Menjelaskan fungsi RTC dan cara menggunakannya (merangkai) dan menjelaskan mengenai sensor peer dan sensor ultrasonik', 'mengerjakan tugas praktikum 1-4 dan studi kasus materi RTC', 21, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
 (343, 79, '2024-11-12', 'MID', '-', 21, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
 (344, 46, '2024-11-12', 'View dan Select, Trigger', 'Implementas pembuatan view dan trigger', 14, 5, 'Hadir', NULL, 'Hadir', NULL),
-(346, 68, '2024-11-12', 'pertemuan 9 & 10 : RTC & Sensor', 'merangkai menggunakan RTC dan Sensor', 20, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
 (349, 17, '2024-11-05', 'Looping Statement: for, Whike, dan do Whilel;\r\npengkondisian if else\r\n', 'Pembuatan looping for, while dan Do While; studi kasus kombinasi perulangan loop dan kondisi if else', 21, 5, 'Hadir', NULL, 'Hadir', 5),
 (350, 17, '2024-11-12', 'Midtest quiziz dan mengerjakan program pengechekan tahun kabisat', 'Midtest ', 25, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
 (352, 16, '2024-11-12', 'Modul 4 LOOPING STATEMENT', 'Mengimplementasikan Looping : for, while, do while dalam sebuah program', 27, 9, 'Hadir', 'Hadir', 'Hadir', NULL),
-(353, 14, '2024-11-05', 'Merakit PC', 'Tugas Evaluasi Praktikum', 18, 10, 'Hadir', 'Hadir', 'Hadir', NULL),
-(354, 14, '2024-11-12', 'Installasi Linux', 'Evaluasi Praktikum 4', 24, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
 (355, 43, '2024-11-12', 'View dan Trigger', 'Evaluasi Praktikum View dan Trigger', 16, 8, 'Hadir', 'Hadir', 'Hadir', NULL),
 (356, 43, '2024-11-05', 'Join SQL', 'Evaluasi Praktikum Join', 20, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
 (357, 23, '2024-10-30', 'Swicth Selection', 'Evaluasi Praktikum ', 28, 0, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -851,7 +903,6 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (365, 30, '2024-11-14', 'Tree', 'Mengerjakan Tugas Materi Tentang Tree', 17, 4, 'Hadir', 'Hadir', 'Hadir', NULL),
 (366, 62, '2024-11-14', 'menjelaskan cara penggunaan sensor PIR, sensor ULTRASONIK dan beberapa sensor lainnya', 'mengerjakan tugas praktikum studi kasus', 17, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
 (367, 31, '2024-11-14', 'Tree', 'Tugas Materi Tree', 12, 10, 'Hadir', 'Hadir', 'Hadir', NULL),
-(368, 66, '2024-11-13', 'Pertemuan 10 : Sensor', 'merangakai menggunakan komponen Sensor', 20, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
 (369, 74, '2024-10-17', 'Explicit intent', 'studi kasus', 3, 8, 'Hadir', 'Hadir', 'Hadir', NULL),
 (370, 74, '2024-11-14', 'sqlite', 'studi kasus', 3, 8, 'Hadir', 'Hadir', 'Hadir', NULL),
 (371, 81, '2024-11-14', 'Modul 4 : JavaScript', 'kegiatan praktikum javascript', 19, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -863,16 +914,11 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (380, 53, '2024-11-14', 'Trigger ', 'Evaluasi Praktikum Trigger', 10, 11, 'Hadir', 'Hadir', NULL, 12),
 (381, 53, '2024-11-14', 'Trigger ', 'Evaluasi Praktikum Trigger', 10, 11, 'Hadir', 'Hadir', NULL, 12),
 (382, 83, '2024-11-14', 'MID ', 'MID', 22, 4, NULL, 'Hadir', 'Hadir', NULL),
-(383, 70, '2024-11-14', 'Pertemuan 9 : Real Time Clock', 'merangakai menggunakan komponen RTC', 19, 3, 'Hadir', 'Hadir', 'Hadir', NULL),
-(384, 15, '2024-11-12', 'Looping', 'Studi kasus Kegiatan praktikum', 27, 3, 'Hadir', 'Hadir', NULL, 7),
 (385, 55, '2024-11-15', 'Pertemuan 6 : Asistensi 2', 'Asistensi 2', 25, 4, NULL, 'Hadir', 'Hadir', NULL),
 (386, 21, '2024-11-15', 'Nested For (for di dalam for)', '1. Membuat Segitiga Terbalik\r\n2. Membuat Segitiga  yang isinya kosong', 24, 1, NULL, 'Hadir', 'Hadir', NULL),
 (387, 22, '2024-11-15', 'nested loop', 'membuat segitiga menggunakan nested loop', 17, 3, 'Hadir', 'Hadir', NULL, 7),
 (388, 6, '2024-11-15', 'Modul 4 Sistem Operasi Linux', 'Melakukan instalasi linux ubuntu pada virtualbox. mulai dari memilih iso, setup partisi dan memori ram hingga core', 20, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
 (389, 4, '2024-11-15', 'Modul 5 Struktur File', 'Explore Struktur file pada windows dan linux', 24, 2, 'Hadir', 'Hadir', 'Hadir', NULL),
-(390, 64, '2024-11-08', 'PERTEMUAN 10 : Real Time Clock', 'merangkai menggunakan rtc', 6, 11, 'Hadir', 'Hadir', 'Hadir', NULL),
-(391, 64, '2024-11-15', 'Pertemuan 10 : Sensor', 'mernagkai menggunakan sensor pir, ultrasonic, dan random sensor', 6, 11, 'Hadir', 'Hadir', 'Hadir', NULL),
-(392, 44, '2024-11-15', 'Pertemuan 10 : Sensor', 'merangkai menggunakan sensor pir , ultrasonic, dan random sensor', 14, 8, 'Hadir', 'Hadir', 'Hadir', NULL),
 (394, 2, '2024-11-16', 'Modul 4 : Instalasi Linux di Virtual Box', 'penginstalan linux secara mandiri & asistensi ke 2', 31, 4, 'Hadir', 'Hadir', NULL, 12),
 (395, 3, '2024-11-16', 'Modul 4 Sistem Operasi Linux', 'Melakukan instalasi sistem operasi linux pada virtualbox. mulai dari pembuatan virtual machine yaitu penentuan ram, core, dan HDD', 21, 13, 'Hadir', 'Hadir', 'Hadir', NULL),
 (396, 36, '2024-11-16', 'Double Linked List', 'Implementasi double linked list pada modul', 11, 9, 'Hadir', 'Hadir', 'Hadir', NULL),
@@ -893,7 +939,10 @@ INSERT INTO `trs_mentoring` (`id_mentoring`, `id_frekuensi`, `tanggal`, `uraian_
 (413, 33, '2024-11-11', '-', 'MID', 20, 7, 'Hadir', 'Hadir', 'Hadir', NULL),
 (414, 33, '2024-11-18', 'Pemaparan tugas besar', 'Mencari ide project yang baik', 22, 5, 'Hadir', 'Hadir', 'Hadir', NULL),
 (416, 67, '2024-11-19', 'menjelaskan mengenai beberapasensor', 'mengerjakan tugas praktikum studi kasus 1-3', 24, 1, 'Hadir', 'Hadir', 'Hadir', NULL),
-(435, 63, '2026-01-23', 'abc', 'abc', 12, 8, 'Hadir', 'Hadir', 'Hadir', NULL);
+(439, 53, '2024-10-18', 'abc', 'abc', 12, 12, 'Hadir', 'Hadir', 'Hadir', NULL),
+(441, 96, '2026-01-29', 'ABC', 'ABC', 12, 12, 'Hadir', 'Hadir', 'Hadir', NULL),
+(446, 97, '2026-01-16', 'abc', 'abc', 12, 12, 'Hadir', 'Hadir', 'Hadir', NULL),
+(447, 98, '2026-01-22', 'abc', 'abc', 12, 12, 'Hadir', 'Hadir', 'Hadir', NULL);
 
 --
 -- Indexes for dumped tables
@@ -984,7 +1033,7 @@ ALTER TABLE `trs_mentoring`
 -- AUTO_INCREMENT untuk tabel `mst_asisten`
 --
 ALTER TABLE `mst_asisten`
-  MODIFY `id_asisten` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id_asisten` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=49;
 
 --
 -- AUTO_INCREMENT untuk tabel `mst_dosen`
@@ -996,49 +1045,49 @@ ALTER TABLE `mst_dosen`
 -- AUTO_INCREMENT untuk tabel `mst_jurusan`
 --
 ALTER TABLE `mst_jurusan`
-  MODIFY `id_jurusan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_jurusan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `mst_kelas`
 --
 ALTER TABLE `mst_kelas`
-  MODIFY `id_kelas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
+  MODIFY `id_kelas` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
 
 --
 -- AUTO_INCREMENT untuk tabel `mst_matakuliah`
 --
 ALTER TABLE `mst_matakuliah`
-  MODIFY `id_matkul` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_matkul` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT untuk tabel `mst_ruangan`
 --
 ALTER TABLE `mst_ruangan`
-  MODIFY `id_ruangan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id_ruangan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- AUTO_INCREMENT untuk tabel `mst_tahun_ajaran`
 --
 ALTER TABLE `mst_tahun_ajaran`
-  MODIFY `id_tahun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_tahun` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT untuk tabel `mst_user`
 --
 ALTER TABLE `mst_user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT untuk tabel `trs_frekuensi`
 --
 ALTER TABLE `trs_frekuensi`
-  MODIFY `id_frekuensi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=89;
+  MODIFY `id_frekuensi` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=100;
 
 --
 -- AUTO_INCREMENT untuk tabel `trs_mentoring`
 --
 ALTER TABLE `trs_mentoring`
-  MODIFY `id_mentoring` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=436;
+  MODIFY `id_mentoring` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=451;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
