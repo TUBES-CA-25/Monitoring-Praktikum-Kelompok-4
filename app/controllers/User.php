@@ -105,10 +105,6 @@ class User extends Controller {
         exit;
     }
 
-<<<<<<< HEAD
-=======
-    // --- FITUR PROFIL SAYA (ADMIN/ASISTEN) ---
->>>>>>> c53aa501464698e0402b324b68a0c606092a0525
 
 public function profil() {
     if (!isset($_SESSION['id_user'])) {
@@ -116,7 +112,6 @@ public function profil() {
         exit;
     }
 
-<<<<<<< HEAD
     $data['title'] = 'Profil Saya';
     $id_user = $_SESSION['id_user']; 
     $data['user'] = $this->model('User_model')->getUserById($id_user);
@@ -142,16 +137,6 @@ public function updateProfil() {
         'username' => $_POST['username'], 
         'password' => $_POST['password']
     ];
-=======
-    public function updateProfil() {
-        $id_user = $_SESSION['id_user'];
-        
-        // Siapkan data dasar
-        $data = [
-            'id_user'  => $id_user,
-            'username' => $_POST['username']
-        ];
->>>>>>> c53aa501464698e0402b324b68a0c606092a0525
 
         // --- PERBAIKAN LOGIKA PASSWORD DI SINI ---
         if (!empty($_POST['password'])) {
@@ -172,10 +157,6 @@ public function updateProfil() {
         exit;
     }
 
-<<<<<<< HEAD
-=======
-    // TAMBAHAN UPLOAD FOTO (rafli)
->>>>>>> c53aa501464698e0402b324b68a0c606092a0525
 
     public function uploadFoto($namaOrang, $fotoLama)
     {
