@@ -208,33 +208,33 @@
             $('#myModal').modal('show');
         });
 
-        // --- 3. DARK MODE TOGGLE ---
-        const toggleButton = $('#dark-mode-toggle');
-        const body = $('body');
-        const icon = toggleButton.find('i');
+        // // --- 3. DARK MODE TOGGLE ---
+        // const toggleButton = $('#dark-mode-toggle');
+        // const body = $('body');
+        // const icon = toggleButton.find('i');
 
-        // Cek tema saat load
-        if (localStorage.getItem('theme') === 'dark') {
-            body.addClass('dark-mode');
-            icon.removeClass('fa-moon').addClass('fa-sun');
-            $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
-        }
+        // // Cek tema saat load
+        // if (localStorage.getItem('theme') === 'dark') {
+        //     body.addClass('dark-mode');
+        //     icon.removeClass('fa-moon').addClass('fa-sun');
+        //     $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
+        // }
 
-        toggleButton.on('click', function(e) {
-            e.preventDefault();
-            body.toggleClass('dark-mode');
+        // toggleButton.on('click', function(e) {
+        //     e.preventDefault();
+        //     body.toggleClass('dark-mode');
             
-            const isDark = body.hasClass('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        //     const isDark = body.hasClass('dark-mode');
+        //     localStorage.setItem('theme', isDark ? 'dark' : 'light');
             
-            // Update Ikon & Navbar
-            icon.toggleClass('fa-moon fa-sun');
-            if (isDark) {
-                $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
-            } else {
-                $('.main-header').addClass('navbar-white navbar-light').removeClass('navbar-dark');
-            }
-        });
+        //     // Update Ikon & Navbar
+        //     icon.toggleClass('fa-moon fa-sun');
+        //     if (isDark) {
+        //         $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
+        //     } else {
+        //         $('.main-header').addClass('navbar-white navbar-light').removeClass('navbar-dark');
+        //     }
+        // });
 
         // --- 4. FULL CALENDAR ---
         const calendarEl = document.getElementById('calendar-monitoring');
