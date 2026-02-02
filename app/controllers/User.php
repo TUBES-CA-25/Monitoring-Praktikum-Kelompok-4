@@ -22,6 +22,8 @@ class User extends Controller {
     public function tambah() {
         $this->isAdmin();
         $data = $_POST;
+        
+        // Enkripsi password saat tambah user baru
         if (!empty($data['password'])) {
             $data['password'] = hash('sha256', $data['password']);
         }
@@ -50,6 +52,7 @@ class User extends Controller {
         $nama_asli = $_POST['nama_user']; 
         $foto_lama = $_POST['foto_lama'];
 
+        // Proses upload foto
         if ($_FILES['photo_profil']['error'] === 4) {
             $foto_baru = $foto_lama;
         } else {
@@ -60,9 +63,26 @@ class User extends Controller {
             }
         }
 
-        if($this->model('User_model')->prosesUbah($_POST) >= 0){
+        // --- PERBAIKAN LOGIKA PASSWORD DI SINI ---
+        $data = $_POST; // Salin data POST ke variabel baru
+        
+        if (!empty($data['password'])) {
+            // Jika admin mengisi password baru, enkripsi dulu!
+            $data['password'] = hash('sha256', $data['password']);
+        } else {
+            // Jika kosong, hapus key password agar Model tidak mengupdate password jadi string kosong
+            // (Asumsi Model mengecek !empty($data['password']))
+            unset($data['password']);
         }
+
+        // Kirim $data (yang sudah di-hash), BUKAN $_POST mentah
+        if($this->model('User_model')->prosesUbah($data) >= 0){
+             // Query update user berhasil dijalankan
+        }
+
+        // Update foto di tabel asisten jika perlu
         if ($this->model('Asisten_model')->updateFotoViaUser($_POST['id_user'], $foto_baru) > 0) {
+             // Query update foto berhasil
         }
         
         Flasher::setFlash(' berhasil diubah', '', 'success');
@@ -85,7 +105,7 @@ class User extends Controller {
         exit;
     }
 
-    // --- FITUR PROFIL SAYA (ADMIN) ---
+    // --- FITUR PROFIL SAYA (ADMIN/ASISTEN) ---
 
     public function profil() {
         // Cek login
@@ -105,22 +125,35 @@ class User extends Controller {
         $this->view('templates/footer');
     }
 
-public function updateProfil() {
-    $id_user = $_SESSION['id_user'];
-    $data = [
-        'id_user'  => $id_user,
-        'username' => $_POST['username'], 
-        'password' => $_POST['password']
-    ];
+    public function updateProfil() {
+        $id_user = $_SESSION['id_user'];
+        
+        // Siapkan data dasar
+        $data = [
+            'id_user'  => $id_user,
+            'username' => $_POST['username']
+        ];
 
-    if ($this->model('User_model')->updateDataUser($data) > 0) {
-        Flasher::setFlash('berhasil', 'diperbarui', 'success', 'Password');
+        // --- PERBAIKAN LOGIKA PASSWORD DI SINI ---
+        if (!empty($_POST['password'])) {
+            // Jika user mengisi password baru, enkripsi!
+            $data['password'] = hash('sha256', $_POST['password']);
+        } else {
+            // Jika kosong, kirim string kosong (Model harus menangani logika 'jika kosong jangan update')
+            // Atau sesuaikan dengan logika Model Anda. 
+            // Biasanya amannya dikirim kosong jika model pakai cek !empty()
+            $data['password'] = ''; 
+        }
+
+        if ($this->model('User_model')->updateDataUser($data) > 0) {
+            Flasher::setFlash('berhasil', 'diperbarui', 'success', 'Password');
+        }
+        
+        header('Location: ' . BASEURL . '/user/profil');
+        exit;
     }
-    header('Location: ' . BASEURL . '/user/profil');
-    exit;
-}
 
-    // --- HELPER FUNCTIONS ---
+    // TAMBAHAN UPLOAD FOTO (rafli)
 
     public function uploadFoto($namaOrang, $fotoLama)
     {
@@ -134,13 +167,15 @@ public function updateProfil() {
 
         if (!in_array($ekstensiGambar, $ekstensiGambarValid)) {
             Flasher::setFlash('gagal', 'upload! Format harus jpg/jpeg/png', 'danger');
-            header('Location: ' . BASEURL . '/user');
+            $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
+            header('Location: ' . BASEURL . ($role == 'Asisten' ? '/asisten' : '/user'));
             exit;
         }
 
         if ($ukuranFile > 2000000) {
             Flasher::setFlash('gagal', 'upload! Ukuran max 2MB', 'danger');
-            header('Location: ' . BASEURL . '/user');
+            $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
+            header('Location: ' . BASEURL . ($role == 'Asisten' ? '/asisten' : '/user'));
             exit;
         }
 

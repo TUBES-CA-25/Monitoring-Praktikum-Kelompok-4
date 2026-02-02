@@ -39,6 +39,7 @@ class User_model{
         }
     }
 
+    // TAMBAHAN UPDATE DATA USER DENGAN VALIDASI PASSWORD (rafli)
     public function updateDataUser($data) {
         $query = "UPDATE mst_user SET username = :username";
         

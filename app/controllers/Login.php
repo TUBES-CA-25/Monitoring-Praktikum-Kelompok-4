@@ -19,6 +19,8 @@ class Login extends Controller {
 
         $user = $this->model('Login_model')->getUser($username);
 
+        // PENAMBAHAN LOGIKA USERNAME & PASSWORD SALAH (rafli)
+
         if ($user) {
             if (hash('sha256', $password) == $user['password']) {
                 $_SESSION['id_user'] = $user['id_user'];

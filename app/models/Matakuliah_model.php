@@ -6,6 +6,8 @@ class Matakuliah_model{
         $this->db = new Database;
     }
 
+    // PENAMBAHAN LOGIKA DUPLIKAT (rafli)
+
     public function tambah($data){
         $this->db->query("SELECT COUNT(*) as jumlah FROM mst_matakuliah WHERE kode_matkul = :kode_matkul");
         $this->db->bind('kode_matkul', $data['kode_matkul']);

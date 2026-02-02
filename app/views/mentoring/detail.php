@@ -184,6 +184,9 @@
                                                         </td>
                                                         
                                                         <td class="text-center"><?= $mentoring['nama_asisten_pengganti']; ?></td>
+
+                                                        <!-- PENAMBAHAN AKSI UBAH DAN HAPUS (rafli) -->
+
                                                         <td class="text-center d-print-none" style="white-space: nowrap;">
                                                             <a href="javascript:void(0);" 
                                                             class="btn btn-success btn-sm modalUbah me-1 mb-1"
@@ -204,6 +207,8 @@
                                                             <i class="fas fa-trash"></i>
                                                             </a>
                                                         </td>
+
+                                                        
                                                     </tr>
                                                 <?php endforeach; 
                                             endif;  

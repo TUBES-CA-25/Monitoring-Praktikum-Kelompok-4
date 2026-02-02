@@ -14,6 +14,9 @@
                     <label for="singkatan" class="form-label">Singkatan</label>
                     <input type="text" name="singkatan" class="form-control" placeholder="Masukkan Singkatan" required>
                 </div>
+
+                <!-- PENAMBAHAN SELECT JURUSAN (rafli) -->
+
                 <div class="form-group mb-3">
                     <label for="id_jurusan" class="form-label">Jurusan</label>
                     <select name="id_jurusan" id="id_jurusan" class="form-control" required>
@@ -25,6 +28,8 @@
                         <?php endforeach; ?>
                     </select>
                 </div>
+                
+
                 <div class="form-group mb-3">
                     <label for="semester" class="form-label">Semester</label>
                     <select name="semester" id="semester" class="form-control" required>

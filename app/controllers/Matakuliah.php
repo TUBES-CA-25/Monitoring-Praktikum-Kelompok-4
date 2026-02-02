@@ -19,6 +19,8 @@ class Matakuliah extends Controller {
         $this->view('matakuliah/tambah_matakuliah', $data);
     }
 
+    // PENAMBAHAN FLASHER (rafli)
+
     public function tambah(){
         $this->isAdmin();
         $data['jurusanOptions'] = $this->model('Matakuliah_model')->tampilJurusan();
