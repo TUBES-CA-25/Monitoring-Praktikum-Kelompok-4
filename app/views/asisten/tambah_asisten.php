@@ -1,14 +1,14 @@
-
-<form id="formTambahDataAsisten" action="<?= BASEURL ?>/Asisten/tambah" method="post" autocomplete="off" enctype="multipart/form-data">
+<form id="formTambahDataAsisten" action="<?= BASEURL ?>/asisten/tambah" method="post" autocomplete="off" enctype="multipart/form-data">
     <div class="row">
         <div class="col-12">            
+            
             <!-- Data User (Login) -->
             <div class="alert alert-info py-2 mb-3"><small><strong>Data Login Akun</strong></small></div>
             
             <div class="form-group mb-3">
-                <label for="username" class="form-label">Username (Email)</label>
-                <input type="text" name="username" class="form-control" placeholder="Contoh: nama@student.umi.ac.id" required>
-                <!-- Menambahkan Helper Text untuk Validasi Domain -->
+                <label for="usernameInput" class="form-label">Username (Email)</label>
+                <input type="email" name="username" id="usernameInput" class="form-control" placeholder="Contoh: nama@student.umi.ac.id" value="<?= $_SESSION['old']['username'] ?? '' ?>" required>
+                <!-- Helper Text -->
                 <small class="text-muted d-block mt-1">
                     Akhiran yang diizinkan: 
                     <span class="badge badge-light text-dark border">.iclabs@umi.ac.id</span>
@@ -16,12 +16,21 @@
                     <span class="badge badge-light text-dark border">@umi.ac.id</span>
                     <span class="badge badge-light text-dark border">@gmail.com</span>
                 </small>
+                <!-- Tempat Pesan Error muncul -->
+                <small id="emailError" class="text-danger font-italic" style="display:none;"></small>
             </div>
             
+            <!-- INPUT PASSWORD DENGAN FITUR SHOW/HIDE -->
             <div class="form-group mb-3">
-                <label for="password" class="form-label">Password</label>
-                <!-- Hapus 'required' dan update placeholder -->
-                <input type="password" name="password" class="form-control" placeholder="(Opsional) Kosongkan untuk password default: iclabs-umi">
+                <label for="passwordInput" class="form-label">Password</label>
+                <div class="input-group">
+                    <input type="password" name="password" id="passwordInput" class="form-control" placeholder="(Opsional) Default: iclabs-umi">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- Data Profil Asisten -->
@@ -67,3 +76,4 @@
         </div>
     </div>
 </form>
+<?php unset($_SESSION['old']); ?>

@@ -24,12 +24,12 @@ header("Content-Disposition: attachment; filename=Rekap_Kehadiran_".$data['tahun
             <th>Hadir Dosen</th>
             <th>Tdk Hadir Dosen</th>
             <th>% Dosen</th>
-            <th>Hadir Asis 1</th>
-            <th>Tdk Hadir Asis 1</th>
-            <th>% Asis 1</th>
-            <th>Hadir Asis 2</th>
-            <th>Tdk Hadir Asis 2</th>
-            <th>% Asis 2</th>
+            <th>Hadir Asisten 1</th>
+            <th>Tdk Hadir Asisten 1</th>
+            <th>% Asisten 1</th>
+            <th>Hadir Asisten 2</th>
+            <th>Tdk Hadir Asisten 2</th>
+            <th>% Asisten 2</th>
         </tr>
     </thead>
     <tbody>

@@ -1,3 +1,4 @@
+<?php Flasher::flash(); ?>
 <div class="content-wrapper">
     
   <?= Flasher::flash(); ?>

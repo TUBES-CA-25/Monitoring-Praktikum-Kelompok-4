@@ -69,6 +69,7 @@ class Asisten extends Controller {
         
         $cekUser = $this->model('User_model')->getUserByUsername($data['username']);
         if ($cekUser) {
+            $_SESSION['old'] = $_POST;
             Flasher::setFlash('Username/Email sudah terdaftar!', 'Gagal', 'danger');
             header('Location: ' . BASEURL . '/asisten');
             exit;
@@ -76,18 +77,30 @@ class Asisten extends Controller {
 
         $cekStambuk = $this->model('Asisten_model')->cekStambuk($data['stambuk']);
         if ($cekStambuk) {
+            $_SESSION['old'] = $_POST;
             Flasher::setFlash('Stambuk ini sudah ada!', 'Gagal', 'danger');
             header('Location: ' . BASEURL . '/asisten');
             exit;
         }
 
-        $validasiAkun = $this->validateAkun($data['username'], $data['password']);
-        if ($validasiAkun['status'] === false) {
-            Flasher::setFlash($validasiAkun['message'], 'Gagal', 'danger');
+        try {
+            $passwordHash = $this->validateAkun($data['username'], $data['password']);
+
+            if (trim($data['password']) === '') {
+                Flasher::setFlash(
+                    'Password kosong, sistem menggunakan default (iclabs-umi)',
+                    'Info',
+                    'info'
+                );
+            }
+
+        } catch (Exception $e) {
+            $_SESSION['old'] = $_POST;
+            Flasher::setFlash($e->getMessage(), 'Gagal', 'danger');
             header('Location: ' . BASEURL . '/asisten');
             exit;
         }
-        $passwordHash = $validasiAkun['data'];
+
         
         $namaBersih = preg_replace('/[^A-Za-z0-9]/', '_', $data['nama_asisten']);
         $namaFileCustom = $namaBersih; 
@@ -250,27 +263,42 @@ class Asisten extends Controller {
 
     private function validateAkun($username, $password)
     {
-        $allowedDomains = ['@umi.ac.id', '.iclabs@umi.ac.id', '@gmail.com', '@student.umi.ac.id'];
-        $isValid = false;
+        $username = trim(strtolower($username));
 
+        if ($username === '') {
+            throw new Exception('Email wajib diisi!');
+        }
+
+        $allowedDomains = [
+            '@umi.ac.id',
+            '@student.umi.ac.id',
+            '@gmail.com'
+        ];
+
+        $valid = false;
         foreach ($allowedDomains as $domain) {
-            if (strpos($username, $domain) !== false) {
-                $isValid = true; 
+            if (substr($username, -strlen($domain)) === $domain) {
+                $valid = true;
                 break;
             }
         }
 
-        if (!$isValid) {
-             return [
-                 'status' => false, 
-                 'message' => 'Email Ditolak! Wajib gunakan domain (@umi.ac.id, @student.umi.ac.id, atau @gmail.com)'
-             ];
+        // email khusus
+        if ($username === 'iclabs@umi.ac.id') {
+            $valid = true;
+        }
+
+        if (!$valid) {
+            throw new Exception(
+                'Email tidak valid! Gunakan domain UMI / Student / Gmail'
+            );
         }
 
         $finalPass = trim($password);
-        if (empty($finalPass)) {
+        if ($finalPass === '') {
             $finalPass = 'iclabs-umi';
         }
-        return ['status' => true, 'data' => hash('sha256', $finalPass)];
+
+        return hash('sha256', $finalPass);
     }
 }
