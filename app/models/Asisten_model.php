@@ -10,7 +10,7 @@ class Asisten_model {
     public function tambah($data) {
         $query = "INSERT INTO mst_asisten 
                     (stambuk, nama_asisten, angkatan, status, jenis_kelamin, id_user, photo_profil, photo_path) 
-                  VALUES 
+                VALUES 
                     (:stambuk, :nama_asisten, :angkatan, :status, :jenis_kelamin, :id_user, :photo_profil, :photo_path)";
 
         $this->db->query($query);
@@ -28,6 +28,12 @@ class Asisten_model {
         $this->db->execute();
 
         return $this->db->rowCount();
+    }
+    
+    public function cekStambuk($stambuk) {
+        $this->db->query("SELECT id_asisten FROM mst_asisten WHERE stambuk = :stambuk");
+        $this->db->bind(':stambuk', $stambuk);
+        return $this->db->single();
     }
 
     public function prosesUbah($data) {

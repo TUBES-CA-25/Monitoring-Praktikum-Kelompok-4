@@ -4,16 +4,32 @@
             <div class="col-12">
                 <div class="form-group mb-3">
                     <label for="kode_matkul" class="form-label">Kode Matakuliah</label>
-                    <input type="text" name="kode_matkul" class="form-control " placeholder="Masukkan Kode Matakuliah" required>
+                    <input type="text" name="kode_matkul" class="form-control" placeholder="Masukkan Kode Matakuliah" required>
                 </div>
                 <div class="form-group mb-3">
                     <label for="nama_matkul" class="form-label">Matakuliah</label>
-                    <input type="text" name="nama_matkul" class="form-control " placeholder="Masukkan Matakuliah" required>
+                    <input type="text" name="nama_matkul" class="form-control" placeholder="Masukkan Matakuliah" required>
                 </div>
                 <div class="form-group mb-3">
                     <label for="singkatan" class="form-label">Singkatan</label>
-                    <input type="text" name="singkatan" class="form-control " placeholder="Masukkan Singkatan" required>
+                    <input type="text" name="singkatan" class="form-control" placeholder="Masukkan Singkatan" required>
                 </div>
+
+                <!-- PENAMBAHAN SELECT JURUSAN (rafli) -->
+
+                <div class="form-group mb-3">
+                    <label for="id_jurusan" class="form-label">Jurusan</label>
+                    <select name="id_jurusan" id="id_jurusan" class="form-control" required>
+                        <option value="">Pilih Jurusan</option>
+                        <?php foreach ($data['jurusanOptions'] as $jurusan) : ?>
+                            <option value="<?= $jurusan['id_jurusan'] ?>">
+                                <?= $jurusan['jurusan'] ?> (<?= $jurusan['singkatan_jurusan'] ?>)
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                
+
                 <div class="form-group mb-3">
                     <label for="semester" class="form-label">Semester</label>
                     <select name="semester" id="semester" class="form-control" required>
@@ -24,7 +40,7 @@
                 </div>
                 <div class="form-group mb-3">
                     <label for="sks" class="form-label">SKS</label>
-                    <input type="number" name="sks" class="form-control " placeholder="Masukkan SKS" required>
+                    <input type="number" name="sks" class="form-control" placeholder="Masukkan SKS" required>
                 </div><br>
             </div>
         </div>

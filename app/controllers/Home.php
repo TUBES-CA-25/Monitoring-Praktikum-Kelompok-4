@@ -142,7 +142,6 @@ class Home extends Controller {
             }
             // 🟢 SESUAI JADWAL
             else {
-
                 $color  = '#28a745';
                 $status = 'Sudah Mengisi';
             }

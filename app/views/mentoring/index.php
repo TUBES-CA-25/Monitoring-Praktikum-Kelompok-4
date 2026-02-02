@@ -44,35 +44,35 @@ Content Wrapper. Contains page content -->
                <div>
                   <div>
                   <div class="data-frekuensi d-flex flex-row justify-content-between mb-4">
-            <div class="column-1 d-flex flex-row gap-3">
-                <div class="frek-header d-flex flex-column">
-                    <span>Kode Matakuliah</span> 
-                    <span>Nama Matakuliah</span> 
-                    <span>Frekuensi</span> 
-                    <span>Hari / Jam</span> 
-                </div>
-                <div class="frek-value d-flex flex-column">
-                    <span>Kode Matkul</span> 
-                    <span>Nama Matkul</span> 
-                    <span>Kelas</span> 
-                    <span>Jadwal</span>
-                </div>
-            </div>
-            <div class="column-2 d-flex flex-row gap-3">
-                <div class="frek-header d-flex flex-column">
-                    <span>Ruangan</span> 
-                    <span>Dosen</span> 
-                    <span>Asisten 1</span> 
-                    <span>Asisten 2</span> 
-                </div>
-                <div class="frek-value d-flex flex-column">
-                    <span>Nama Laboratorium</span> 
-                    <span>Nama Dosen</span> 
-                    <span>Nama Asisten 1</span> 
-                    <span>Nama Asisten 2</span> 
-                </div>
-            </div>
-        </div>
+                      <div class="column-1 d-flex flex-row gap-3">
+                          <div class="frek-header d-flex flex-column">
+                              <span>Kode Matakuliah</span> 
+                              <span>Nama Matakuliah</span> 
+                              <span>Frekuensi</span> 
+                              <span>Hari / Jam</span> 
+                          </div>
+                          <div class="frek-value d-flex flex-column">
+                              <span>Kode Matkul</span> 
+                              <span>Nama Matkul</span> 
+                              <span>Kelas</span> 
+                              <span>Jadwal</span>
+                          </div>
+                      </div>
+                      <div class="column-2 d-flex flex-row gap-3">
+                          <div class="frek-header d-flex flex-column">
+                              <span>Ruangan</span> 
+                              <span>Dosen</span> 
+                              <span>Asisten 1</span> 
+                              <span>Asisten 2</span> 
+                          </div>
+                          <div class="frek-value d-flex flex-column">
+                              <span>Nama Laboratorium</span> 
+                              <span>Nama Dosen</span> 
+                              <span>Nama Asisten 1</span> 
+                              <span>Nama Asisten 2</span> 
+                          </div>
+                      </div>
+                  </div>
                   </div>
                   <div class="card-body p-0">
                     <div class="d-md-flex">

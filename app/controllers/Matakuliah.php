@@ -19,14 +19,22 @@ class Matakuliah extends Controller {
         $this->view('matakuliah/tambah_matakuliah', $data);
     }
 
+    // PENAMBAHAN FLASHER (rafli)
+
     public function tambah(){
         $this->isAdmin();
         $data['jurusanOptions'] = $this->model('Matakuliah_model')->tampilJurusan();
-        if($this->model('Matakuliah_model')->tambah($_POST) > 0){
-            Flasher::setFlash(' berhasil ditambahkan', '', 'success');
-        }else{
-            Flasher::setFlash(' tidak berhasil ditambahkan', '', 'danger');
+    
+        $result = $this->model('Matakuliah_model')->tambah($_POST);
+    
+        if($result > 0){
+            Flasher::setFlash('Matakuliah berhasil ditambahkan', '', 'success');
+        } elseif($result == -2) {
+            Flasher::setFlash('Kode matakuliah sudah ada! Gunakan kode lain', '', 'danger');
+        } else {
+            Flasher::setFlash('Matakuliah tidak berhasil ditambahkan', '', 'danger');
         }
+    
         header('Location: '.BASEURL. '/matakuliah');
         exit;
     }

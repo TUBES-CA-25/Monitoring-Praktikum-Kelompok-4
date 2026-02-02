@@ -32,6 +32,49 @@
 
     })
 
+    //JavaScript Show / Hide Password
+    $(document).on('click', '#togglePassword', function () {
+        const passwordInput = $('#passwordInput');
+        const icon = $(this).find('i');
+
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+
+    $(document).on('submit', '#formTambahDataAsisten', function (e) {
+        const email = $('#usernameInput').val().trim();
+
+        const allowedDomains = [
+            '@iclabs@umi.ac.id',
+            '@student.umi.ac.id',
+            '@umi.ac.id',
+            '@gmail.com'
+        ];
+
+        const valid = allowedDomains.some(domain => email.endsWith(domain));
+
+        if (!valid) {
+            e.preventDefault();
+            alert(
+                'Email tidak valid!\n\n' +
+                'Gunakan domain berikut:\n' +
+                '- iclabs@umi.ac.id\n' +
+                '- student.umi.ac.id\n' +
+                '- umi.ac.id\n' +
+                '- gmail.com'
+            );
+            $('#usernameInput').focus().addClass('is-invalid');
+            return false;
+        }
+    });
+
+
+
     document.addEventListener('DOMContentLoaded', function() {
         const tahunFilter = document.getElementById('tahunAjaranFilter');
         if (tahunFilter) {
@@ -108,7 +151,6 @@
             tbody.insertAdjacentHTML('beforeend', row);
         });
     }
-
 });
 
     $(document).ready(function() {
@@ -166,33 +208,33 @@
             $('#myModal').modal('show');
         });
 
-        // --- 3. DARK MODE TOGGLE ---
-        const toggleButton = $('#dark-mode-toggle');
-        const body = $('body');
-        const icon = toggleButton.find('i');
+        // // --- 3. DARK MODE TOGGLE ---
+        // const toggleButton = $('#dark-mode-toggle');
+        // const body = $('body');
+        // const icon = toggleButton.find('i');
 
-        // Cek tema saat load
-        if (localStorage.getItem('theme') === 'dark') {
-            body.addClass('dark-mode');
-            icon.removeClass('fa-moon').addClass('fa-sun');
-            $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
-        }
+        // // Cek tema saat load
+        // if (localStorage.getItem('theme') === 'dark') {
+        //     body.addClass('dark-mode');
+        //     icon.removeClass('fa-moon').addClass('fa-sun');
+        //     $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
+        // }
 
-        toggleButton.on('click', function(e) {
-            e.preventDefault();
-            body.toggleClass('dark-mode');
+        // toggleButton.on('click', function(e) {
+        //     e.preventDefault();
+        //     body.toggleClass('dark-mode');
             
-            const isDark = body.hasClass('dark-mode');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+        //     const isDark = body.hasClass('dark-mode');
+        //     localStorage.setItem('theme', isDark ? 'dark' : 'light');
             
-            // Update Ikon & Navbar
-            icon.toggleClass('fa-moon fa-sun');
-            if (isDark) {
-                $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
-            } else {
-                $('.main-header').addClass('navbar-white navbar-light').removeClass('navbar-dark');
-            }
-        });
+        //     // Update Ikon & Navbar
+        //     icon.toggleClass('fa-moon fa-sun');
+        //     if (isDark) {
+        //         $('.main-header').addClass('navbar-dark').removeClass('navbar-white navbar-light');
+        //     } else {
+        //         $('.main-header').addClass('navbar-white navbar-light').removeClass('navbar-dark');
+        //     }
+        // });
 
         // --- 4. FULL CALENDAR ---
         const calendarEl = document.getElementById('calendar-monitoring');
