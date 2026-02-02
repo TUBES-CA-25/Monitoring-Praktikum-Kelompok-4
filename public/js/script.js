@@ -32,6 +32,49 @@
 
     })
 
+    //JavaScript Show / Hide Password
+    $(document).on('click', '#togglePassword', function () {
+        const passwordInput = $('#passwordInput');
+        const icon = $(this).find('i');
+
+        if (passwordInput.attr('type') === 'password') {
+            passwordInput.attr('type', 'text');
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        } else {
+            passwordInput.attr('type', 'password');
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        }
+    });
+
+    $(document).on('submit', '#formTambahDataAsisten', function (e) {
+        const email = $('#usernameInput').val().trim();
+
+        const allowedDomains = [
+            '@iclabs@umi.ac.id',
+            '@student.umi.ac.id',
+            '@umi.ac.id',
+            '@gmail.com'
+        ];
+
+        const valid = allowedDomains.some(domain => email.endsWith(domain));
+
+        if (!valid) {
+            e.preventDefault();
+            alert(
+                'Email tidak valid!\n\n' +
+                'Gunakan domain berikut:\n' +
+                '- iclabs@umi.ac.id\n' +
+                '- student.umi.ac.id\n' +
+                '- umi.ac.id\n' +
+                '- gmail.com'
+            );
+            $('#usernameInput').focus().addClass('is-invalid');
+            return false;
+        }
+    });
+
+
+
     document.addEventListener('DOMContentLoaded', function() {
         const tahunFilter = document.getElementById('tahunAjaranFilter');
         if (tahunFilter) {
@@ -108,7 +151,6 @@
             tbody.insertAdjacentHTML('beforeend', row);
         });
     }
-
 });
 
     $(document).ready(function() {

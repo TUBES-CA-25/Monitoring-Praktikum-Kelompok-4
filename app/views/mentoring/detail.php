@@ -1,32 +1,3 @@
-<!-- <style>
-    .btn, .card-header, footer {
-        display: none;
-    }
-    @page {
-        size: landscape;        
-    }
-</style> -->
-<style>
-    @media print {
-        .btn, .card-header, footer {
-            display: none;
-        }
-        @page {
-            size: landscape;
-            margin: 10mm; /* Mengatur margin pada halaman cetak */
-        }
-        .table-row {
-            height: 50px;
-        }         
-        /* .content-wrapper {
-            margin: 20mm; 
-        } */
-        /* .card-body {
-            padding: 10mm; 
-        } */
-    }
-</style>
-
 <div class="content-wrapper">
     <div class="content-header">
         <div class="container-fluid">
