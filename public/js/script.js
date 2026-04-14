@@ -347,3 +347,36 @@
             </div>
         `);
     }
+
+    // --- 6. FITUR LAPORAN ---
+    $(document).ready(function() {
+        // Hanya jalankan jika elemen-elemen ini ada di halaman
+        if ($('#tahun_filter').length && $('#laporan_body').length) {
+            
+            $('#tahun_filter').on('change', function() {
+                const idTahun = $(this).val() || 'null';
+                
+                $('#laporan_body').html('<tr><td colspan="20" class="text-center">Sedang memuat data...</td></tr>');
+
+                $.ajax({
+                    url: BASEURL + '/Laporan/getTableByTahun/' + idTahun,
+                    type: 'GET',
+                    success: function(data) {
+                        $('#laporan_body').html(data);
+                    },
+                    error: function() {
+                        $('#laporan_body').html('<tr><td colspan="20" class="text-center text-danger">Gagal memuat data.</td></tr>');
+                        alert('Gagal mengambil data laporan.');
+                    }
+                });
+            });
+        }
+
+        if ($('#btn_export').length) {
+            $('#btn_export').on('click', function() {
+                const idTahun = $('#tahun_filter').val() || 'null';
+                // Arahkan ke metode exportExcel dengan parameter tahun
+                window.location.href = BASEURL + '/Laporan/exportExcel/' + idTahun;
+            });
+        }
+    });
