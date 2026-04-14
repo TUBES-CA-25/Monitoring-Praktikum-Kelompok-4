@@ -66,12 +66,12 @@
               <p>Data Asisten</p>
             </a>
           </li>
-<li class="nav-item">
-    <a href="<?= BASEURL ?>/user" class="nav-link <?= (strpos($current_page, '/user') !== false && strpos($current_page, '/profil') === false) ? 'active' : '' ?>">
-        <i class="nav-icon fas fa-user-plus"></i>
-        <p>Data User</p>
-    </a>
-</li>
+          <li class="nav-item">
+              <a href="<?= BASEURL ?>/user" class="nav-link <?= (strpos($current_page, '/user') !== false && strpos($current_page, '/profil') === false) ? 'active' : '' ?>">
+                  <i class="nav-icon fas fa-user-plus"></i>
+                  <p>Data User</p>
+              </a>
+          </li>
 
           <li class="nav-header">MENU LAINNYA</li>
           <li class="nav-item">
@@ -103,8 +103,15 @@
               <i class="nav-icon fas fa-calendar-alt"></i>
               <p>Tahun Ajaran</p>
             </a>
-          </li>
-          <?php endif; ?>
+            <li class="nav-header mt-3">UTILITY</li>
+            <li class="nav-item">
+              <a href="<?= BASEURL ?>/restore"
+                class="nav-link <?= strpos($current_path, '/restore') !== false ? 'active' : '' ?>">
+                <i class="nav-icon fas fa-undo"></i>
+                <p>Restore Data</p>
+              </a>
+            </li>
+        <?php endif; ?>
         </ul>
       </nav>
     </div>
