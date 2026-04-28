@@ -134,7 +134,7 @@ class Asisten extends Controller {
             'role'      => 'Asisten'
         ];
 
-        $tambahUser = $this->model('User_model')->tambahByAsisten($dataUser);
+        $tambahUser = $this->model('User_model')->tambah($dataUser);
 
         if ($tambahUser > 0) {
             
