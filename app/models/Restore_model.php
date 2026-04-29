@@ -97,17 +97,14 @@ class Restore_model
     // Simpan data ke tabel restore (dipanggil saat delete)
     public function saveToRestore($table, $data, $deletedBy)
     {
-        $this->db->query("
-            INSERT INTO `restore` 
-            (nama_data, jenis_data, data_json, deleted_at, deleted_by)
-            VALUES 
-            (:nama, :jenis, :json, NOW(), :by)
-        ");
+        $dataJson = json_encode($data);
 
-        $this->db->bind('nama', $data['nama'] ?? $table);
-        $this->db->bind('jenis', $table);
-        $this->db->bind('json', json_encode($data));
-        $this->db->bind('by', $deletedBy);
+        $this->db->query("INSERT INTO `restore` (jenis_data, data_json, deleted_by, deleted_at) 
+                        VALUES (:jenis_data, :data_json, :deleted_by, NOW())");
+        
+        $this->db->bind('jenis_data', $table);
+        $this->db->bind('data_json', $dataJson);
+        $this->db->bind('deleted_by', $deletedBy);
 
         return $this->db->execute();
     }

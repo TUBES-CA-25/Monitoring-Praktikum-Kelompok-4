@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/Restore_model.php';
+
 class Asisten_model {
     private $db;
 
@@ -83,10 +85,42 @@ class Asisten_model {
     }
 
     public function prosesHapus($id) {
-        $this->db->query("CALL delete_asisten_with_references(:id)");
-        $this->db->bind(':id', $id);
-        $this->db->execute();
-        return $this->db->rowCount(); 
+        try {
+            // Ambil data asisten yang akan dihapus
+            $asisten = $this->detailAsisten($id);
+            if (!$asisten) {
+                return 0;
+            }
+
+            // Simpan ke tabel restore
+            $restoreModel = new Restore_model();
+            $restoreModel->saveToRestore('mst_asisten', $asisten, $_SESSION['id_user']);
+
+            // Hapus mentoring yang terkait frekuensi asisten
+            $this->db->query("DELETE FROM trs_mentoring 
+                            WHERE id_frekuensi IN (
+                                SELECT id_frekuensi FROM trs_frekuensi 
+                                WHERE id_asisten1 = :id OR id_asisten2 = :id
+                            )");
+            $this->db->bind(':id', $id);
+            $this->db->execute();
+
+            // Hapus frekuensi yang melibatkan asisten
+            $this->db->query("DELETE FROM trs_frekuensi 
+                            WHERE id_asisten1 = :id OR id_asisten2 = :id");
+            $this->db->bind(':id', $id);
+            $this->db->execute();
+
+            // Hapus data dari tabel mst_asisten
+            $this->db->query("DELETE FROM mst_asisten WHERE id_asisten = :id");
+            $this->db->bind(':id', $id);
+            $this->db->execute();
+
+            return $this->db->rowCount(); 
+
+        } catch (PDOException $e) {
+            return 0;
+        }
     }
 
     public function tampil() {

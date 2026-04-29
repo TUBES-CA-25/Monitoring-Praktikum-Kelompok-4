@@ -1,10 +1,10 @@
 <div class="content-wrapper">
-    <?= Flasher::flash(); ?>
+    <?php if (class_exists('Flasher')) { Flasher::flash(); } ?>
     <div class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1 class="m-0"><?= $data['title']; ?></h1>
+                    <h1 class="m-0"><?= htmlspecialchars($data['title'] ?? 'Laporan'); ?></h1>
                 </div>
             </div>
         </div> 
@@ -19,11 +19,13 @@
                         <div class="form-inline">
                             <select name="id_tahun_filter" id="tahun_filter" class="form-control form-control-sm mr-2">
                                 <option value="">-- Semua Tahun Ajaran --</option>
-                                <?php foreach ($data['ajaranOptions'] as $ajaran) : ?>
-                                    <option value="<?= $ajaran['id_tahun']; ?>" <?= ($data['tahun_aktif'] == $ajaran['id_tahun']) ? 'selected' : ''; ?>>
-                                        <?= $ajaran['tahun_ajaran']; ?>
-                                    </option>
-                                <?php endforeach; ?>
+                                <?php if (!empty($data['ajaranOptions']) && is_array($data['ajaranOptions'])): ?>
+                                    <?php foreach ($data['ajaranOptions'] as $ajaran) : ?>
+                                        <option value="<?= htmlspecialchars($ajaran['id_tahun'] ?? ''); ?>" <?= (($data['tahun_aktif'] ?? null) == ($ajaran['id_tahun'] ?? null)) ? 'selected' : ''; ?>>
+                                            <?= htmlspecialchars($ajaran['tahun_ajaran'] ?? ''); ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
                             </select>
                             
                             <button type="button" id="btn_export" class="btn btn-success btn-sm ml-1">
@@ -61,7 +63,13 @@
                                 </tr>
                             </thead>
                             <tbody id="laporan_body">
-                                <?php include 'table_body.php'; ?>
+                                <?php if (!empty($data['laporan']) && is_array($data['laporan'])): ?>
+                                    <?php include 'table_body.php'; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="21" class="text-center">Data laporan tidak ditemukan</td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>

@@ -103,10 +103,12 @@
               <i class="nav-icon fas fa-calendar-alt"></i>
               <p>Tahun Ajaran</p>
             </a>
-            <li class="nav-header mt-3">UTILITY</li>
+          </li>
+
+          <li class="nav-header mt-3">UTILITY</li>
             <li class="nav-item">
               <a href="<?= BASEURL ?>/restore"
-                class="nav-link <?= strpos($current_path, '/restore') !== false ? 'active' : '' ?>">
+                class="nav-link <?= strpos($current_page, '/restore') !== false ? 'active' : '' ?>">
                 <i class="nav-icon fas fa-undo"></i>
                 <p>Restore Data</p>
               </a>

@@ -4,6 +4,9 @@ class Restore extends Controller
 {
     public function __construct()
     {
+        // Call parent constructor to initialize session
+        parent::__construct();
+        
         // Pastikan pengguna login sebagai Admin
         if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
             header('Location: ' . BASEURL . '/login');
@@ -15,7 +18,7 @@ class Restore extends Controller
     public function isAdmin() {
         if (isset($_SESSION['role']) && $_SESSION['role'] != 'Admin') {  
             if ($_SESSION['role'] == 'Asisten') {
-                header('Location:' . BASEURL);
+                header('Location: ' . BASEURL);
             } else {
             }
             exit;
@@ -24,8 +27,6 @@ class Restore extends Controller
 
     public function index()
     {
-        $this->isAdmin();
-
         $data['title']   = 'Restore Data';
         $data['restore'] = $this->model('Restore_model')->getAll();
 
@@ -38,12 +39,10 @@ class Restore extends Controller
 
     public function restore($id)
     {
-        $this->isAdmin();
-
         if ($this->model('Restore_model')->restoreData($id)) {
-            Flasher::setFlash('Data berhasil direstore', 'success', 'restore');
+            Flasher::setFlash('Data berhasil', 'direstore', 'success');
         } else {
-            Flasher::setFlash('Gagal melakukan restore data', 'danger', 'restore');
+            Flasher::setFlash('Gagal melakukan restore data', '', 'danger');
         }
 
         header('Location: ' . BASEURL . '/restore');
@@ -52,12 +51,10 @@ class Restore extends Controller
 
     public function deletePermanent($id)
     {
-        $this->isAdmin();
-
         if ($this->model('Restore_model')->deletePermanent($id)) {
-            Flasher::setFlash('Data berhasil dihapus permanen', 'success', 'restore');
+            Flasher::setFlash('Data berhasil', 'dihapus permanen', 'success');
         } else {
-            Flasher::setFlash('Gagal menghapus data', 'danger', 'restore');
+            Flasher::setFlash('Gagal menghapus data', '', 'danger');
         }
 
         header('Location: ' . BASEURL . '/restore');

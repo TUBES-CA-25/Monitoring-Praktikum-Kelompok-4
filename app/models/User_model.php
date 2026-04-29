@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/Restore_model.php';
 class User_model{
     private $db;
     public function __construct(){
@@ -93,12 +93,23 @@ class User_model{
     }
 
     public function prosesHapus($id){
-        $this->db->query("CALL delete_user_with_references(:id)");
+        // Ambil data user yang akan dihapus
+        $user = $this->getUserById($id);
+        if (!$user) {
+            return false; // Data tidak ditemukan
+        }
+
+        // Simpan ke tabel restore
+        $restoreModel = new Restore_model();
+        $restoreModel->saveToRestore('mst_user', $user, $_SESSION['id_user']);
+
+        // Hapus data dari tabel mst_user
+        $this->db->query("DELETE FROM mst_user WHERE id_user = :id");
         $this->db->bind("id", $id);
         $this->db->execute();
 
-        return $this->db->rowCount(); 
-    }
+        return $this->db->rowCount();
+    } 
 
     public function detailUser($id){
         $this->db->query("SELECT * FROM mst_user WHERE id_user = :id");

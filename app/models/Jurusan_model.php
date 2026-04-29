@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/Restore_model.php';
 class Jurusan_model{
     private $db;
 
@@ -48,11 +48,37 @@ class Jurusan_model{
     }
 
     public function prosesHapus($id){
-        $this->db->query("CALL delete_jurusan_with_references(:id)");
-        $this->db->bind("id", $id);
-        $this->db->execute();
+        try {
+            // Ambil data jurusan yang akan dihapus
+            $jurusan = $this->ubah($id);
+            if (!$jurusan) {
+                return 0;
+            }
 
-        return $this->db->rowCount(); 
+            // Simpan ke tabel restore
+            $restoreModel = new Restore_model();
+            $restoreModel->saveToRestore('mst_jurusan', $jurusan, $_SESSION['id_user']);
+
+            // Hapus mentoring yang terkait frekuensi jurusan ini
+            $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi IN (SELECT id_frekuensi FROM trs_frekuensi WHERE id_jurusan = :id)");
+            $this->db->bind(':id', $id);
+            $this->db->execute();
+
+            // Hapus frekuensi yang terkait jurusan
+            $this->db->query("DELETE FROM trs_frekuensi WHERE id_jurusan = :id");
+            $this->db->bind(':id', $id);
+            $this->db->execute();
+
+            // Hapus data dari tabel mst_jurusan
+            $this->db->query("DELETE FROM mst_jurusan WHERE id_jurusan = :id");
+            $this->db->bind(':id', $id);
+            $this->db->execute();
+
+            return $this->db->rowCount();
+
+        } catch (PDOException $e) {
+            return 0;
+        }
     }
 
     public function jumlahDataJurusan() {

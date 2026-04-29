@@ -185,6 +185,11 @@ public function updateProfil() {
         $namaBersih = preg_replace('/[^A-Za-z0-9]/', '_', $namaOrang);
         $namaFileBaru = $namaBersih . '_profil.' . $ekstensiGambar;
 
+        // Gunakan __DIR__ untuk path yang reliable
+        // __DIR__ = /.../.../app/controllers
+        // Naik 2 level ke project root = /.../.../monitoring-praktikum
+        $projectRoot = dirname(dirname(__DIR__));
+        $targetDirSystem = $projectRoot . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $namaFileBaru;
         $targetPath = 'public/img/uploads/' . $namaFileBaru;
 
         if (!empty($fotoLama) && file_exists($fotoLama)) {
@@ -193,7 +198,7 @@ public function updateProfil() {
             }
         }
 
-        move_uploaded_file($tmpName, $targetPath);
+        move_uploaded_file($tmpName, $targetDirSystem);
         return $targetPath;
     }
 }
