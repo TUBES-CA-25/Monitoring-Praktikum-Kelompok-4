@@ -16,7 +16,9 @@
                                      src="<?= BASEURL ?>/public/img/user.png"
                                      alt="User profile picture">
                             </div>
-                            <h3 class="profile-username text-center"><?= $data['user']['nama_user']; ?></h3>
+                            <h3 class="profile-username text-center">
+                                <?= $data['user']['nama_user'] ?? $_SESSION['nama_user']; ?>
+                            </h3>
                             <p class="text-muted text-center"><?= $_SESSION['role']; ?></p>
                         </div>
                     </div>
@@ -31,7 +33,7 @@
                             <div class="form-group row">
                                 <label class="col-sm-3 col-form-label">Email (Username)</label>
                                 <div class="col-sm-9">
-                                    <p class="form-control-plaintext"><?= $data['user']['username']; ?></p>
+                                    <p class="form-control-plaintext"><?= $data['user']['username'] ?? $_SESSION['username']; ?></p>
                                 </div>
                             </div>
                             <div class="form-group row">
@@ -46,9 +48,10 @@
                                     <div class="form-group row">
                                         <label class="col-sm-3 col-form-label text-primary">Password Baru</label>
                                         <div class="col-sm-9">
+                                            <input type="hidden" name="username" value="<?= $data['user']['username'] ?? $_SESSION['username']; ?>">
                                             <input type="password" name="password" class="form-control" placeholder="Masukkan password baru untuk mengganti" required>
                                             <small class="text-muted">Masukkan password baru Anda untuk meningkatkan keamanan.</small>
-                                            <input type="hidden" name="username" value="<?= $data['user']['username']; ?>">
+                                            <input type="hidden" name="id_user" value="<?= $data['user']['id_user'] ?? $_SESSION['id_user']; ?>">
                                         </div>
                                     </div>
                                     <div class="text-right">

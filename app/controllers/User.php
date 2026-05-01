@@ -54,7 +54,14 @@ class User extends Controller {
         $asistenLama = $this->model('Asisten_model')->getByUserId($id_user); 
 
         // 1. Password SHA-256
-        $data['password'] = empty($data['password']) ? $userLama['password'] : hash('sha256', $data['password']);
+        // LOGIKA PASSWORD YANG BENAR
+        if (empty($data['password'])) {
+            // Jika input kosong, ambil password lama (sudah dalam bentuk hash)
+            $data['password'] = $userLama['password'];
+        } else {
+            // Jika diisi, baru kita hash menggunakan SHA-256
+            $data['password'] = hash('sha256', $data['password']);
+        }
 
         // 2. Upload Foto Profil
         $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', 'profil_' . $id_user);
@@ -100,54 +107,63 @@ class User extends Controller {
         exit;
     }
 
+    public function profil() {
+        if (!isset($_SESSION['id_user'])) {
+            header('Location: ' . BASEURL . '/login');
+            exit;
+        }
 
-public function profil() {
-    if (!isset($_SESSION['id_user'])) {
-        header('Location: ' . BASEURL . '/login');
-        exit;
-    }
+        $id_user = $_SESSION['id_user'];
+        // Ambil data user dari model
+        $data['user'] = $this->model('User_model')->getUserById($id_user);
+        $data['title'] = 'Profil Saya';
 
-    $data['title'] = 'Profil Saya';
-    $id_user = $_SESSION['id_user']; 
-    $data['user'] = $this->model('User_model')->getUserById($id_user);
+        // Jika data tidak ditemukan di database, gunakan data session agar tidak error
+        if (!$data['user']) {
+            $data['user'] = [
+                'id_user' => $_SESSION['id_user'],
+                'username' => $_SESSION['username'],
+                'nama_user' => $_SESSION['nama_user'],
+                'role' => $_SESSION['role']
+            ];
+        }
 
-    $this->view('templates/header', $data);
-    $this->view('templates/topbar');
-    $this->view('templates/sidebar');
+        $this->view('templates/header', $data);
+        $this->view('templates/topbar');
+        $this->view('templates/sidebar');
 
-    if ($_SESSION['role'] == 'Admin') {
-        $this->view('user/profil', $data); 
-    } else {
-        header('Location: ' . BASEURL . '/asisten'); 
-        exit;
-    }
-
-    $this->view('templates/footer');
-}
-
-public function updateProfil() {
-    $id_user = $_SESSION['id_user'];
-    $data = [
-        'id_user'  => $id_user,
-        'username' => $_POST['username'], 
-        'password' => $_POST['password']
-    ];
-
-        // --- PERBAIKAN LOGIKA PASSWORD DI SINI ---
-        if (!empty($_POST['password'])) {
-            // Jika user mengisi password baru, enkripsi!
-            $data['password'] = hash('sha256', $_POST['password']);
+        if ($_SESSION['role'] == 'Admin') {
+            $this->view('user/profil', $data); 
         } else {
-            // Jika kosong, kirim string kosong (Model harus menangani logika 'jika kosong jangan update')
-            // Atau sesuaikan dengan logika Model Anda. 
-            // Biasanya amannya dikirim kosong jika model pakai cek !empty()
-            $data['password'] = ''; 
+            // Jika asisten, arahkan ke halaman profil asisten yang sesuai
+            header('Location: ' . BASEURL . '/asisten'); 
+            exit;
         }
 
-        if ($this->model('User_model')->updateDataUser($data) > 0) {
-            Flasher::setFlash('berhasil', 'diperbarui', 'success', 'Password');
-        }
+        $this->view('templates/footer');
+    }
+
+    public function updateProfil() {
+        $id_user = $_POST['id_user'];
+        $passwordBaru = $_POST['password'];
         
+        // Ambil data lama agar nama_user dan username tidak hilang
+        $userLama = $this->model('User_model')->getUserById($id_user);
+
+        $dataUpdate = [
+            'id_user'   => $id_user,
+            'username'  => $_POST['username'],
+            'nama_user' => $userLama['nama_user'],
+            'password'  => hash('sha256', $passwordBaru), // Hash dilakukan DISINI saja
+            'role'      => $userLama['role']
+        ];
+
+        if ($this->model('User_model')->ubahDataUser($dataUpdate) >= 0) {
+            Flasher::setFlash('Berhasil', 'Password Admin telah diperbarui', 'success');
+        } else {
+            Flasher::setFlash('Gagal', 'Gagal memperbarui password', 'danger');
+        }
+
         header('Location: ' . BASEURL . '/user/profil');
         exit;
     }

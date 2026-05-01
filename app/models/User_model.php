@@ -98,8 +98,7 @@ class User_model{
         }
     }
 
-    public function ubahDataUser($data)
-    {
+    public function ubahDataUser($data) {
         $query = "UPDATE mst_user SET 
                     username = :username,
                     password = :password,
@@ -109,7 +108,7 @@ class User_model{
         $this->db->query($query);
         $this->db->bind('username', $data['username']);
         $this->db->bind('password', $data['password']);
-        $this->db->bind('nama', $data['nama_asisten']);
+        $this->db->bind('nama', $data['nama_user']); 
         $this->db->bind('id_user', $data['id_user']);
 
         return $this->db->execute();
