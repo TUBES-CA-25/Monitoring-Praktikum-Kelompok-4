@@ -23,10 +23,19 @@ class Asisten_model {
         $this->db->bind(':status', $data['status']);
         $this->db->bind(':jenis_kelamin', $data['jenis_kelamin']);
         $this->db->bind(':id_user', $data['id_user']);
-        
         $this->db->bind(':photo_profil', $data['photo_profil']);
         $this->db->bind(':photo_path', $data['photo_path']);
 
+        try {
+            $this->db->execute();
+        } catch (PDOException $e) {
+            echo "<h3>Detail Error Database:</h3>";
+            echo "Pesan: " . $e->getMessage();
+            echo "<br>Data yang dikirim: <pre>";
+            print_r($data);
+            echo "</pre>";
+            die; // Menghentikan sistem agar error terbaca
+        }
         $this->db->execute();
 
         return $this->db->rowCount();
@@ -86,39 +95,51 @@ class Asisten_model {
 
     public function prosesHapus($id) {
         try {
-            // Ambil data asisten yang akan dihapus
+            // 1. Ambil data asisten secara lengkap sebelum dihapus
+            // Pastikan detailAsisten mengembalikan array data asisten
             $asisten = $this->detailAsisten($id);
+            
             if (!$asisten) {
-                return 0;
+                return 0; // Data tidak ditemukan
             }
 
-            // Simpan ke tabel restore
-            $restoreModel = new Restore_model();
-            $restoreModel->saveToRestore('mst_asisten', $asisten, $_SESSION['id_user']);
+            $id_user = $asisten['id_user']; 
 
-            // Hapus mentoring yang terkait frekuensi asisten
-            $this->db->query("DELETE FROM trs_mentoring 
-                            WHERE id_frekuensi IN (
-                                SELECT id_frekuensi FROM trs_frekuensi 
-                                WHERE id_asisten1 = :id OR id_asisten2 = :id
-                            )");
+            // 2. Simpan ke tabel trs_restore
+            // Pastikan tabel trs_restore sudah ada dengan kolom data_json
+            $dataJson = json_encode($asisten);
+            $deletedBy = isset($_SESSION['id_user']) ? $_SESSION['id_user'] : 0; // Antisipasi jika session kosong
+
+            $this->db->query("INSERT INTO trs_restore (jenis_data, data_json, deleted_by, deleted_at) 
+                            VALUES (:jenis, :json, :by, NOW())");
+            $this->db->bind(':jenis', 'mst_asisten');
+            $this->db->bind(':json', $dataJson);
+            $this->db->bind(':by', $deletedBy);
+            $this->db->execute();
+
+            // 3. Hapus relasi di tabel transaksi (Mentoring & Frekuensi)
+            $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi IN 
+                            (SELECT id_frekuensi FROM trs_frekuensi WHERE id_asisten1 = :id OR id_asisten2 = :id)");
             $this->db->bind(':id', $id);
             $this->db->execute();
 
-            // Hapus frekuensi yang melibatkan asisten
-            $this->db->query("DELETE FROM trs_frekuensi 
-                            WHERE id_asisten1 = :id OR id_asisten2 = :id");
+            $this->db->query("DELETE FROM trs_frekuensi WHERE id_asisten1 = :id OR id_asisten2 = :id");
             $this->db->bind(':id', $id);
             $this->db->execute();
 
-            // Hapus data dari tabel mst_asisten
+            // 4. Hapus dari tabel mst_asisten
             $this->db->query("DELETE FROM mst_asisten WHERE id_asisten = :id");
             $this->db->bind(':id', $id);
             $this->db->execute();
 
-            return $this->db->rowCount(); 
+            // 5. Hapus dari tabel mst_user agar tidak duplikat di kemudian hari
+            $this->db->query("DELETE FROM mst_user WHERE id_user = :id_user");
+            $this->db->bind(':id_user', $id_user);
+            $this->db->execute();
 
+            return $this->db->rowCount(); 
         } catch (PDOException $e) {
+            // Jika terjadi error, proses akan berhenti di sini
             return 0;
         }
     }
@@ -185,5 +206,61 @@ class Asisten_model {
         
         $this->db->execute();
         return $this->db->rowCount();
+    }
+
+    public function getUbahData($id) {
+        $this->db->query("SELECT a.*, u.username 
+                        FROM mst_asisten a 
+                        JOIN mst_user u ON a.id_user = u.id_user 
+                        WHERE a.id_asisten = :id");
+        $this->db->bind(':id', $id);
+        return $this->db->single();
+    }
+
+    public function ubahData($data)
+    {
+        $query = "UPDATE mst_asisten SET 
+                    stambuk = :stambuk,
+                    nama_asisten = :nama,
+                    angkatan = :angkatan,
+                    status = :status,
+                    jenis_kelamin = :jk,
+                    photo_profil = :pp,
+                    photo_path = :ttd
+                WHERE id_asisten = :id";
+        
+        $this->db->query($query);
+        $this->db->bind('stambuk', $data['stambuk']);
+        $this->db->bind('nama', $data['nama_asisten']);
+        $this->db->bind('angkatan', $data['angkatan']);
+        $this->db->bind('status', $data['status']);
+        $this->db->bind('jk', $data['jenis_kelamin']);
+        $this->db->bind('pp', $data['photo_profil']);
+        $this->db->bind('ttd', $data['photo_path']);
+        $this->db->bind('id', $data['id_asisten']);
+
+        $this->db->execute();
+        return $this->db->rowCount();
+    }
+
+    public function getByUserId($id_user) {
+        $this->db->query("SELECT * FROM mst_asisten WHERE id_user = :id_user");
+        $this->db->bind('id_user', $id_user);
+        return $this->db->single();
+    }
+
+    public function updateFilesByUserId($id_user, $foto, $ttd) {
+        // Kita update tabel asisten karena di tabel user tidak ada kolom foto/ttd
+        $query = "UPDATE mst_asisten SET 
+                    photo_profil = :foto,
+                    photo_path = :ttd
+                WHERE id_user = :id_user";
+        
+        $this->db->query($query);
+        $this->db->bind('foto', $foto);
+        $this->db->bind('ttd', $ttd);
+        $this->db->bind('id_user', $id_user);
+
+        return $this->db->execute();
     }
 }
