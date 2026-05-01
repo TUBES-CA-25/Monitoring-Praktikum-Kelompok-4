@@ -39,7 +39,7 @@
                             <div class="form-group row">
                                 <label class="col-sm-3 col-form-label">Role</label>
                                 <div class="col-sm-9">
-                                    <p class="form-control-plaintext"><?= $data['user']['role']; ?></p>
+                                    <input type="hidden" name="id_user" value="<?= $data['user']['id_user'] ?? $_SESSION['id_user']; ?>">
                                 </div>
                             </div>
                             <?php if ($_SESSION['role'] == 'Admin') : ?>
