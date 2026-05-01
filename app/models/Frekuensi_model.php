@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/Restore_model.php';
+
 class Frekuensi_model{
     private $db;
     public function __construct(){
@@ -43,7 +45,7 @@ class Frekuensi_model{
 
     public function prosesUbah($data){   
         $this->db->query("UPDATE trs_frekuensi 
-                          SET 
+                            SET 
                               frekuensi = :frekuensi,
                               id_matkul = :id_matkul, 
                               id_jurusan = :id_jurusan, 
@@ -56,7 +58,7 @@ class Frekuensi_model{
                               id_dosen = :id_dosen, 
                               id_asisten1 = :id_asisten1, 
                               id_asisten2 = :id_asisten2
-                          WHERE 
+                            WHERE 
                               id_frekuensi = :id_frekuensi;");
     
         $this->db->bind('frekuensi', $data['frekuensi']);
@@ -187,25 +189,33 @@ class Frekuensi_model{
     }
 
     public function prosesHapus($id){
-    try {
-        $this->db->beginTransaction();
+        try {
+            // Ambil data frekuensi yang akan dihapus
+            $frekuensi = $this->ubah($id);
+            if (!$frekuensi) {
+                return 0;
+            }
 
-        $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi = :id");
-        $this->db->bind("id", $id);
-        $this->db->execute();
+            // Simpan ke tabel restore
+            $restoreModel = new Restore_model();
+            $restoreModel->saveToRestore('trs_frekuensi', $frekuensi, $_SESSION['id_user']);
 
-        $this->db->query("DELETE FROM trs_frekuensi WHERE id_frekuensi = :id");
-        $this->db->bind("id", $id);
-        $this->db->execute();
+            // Hapus data mentoring terkait
+            $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi = :id");
+            $this->db->bind("id", $id);
+            $this->db->execute();
 
-        $this->db->commit();
-        return $this->db->rowCount(); 
+            // Hapus frekuensi
+            $this->db->query("DELETE FROM trs_frekuensi WHERE id_frekuensi = :id");
+            $this->db->bind("id", $id);
+            $this->db->execute();
 
-    } catch (PDOException $e) {
-        $this->db->rollBack();
-        return 0;
+            return $this->db->rowCount(); 
+
+        } catch (PDOException $e) {
+            return 0;
+        }
     }
-}
 
     public function detailFrekuensi($id) {
         $this->db->query("SELECT

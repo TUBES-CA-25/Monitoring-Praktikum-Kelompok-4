@@ -1,5 +1,5 @@
 <?php
-
+require_once __DIR__ . '/Restore_model.php';
 class Matakuliah_model{
     private $db;
     public function __construct(){
@@ -80,43 +80,34 @@ class Matakuliah_model{
 
     public function prosesHapus($id){
         try {
-            // Mulai transaction (jika supported)
-            if (method_exists($this->db, 'beginTransaction')) {
-                $this->db->beginTransaction();
+            // Ambil data matakuliah yang akan dihapus
+            $matakuliah = $this->ubah($id);
+            if (!$matakuliah) {
+                return 0;
             }
-            
-            // Hapus mentoring terkait
-            $this->db->query("DELETE FROM trs_mentoring 
-                             WHERE id_frekuensi IN (
-                                 SELECT id_frekuensi FROM trs_frekuensi 
-                                 WHERE id_matkul = :id_matkul
-                             )");
-            $this->db->bind('id_matkul', $id);
+
+            // Simpan ke tabel restore
+            $restoreModel = new Restore_model();
+            $restoreModel->saveToRestore('mst_matakuliah', $matakuliah, $_SESSION['id_user']);
+
+            // Hapus mentoring yang terkait frekuensi matakuliah ini
+            $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi IN (SELECT id_frekuensi FROM trs_frekuensi WHERE id_matkul = :id)");
+            $this->db->bind(':id', $id);
             $this->db->execute();
-            
-            // Hapus frekuensi
-            $this->db->query("DELETE FROM trs_frekuensi WHERE id_matkul = :id_matkul");
-            $this->db->bind('id_matkul', $id);
+
+            // Hapus frekuensi yang terkait matakuliah
+            $this->db->query("DELETE FROM trs_frekuensi WHERE id_matkul = :id");
+            $this->db->bind(':id', $id);
             $this->db->execute();
-            
-            // Hapus matakuliah
-            $this->db->query("DELETE FROM mst_matakuliah WHERE id_matkul = :id_matkul");
-            $this->db->bind('id_matkul', $id);
+
+            // Hapus data dari tabel mst_matakuliah
+            $this->db->query("DELETE FROM mst_matakuliah WHERE id_matkul = :id");
+            $this->db->bind(':id', $id);
             $this->db->execute();
-            
-            // Commit transaction
-            if (method_exists($this->db, 'commit')) {
-                $this->db->commit();
-            }
-            
+
             return $this->db->rowCount();
-            
+
         } catch (PDOException $e) {
-            // Rollback jika error
-            if (method_exists($this->db, 'rollBack')) {
-                $this->db->rollBack();
-            }
-            error_log("Error deleting matakuliah: " . $e->getMessage());
             return 0;
         }
     }
@@ -124,7 +115,7 @@ class Matakuliah_model{
     public function jumlahDataMatakuliah() {
         $this->db->query("SELECT COUNT(*) as jumlah FROM mst_matakuliah");
         $result = $this->db->single();
-        return $result['jumlah'];
+        return $result['jumlah'] ?? 0;
     }
 
     public function getMatakuliahByJurusan($id_jurusan){

@@ -46,51 +46,46 @@ class User extends Controller {
         $this->view('user/ubah_user', $data);
     }
     
-    public function prosesUbah(){
-        $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
+    public function prosesUbah() {
+        $data = $_POST;
+        $id_user = $data['id_user'];
         
-        $nama_asli = $_POST['nama_user']; 
-        $foto_lama = $_POST['foto_lama'];
+        $userLama = $this->model('User_model')->getUserById($id_user);
+        $asistenLama = $this->model('Asisten_model')->getByUserId($id_user); 
 
-        // Proses upload foto
-        if ($_FILES['photo_profil']['error'] === 4) {
-            $foto_baru = $foto_lama;
-        } else {
-            $foto_baru = $this->uploadFoto($nama_asli, $foto_lama);
-            
-            if (!$foto_baru) {
-                return false; 
-            }
-        }
+        // 1. Password SHA-256
+        $data['password'] = empty($data['password']) ? $userLama['password'] : hash('sha256', $data['password']);
 
-        // --- PERBAIKAN LOGIKA PASSWORD DI SINI ---
-        $data = $_POST; // Salin data POST ke variabel baru
+        // 2. Upload Foto Profil
+        $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', 'profil_' . $id_user);
+        // Jika upload sukses dan ada file baru, pakai file baru. Jika tidak, pakai yang lama.
+        $data['photo_profil'] = ($uploadProfil['status'] && !$uploadProfil['no_upload']) 
+                                ? $uploadProfil['nama_file'] 
+                                : $asistenLama['photo_profil'];
+
+        // 3. Upload TTD
+        $uploadTTD = $this->prosesUpload('photo_path', 'public/img/signature/', 'ttd_' . $id_user);
+        $data['photo_path'] = ($uploadTTD['status'] && !$uploadTTD['no_upload']) 
+                            ? $uploadTTD['nama_file'] 
+                            : $asistenLama['photo_path'];
+
+        // 4. Update Database (Tabel User)
+        $updateUser = $this->model('User_model')->ubahDataUser($data);
         
-        if (!empty($data['password'])) {
-            // Jika admin mengisi password baru, enkripsi dulu!
-            $data['password'] = hash('sha256', $data['password']);
+        // 5. Update Database (Tabel Asisten - Khusus Foto & TTD)
+        $updateAsisten = $this->model('Asisten_model')->updateFilesByUserId(
+            $id_user, 
+            $data['photo_profil'], 
+            $data['photo_path']
+        );
+
+        if ($updateUser >= 0 && $updateAsisten >= 0) {
+            Flasher::setFlash('Berhasil', 'diperbarui', 'success');
         } else {
-            // Jika kosong, hapus key password agar Model tidak mengupdate password jadi string kosong
-            // (Asumsi Model mengecek !empty($data['password']))
-            unset($data['password']);
+            Flasher::setFlash('Gagal', 'memperbarui data', 'danger');
         }
 
-        // Kirim $data (yang sudah di-hash), BUKAN $_POST mentah
-        if($this->model('User_model')->prosesUbah($data) >= 0){
-             // Query update user berhasil dijalankan
-        }
-
-        // Update foto di tabel asisten jika perlu
-        if ($this->model('Asisten_model')->updateFotoViaUser($_POST['id_user'], $foto_baru) > 0) {
-             // Query update foto berhasil
-        }
-        
-        Flasher::setFlash(' berhasil diubah', '', 'success');
-        if ($role == 'Asisten') {
-            header('Location: '.BASEURL. '/asisten');
-        } else {
-            header('Location: '.BASEURL. '/user');
-        }
+        header('Location: ' . BASEURL . '/User');
         exit;
     }
 
@@ -185,6 +180,11 @@ public function updateProfil() {
         $namaBersih = preg_replace('/[^A-Za-z0-9]/', '_', $namaOrang);
         $namaFileBaru = $namaBersih . '_profil.' . $ekstensiGambar;
 
+        // Gunakan __DIR__ untuk path yang reliable
+        // __DIR__ = /.../.../app/controllers
+        // Naik 2 level ke project root = /.../.../monitoring-praktikum
+        $projectRoot = dirname(dirname(__DIR__));
+        $targetDirSystem = $projectRoot . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $namaFileBaru;
         $targetPath = 'public/img/uploads/' . $namaFileBaru;
 
         if (!empty($fotoLama) && file_exists($fotoLama)) {
@@ -193,7 +193,7 @@ public function updateProfil() {
             }
         }
 
-        move_uploaded_file($tmpName, $targetPath);
+        move_uploaded_file($tmpName, $targetDirSystem);
         return $targetPath;
     }
 }

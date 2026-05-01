@@ -7,7 +7,7 @@
             
             <div class="form-group mb-3">
                 <label for="usernameInput" class="form-label">Username (Email)</label>
-                <input type="email" name="username" id="usernameInput" class="form-control" placeholder="Contoh: nama@student.umi.ac.id" value="<?= $_SESSION['old']['username'] ?? '' ?>" required>
+                <input type="email" name="username" id="usernameInput" class="form-control" placeholder="Contoh: nama@student.umi.ac.id" value="<?= htmlspecialchars($_SESSION['old']['username'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
                 <!-- Helper Text -->
                 <small class="text-muted d-block mt-1">
                     Akhiran yang diizinkan: 
@@ -67,13 +67,97 @@
 
             <div class="form-group mb-3">
                 <label for="formFile" class="form-label">Masukkan Foto Profil</label>
-                <input class="form-control " type="file" name="photo_profil">
+                <input class="form-control" type="file" name="photo_profil" accept="image/jpeg,image/png,image/gif">
+                <small class="text-muted d-block mt-1">
+                    Format: JPG, PNG, atau GIF | Maksimal: 5MB
+                </small>
             </div>
             <div class="form-group mb-3">
                 <label for="formFile" class="form-label">Masukkan Foto TTD</label>
-                <input class="form-control " type="file" name="photo_path">
+                <input class="form-control" type="file" name="photo_path" accept="image/jpeg,image/png,image/gif">
+                <small class="text-muted d-block mt-1">
+                    Format: JPG, PNG, atau GIF | Maksimal: 5MB
+                </small>
             </div><br>
         </div>
     </div>
 </form>
 <?php unset($_SESSION['old']); ?>
+
+<script>
+// Validasi file upload real-time
+function validateImageFile(input) {
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const fieldName = input.name === 'photo_profil' ? 'Foto Profil' : 'Foto TTD';
+    
+    if (input.files.length === 0) return true;
+    
+    const file = input.files[0];
+    
+    // Cek ukuran
+    if (file.size > maxSize) {
+        alert(`${fieldName}: Ukuran file terlalu besar! Maksimal 5MB (ukuran: ${(file.size / 1024 / 1024).toFixed(2)}MB)`);
+        input.value = '';
+        return false;
+    }
+    
+    // Cek MIME type
+    if (!allowedTypes.includes(file.type)) {
+        alert(`${fieldName}: Format file tidak valid!\n\nFormat yang diizinkan:\n- JPG / JPEG\n- PNG\n- GIF\n\nFormat Anda: ${file.type || 'tidak terdeteksi'}`);
+        input.value = '';
+        return false;
+    }
+    
+    return true;
+}
+
+// Event listener untuk field upload
+document.querySelector('input[name="photo_profil"]').addEventListener('change', function() {
+    validateImageFile(this);
+});
+
+document.querySelector('input[name="photo_path"]').addEventListener('change', function() {
+    validateImageFile(this);
+});
+
+// Validasi form submit
+document.getElementById('formTambahDataAsisten').addEventListener('submit', function(e) {
+    const form = this;
+    
+    // Cek select fields tidak boleh kosong
+    const statusSelect = document.querySelector('select[name="status"]');
+    const jenisKelaminSelect = document.querySelector('select[name="jenis_kelamin"]');
+    
+    if (statusSelect.value === '') {
+        alert('Status harus dipilih!');
+        statusSelect.focus();
+        e.preventDefault();
+        return false;
+    }
+    
+    if (jenisKelaminSelect.value === '') {
+        alert('Jenis Kelamin harus dipilih!');
+        jenisKelaminSelect.focus();
+        e.preventDefault();
+        return false;
+    }
+    
+    const photoProfile = document.querySelector('input[name="photo_profil"]');
+    const photoPath = document.querySelector('input[name="photo_path"]');
+    
+    // Validasi file jika ada
+    if (photoProfile.files.length > 0 && !validateImageFile(photoProfile)) {
+        e.preventDefault();
+        return false;
+    }
+    
+    if (photoPath.files.length > 0 && !validateImageFile(photoPath)) {
+        e.preventDefault();
+        return false;
+    }
+    
+    return true;
+});
+</script>
+                

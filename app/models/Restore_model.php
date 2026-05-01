@@ -1,115 +1,86 @@
 <?php
 
-class Restore_model
-{
+class Restore_model {
     private $db;
 
-    public function __construct()
-    {
+    public function __construct() {
         $this->db = new Database;
     }
 
-    // Ambil semua data restore
-    public function getAll()
-    {
-        $this->db->query("
-            SELECT * FROM `restore`
-            ORDER BY deleted_at DESC
-        ");
+    public function getAll() {
+        $this->db->query("SELECT * FROM trs_restore ORDER BY deleted_at DESC");
         return $this->db->resultSet();
     }
 
-    // Restore data kembali ke tabel asli
-    public function restoreData($id)
-    {
-        // Ambil data restore
-        $this->db->query("SELECT * FROM `restore` WHERE id = :id");
-        $this->db->bind('id', $id);
-        $restore = $this->db->single();
-        if (is_object($restore)) {
-            $restore = (array) $restore;
+    public function restoreData($id_restore) {
+        try {
+            $this->db->query("SELECT * FROM trs_restore WHERE id_restore = :id");
+            $this->db->bind(':id', $id_restore);
+            $dataRestore = $this->db->single();
+            
+            if (!$dataRestore) return 0;
+
+            $data = json_decode($dataRestore['data_json'], true);
+
+            // Cek apakah User masih ada di mst_user[cite: 1]
+            $this->db->query("SELECT id_user FROM mst_user WHERE id_user = :id_user");
+            $this->db->bind(':id_user', $data['id_user']);
+            $userExists = $this->db->single();
+
+            if (!$userExists) {
+                // Buat ulang user jika hilang agar foreign key tidak error[cite: 1]
+                $passwordDefault = password_hash('iclabs-umi', PASSWORD_DEFAULT);
+                $this->db->query("INSERT INTO mst_user (id_user, username, password, role, nama_user) 
+                                VALUES (:id_user, :username, :password, 'Asisten', :nama)");
+                $this->db->bind(':id_user', $data['id_user']);
+                $this->db->bind(':username', $data['stambuk'] . '@student.umi.ac.id');
+                $this->db->bind(':password', $passwordDefault);
+                $this->db->bind(':nama', $data['nama_asisten']);
+                $this->db->execute();
+            }
+
+            // Masukkan kembali ke mst_asisten[cite: 1]
+            $query = "INSERT INTO mst_asisten 
+                        (id_asisten, stambuk, nama_asisten, angkatan, status, jenis_kelamin, id_user, photo_profil, photo_path) 
+                    VALUES 
+                        (:id, :stambuk, :nama, :angkatan, :status, :jk, :id_user, :pp, :ttd)";
+            
+            $this->db->query($query);
+            $this->db->bind(':id', $data['id_asisten']);
+            $this->db->bind(':stambuk', $data['stambuk']);
+            $this->db->bind(':nama', $data['nama_asisten']);
+            $this->db->bind(':angkatan', $data['angkatan']);
+            $this->db->bind(':status', $data['status']);
+            $this->db->bind(':jk', $data['jenis_kelamin']);
+            $this->db->bind(':id_user', $data['id_user']);
+            $this->db->bind(':pp', $data['photo_profil']);
+            $this->db->bind(':ttd', $data['photo_path']);
+            $this->db->execute();
+
+            // Hapus dari trs_restore
+            $this->db->query("DELETE FROM trs_restore WHERE id_restore = :id");
+            $this->db->bind(':id', $id_restore);
+            $this->db->execute();
+
+            return 1;
+        } catch (PDOException $e) {
+            return 0;
         }
-
-        if (!$restore) {
-            return false;
-        }
-
-        $table = $restore['jenis_data']; // contoh: dosen, user, asisten
-        $data  = json_decode($restore['data_json'], true);
-
-        if (!$table || !$data) {
-            return false;
-        }
-
-        // Validasi: pastikan tabel ada di database untuk menghindari SQL injection via nama tabel
-        $this->db->query("
-            SELECT COUNT(*) as cnt 
-            FROM information_schema.tables 
-            WHERE table_schema = DATABASE() AND table_name = :tname
-        ");
-        $this->db->bind('tname', $table);
-        $check = $this->db->single();
-        if (is_object($check)) {
-            $check = (array) $check;
-        }
-        if (!$check || intval($check['cnt'] ?? 0) === 0) {
-            return false;
-        }
-
-        // Siapkan kolom dan parameter
-        $fields = array_keys($data);
-        // Escape column names with backticks
-        $columns = implode(', ', array_map(function ($f) {
-            return "`$f`";
-        }, $fields));
-        $params  = ':' . implode(',:', $fields);
-
-        // Gunakan backticks untuk nama tabel
-        $sql = "INSERT INTO `{$table}` ($columns) VALUES ($params)";
-        $this->db->query($sql);
-
-        foreach ($data as $key => $value) {
-            $this->db->bind($key, $value);
-        }
-
-        // Jalankan insert
-        $inserted = $this->db->execute();
-        if (!$inserted) {
-            return false;
-        }
-
-        // Hapus dari tabel restore
-        $this->db->query("DELETE FROM `restore` WHERE id = :id");
-        $this->db->bind('id', $id);
-        $this->db->execute();
-
-        return true;
     }
 
-    // Hapus permanen dari tabel restore
-    public function deletePermanent($id)
-    {
-        $this->db->query("DELETE FROM `restore` WHERE id = :id");
-        $this->db->bind('id', $id);
+    public function deletePermanent($id) {
+        $this->db->query("DELETE FROM trs_restore WHERE id_restore = :id");
+        $this->db->bind(':id', $id);
         return $this->db->execute();
     }
 
-    // Simpan data ke tabel restore (dipanggil saat delete)
-    public function saveToRestore($table, $data, $deletedBy)
-    {
-        $this->db->query("
-            INSERT INTO `restore` 
-            (nama_data, jenis_data, data_json, deleted_at, deleted_by)
-            VALUES 
-            (:nama, :jenis, :json, NOW(), :by)
-        ");
-
-        $this->db->bind('nama', $data['nama'] ?? $table);
-        $this->db->bind('jenis', $table);
-        $this->db->bind('json', json_encode($data));
-        $this->db->bind('by', $deletedBy);
-
+    public function saveToRestore($table, $data, $deletedBy) {
+        $dataJson = json_encode($data);
+        $this->db->query("INSERT INTO trs_restore (jenis_data, data_json, deleted_by, deleted_at) 
+                        VALUES (:jenis_data, :data_json, :deleted_by, NOW())");
+        $this->db->bind('jenis_data', $table);
+        $this->db->bind('data_json', $dataJson);
+        $this->db->bind('deleted_by', $deletedBy);
         return $this->db->execute();
     }
 }
-?>

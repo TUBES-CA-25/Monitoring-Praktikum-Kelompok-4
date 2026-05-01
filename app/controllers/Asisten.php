@@ -67,96 +67,98 @@ class Asisten extends Controller {
         $this->isAdmin();
         $data = $_POST;
         
-        $cekUser = $this->model('User_model')->getUserByUsername($data['username']);
-        if ($cekUser) {
+        // 1. Validasi Field Kosong
+        $requiredFields = ['username', 'stambuk', 'nama_asisten', 'angkatan', 'status', 'jenis_kelamin'];
+        foreach ($requiredFields as $field) {
+            if (empty($data[$field])) {
+                $_SESSION['old'] = $_POST;
+                Flasher::setFlash('Semua field wajib diisi!', 'Gagal', 'danger');
+                header('Location: ' . BASEURL . '/asisten');
+                exit;
+            }
+        }
+        
+        // 2. Cek apakah Username atau Stambuk sudah ada (Pencegahan awal)
+        if ($this->model('User_model')->getUserByUsername($data['username'])) {
             $_SESSION['old'] = $_POST;
             Flasher::setFlash('Username/Email sudah terdaftar!', 'Gagal', 'danger');
             header('Location: ' . BASEURL . '/asisten');
             exit;
         }
 
-        $cekStambuk = $this->model('Asisten_model')->cekStambuk($data['stambuk']);
-        if ($cekStambuk) {
+        if ($this->model('Asisten_model')->cekStambuk($data['stambuk'])) {
             $_SESSION['old'] = $_POST;
-            Flasher::setFlash('Stambuk ini sudah ada!', 'Gagal', 'danger');
+            Flasher::setFlash('Stambuk ini sudah ada di sistem!', 'Gagal', 'danger');
             header('Location: ' . BASEURL . '/asisten');
             exit;
         }
 
-        try {
-            $passwordHash = $this->validateAkun($data['username'], $data['password']);
-
-            if (trim($data['password']) === '') {
-                Flasher::setFlash(
-                    'Password kosong, sistem menggunakan default (iclabs-umi)',
-                    'Info',
-                    'info'
-                );
-            }
-
-        } catch (Exception $e) {
-            $_SESSION['old'] = $_POST;
-            Flasher::setFlash($e->getMessage(), 'Gagal', 'danger');
-            header('Location: ' . BASEURL . '/asisten');
-            exit;
-        }
-
-        
-        $namaBersih = preg_replace('/[^A-Za-z0-9]/', '_', $data['nama_asisten']);
-        $namaFileCustom = $namaBersih; 
+        // 3. Persiapan Password & Upload File
+        $passwordHash = $this->validateAkun($data['username'], $data['password']);
+        $namaFileCustom = preg_replace('/[^A-Za-z0-9]/', '_', $data['nama_asisten']);
         
         $data['photo_profil'] = null;
         if (!empty($_FILES['photo_profil']['name'])) {
             $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', $namaFileCustom . '_profil');
-            if ($uploadProfil['status'] == false) {
-                Flasher::setFlash('Gagal Upload Profil: ' . $uploadProfil['pesan'], '', 'danger');
-                header('Location: '.BASEURL. '/asisten');
-                exit;
-            }
-            $data['photo_profil'] = $uploadProfil['nama_file'];
+            if ($uploadProfil['status']) $data['photo_profil'] = $uploadProfil['nama_file'];
         }
 
         $data['photo_path'] = null;
         if (!empty($_FILES['photo_path']['name'])) {
             $uploadSignature = $this->prosesUpload('photo_path', 'public/img/signature/', $namaFileCustom . '_ttd');
-            if ($uploadSignature['status'] == false) {
-                Flasher::setFlash('Gagal Upload TTD: ' . $uploadSignature['pesan'], '', 'danger');
-                header('Location: '.BASEURL. '/asisten');
-                exit;
-            }
-            $data['photo_path'] = $uploadSignature['nama_file'];
+            if ($uploadSignature['status']) $data['photo_path'] = $uploadSignature['nama_file'];
         }
 
-        $dataUser = [
-            'nama_user' => $data['nama_asisten'], 
-            'username'  => $data['username'],
-            'password'  => $passwordHash,
-            'role'      => 'Asisten'
-        ];
+        // 4. Proses Eksekusi Database
+        try {
+            // Tambah User Terlebih Dahulu
+            $dataUser = [
+                'nama_user' => $data['nama_asisten'], 
+                'username'  => $data['username'],
+                'password'  => $passwordHash,
+                'role'      => 'Asisten'
+            ];
 
-        $tambahUser = $this->model('User_model')->tambah($dataUser);
+            $id_user = $this->model('User_model')->tambah($dataUser);
 
-        if ($tambahUser > 0) {
-            
-            $newUser = $this->model('User_model')->getUserByUsername($data['username']);
+            if ($id_user > 0) {
+                // Ambil ID User yang baru dibuat (untuk Foreign Key)
+                $newUser = $this->model('User_model')->getUserByUsername($data['username']);
+                
+                // Pembersihan array untuk dikirim ke model asisten
+                $dataFinal = [
+                    'stambuk'       => $data['stambuk'],
+                    'nama_asisten'  => $data['nama_asisten'],
+                    'angkatan'      => $data['angkatan'],
+                    'status'        => $data['status'],
+                    'jenis_kelamin' => $data['jenis_kelamin'],
+                    'id_user'       => $newUser['id_user'],
+                    'photo_profil'  => $data['photo_profil'],
+                    'photo_path'    => $data['photo_path']
+                ];
 
-            if ($newUser) {
-                $data['id_user'] = $newUser['id_user'];
-
-                if ($this->model('Asisten_model')->tambah($data) > 0) {
+                if ($this->model('Asisten_model')->tambah($dataFinal) > 0) {
+                    $_SESSION['old'] = [];
                     Flasher::setFlash('Data Asisten Berhasil Ditambahkan', '', 'success');
                 } else {
-                    Flasher::setFlash('User dibuat, tapi Gagal simpan detail Asisten', '', 'warning');
+                    // Jika asisten gagal, hapus usernya agar tidak jadi data sampah
+                    $this->model('User_model')->prosesHapus($newUser['id_user']);
+                    Flasher::setFlash('Gagal menyimpan data asisten.', '', 'danger');
                 }
             } else {
-                Flasher::setFlash('Gagal mengambil ID User baru', '', 'danger');
+                Flasher::setFlash('Gagal membuat akun user.', '', 'danger');
             }
 
-        } else {
-            Flasher::setFlash('Gagal menyimpan Data User', '', 'danger');
+        } catch (PDOException $e) {
+            // Tangani jika terjadi Duplicate Entry (Kode 1062) saat Double Submit
+            if ($e->errorInfo[1] == 1062) {
+                Flasher::setFlash('Data sudah ada atau terkirim ganda. Silakan cek daftar asisten.', 'Info', 'warning');
+            } else {
+                Flasher::setFlash('Error Database: ' . $e->getMessage(), 'Gagal', 'danger');
+            }
         }
 
-        header('Location: '.BASEURL. '/asisten');
+        header('Location: ' . BASEURL . '/asisten');
         exit;
     }
 
@@ -168,48 +170,88 @@ class Asisten extends Controller {
         $this->view('asisten/ubah_asisten', $data);
     }
 
-    public function prosesUbah(){
+    public function prosesUbah() {
         $this->isAdmin();
         $data = $_POST;
         $id_asisten = $data['id_asisten'];
+        $id_user = $data['id_user'];
 
+        // 1. Ambil data lama untuk pengecekan
+        $asistenLama = $this->model('Asisten_model')->detailAsisten($id_asisten);
+        $userLama = $this->model('User_model')->getUserById($id_user);
+
+        // 2. VALIDASI EMAIL (Penting agar tidak Duplicate Entry)
+        // Jika email yang diinput BERBEDA dengan email lama, baru kita cek ketersediaannya
+        if ($data['username'] !== $userLama['username']) {
+            $cekEmail = $this->model('User_model')->getUserByUsernameExceptMe($data['username'], $id_user);
+            if ($cekEmail) {
+                Flasher::setFlash('Gagal', 'Email sudah dipakai orang lain!', 'danger');
+                header('Location: ' . BASEURL . '/asisten');
+                exit;
+            }
+        }
+
+        // 3. Sanitasi Nama File
         $namaBersih = preg_replace('/[^A-Za-z0-9]/', '_', $data['nama_asisten']); 
-        
-        $namaFileCustom = $namaBersih;
+        $uploadErrors = [];
 
-        if ($_FILES['photo_profil']['error'] === 4) {
-            $data['photo_profil'] = $this->model('Asisten_model')->getPhoto2PathByID($id_asisten);
+        // 4. Logika Password SHA-256
+        if (empty($data['password'])) {
+            $data['password'] = $userLama['password']; // Tetap pakai hash lama
         } else {
-            $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', $namaFileCustom . '_profil');
-            
-            if ($uploadProfil['status'] == false) {
-                Flasher::setFlash('Gagal ubah profil: ' . $uploadProfil['pesan'], '', 'danger');
-                header('Location: '.BASEURL. '/asisten');
-                exit;
-            }
-            $data['photo_profil'] = $uploadProfil['nama_file'];
+            $data['password'] = hash('sha256', $data['password']); // Hash baru
         }
 
-        if ($_FILES['photo_path']['error'] === 4) {
-            $data['photo_path'] = $this->model('Asisten_model')->getPhotoPathByID($id_asisten);
+        // 5. Handle Foto Profil
+        if ($_FILES['photo_profil']['error'] === UPLOAD_ERR_NO_FILE) {
+            $data['photo_profil'] = $asistenLama['photo_profil'];
         } else {
-            $uploadSignature = $this->prosesUpload('photo_path', 'public/img/signature/', $namaFileCustom . '_ttd');
-            
-            if ($uploadSignature['status'] == false) {
-                Flasher::setFlash('Gagal ubah TTD: ' . $uploadSignature['pesan'], '', 'danger');
-                header('Location: '.BASEURL. '/asisten');
-                exit;
-            }
-            $data['photo_path'] = $uploadSignature['nama_file'];
+            $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', $namaBersih . '_profil');
+            $data['photo_profil'] = $uploadProfil['status'] ? $uploadProfil['nama_file'] : $asistenLama['photo_profil'];
+            if (!$uploadProfil['status']) $uploadErrors[] = $uploadProfil['pesan'];
         }
 
-        if($this->model('Asisten_model')->prosesUbah($data) > 0){
-            Flasher::setFlash('berhasil diubah', '', 'success');
+        // 6. Handle Foto TTD
+        if ($_FILES['photo_path']['error'] === UPLOAD_ERR_NO_FILE) {
+            $data['photo_path'] = $asistenLama['photo_path'];
         } else {
-            Flasher::setFlash('Data disimpan (tidak ada perubahan)', '', 'info');
+            $uploadTTD = $this->prosesUpload('photo_path', 'public/img/signature/', $namaBersih . '_ttd');
+            $data['photo_path'] = $uploadTTD['status'] ? $uploadTTD['nama_file'] : $asistenLama['photo_path'];
+            if (!$uploadTTD['status']) $uploadErrors[] = $uploadTTD['pesan'];
         }
-        header('Location: '.BASEURL. '/asisten');
+
+        // 7. Eksekusi ke Database
+        $updateUser = $this->model('User_model')->ubahDataUser($data);
+        $updateAsisten = $this->model('Asisten_model')->ubahData($data);
+
+        if ($updateUser >= 0 && $updateAsisten >= 0) {
+            Flasher::setFlash('Berhasil', 'diperbarui', 'success');
+        } else {
+            Flasher::setFlash('Gagal', 'diperbarui', 'danger');
+        }
+
+        header('Location: ' . BASEURL . '/asisten');
         exit;
+    }
+
+    public function ubah($id) {
+        $data['title'] = 'Ubah Data Asisten'; // Agar <title> di header terisi
+        
+        // Mengambil data lengkap (Asisten + User) dari model
+        $data['ubahdata'] = $this->model('Asisten_model')->getUbahData($id);
+
+        // Jika data tidak ditemukan, kembalikan ke index
+        if (!$data['ubahdata']) {
+            Flasher::setFlash('Data', 'tidak ditemukan', 'danger');
+            header('Location: ' . BASEURL . '/asisten');
+            exit;
+        }
+
+        // Kirim $data ke setiap view agar tidak 'Undefined Variable'
+        $this->view('templates/header', $data);
+        $this->view('templates/sidebar', $data);
+        $this->view('asisten/ubah_asisten', $data);
+        $this->view('templates/footer');
     }
 
     public function hapus($id){
@@ -221,44 +263,6 @@ class Asisten extends Controller {
         }
         header('Location: '.BASEURL. '/asisten');
         exit;
-    }
-
-    private function prosesUpload($inputName, $targetDirDB, $customName = null) {
-        $file = $_FILES[$inputName];
-        
-        if ($file['error'] === 4) {
-            return ['status' => false, 'error_code' => 4, 'nama_file' => null];
-        }
-
-        $ekstensiValid = ['jpg', 'jpeg', 'png'];
-        $ekstensiFile = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-        
-        if (!in_array($ekstensiFile, $ekstensiValid)) {
-            return ['status' => false, 'error_code' => 1, 'pesan' => 'Format file harus JPG/PNG'];
-        }
-
-        if ($file['size'] > 5000000) {
-            return ['status' => false, 'error_code' => 2, 'pesan' => 'Ukuran file max 5MB'];
-        }
-
-        $namaFileBaru = ($customName ? $customName : uniqid()) . '.' . $ekstensiFile;
-
-        $rootPath = getcwd(); 
-        
-        $targetDirSystem = $rootPath . DIRECTORY_SEPARATOR . str_replace('/', DIRECTORY_SEPARATOR, $targetDirDB);
-
-        if (!file_exists($targetDirSystem)) {
-            mkdir($targetDirSystem, 0777, true);
-        }
-
-        if (file_exists($targetDirSystem . $namaFileBaru)) {
-            unlink($targetDirSystem . $namaFileBaru);
-        }
-        if (move_uploaded_file($file['tmp_name'], $targetDirSystem . $namaFileBaru)) {
-            return ['status' => true, 'nama_file' => $targetDirDB . $namaFileBaru];
-        } else {
-            return ['status' => false, 'error_code' => 3, 'pesan' => 'Gagal akses folder: ' . $targetDirSystem];
-        }
     }
 
     private function validateAkun($username, $password)

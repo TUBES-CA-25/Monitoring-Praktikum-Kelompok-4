@@ -70,7 +70,7 @@
 <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
 
 <!-- 9. Page-specific scripts -->
-<script src="<?= BASEURL?>/public/template/dist/js/pages/dashboard2.js"></script>
+<!-- <script src="<?= BASEURL?>/public/template/dist/js/pages/dashboard2.js"></script> -->
 
 <!-- 10. Custom Global Scripts -->
 <script>const BASEURL = "<?= BASEURL ?>";</script>

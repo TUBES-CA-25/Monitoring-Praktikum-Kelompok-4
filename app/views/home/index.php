@@ -5,11 +5,11 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h3><?= $data['title'];?></h3> 
+            <h3><?= htmlspecialchars($data['title'] ?? 'Home'); ?></h3> 
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item active"><?= $data['title'];?></li>
+              <li class="breadcrumb-item active"><?= htmlspecialchars($data['title'] ?? 'Home'); ?></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -28,7 +28,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Data Monitoring</span>
-                <span class="info-box-number"><?php echo $data['jumlahDataMentoring']; ?></span>
+                <span class="info-box-number"><?php echo htmlspecialchars($data['jumlahDataMentoring'] ?? 0); ?></span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -41,7 +41,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Data User</span>
-                <span class="info-box-number"><?php echo $data['jumlahDataUser']; ?></span>
+                <span class="info-box-number"><?php echo htmlspecialchars($data['jumlahDataUser'] ?? 0); ?></span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -58,7 +58,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Data Dosen</span>
-                <span class="info-box-number"><?php echo $data['jumlahDataDosen']; ?></span>
+                <span class="info-box-number"><?php echo htmlspecialchars($data['jumlahDataDosen'] ?? 0); ?></span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -71,7 +71,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Data Asisten</span>
-                <span class="info-box-number"><?php echo $data['jumlahDataAsisten']; ?></span>
+                <span class="info-box-number"><?php echo htmlspecialchars($data['jumlahDataAsisten'] ?? 0); ?></span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -141,7 +141,7 @@
                   <!-- LEGEND -->
                   <div class="mt-3">
                     <div class="mt-3">
-                      <?php if (!empty($data['calendarLegend'])) : ?>
+                      <?php if (!empty($data['calendarLegend']) && is_array($data['calendarLegend'])) : ?>
                         <div class="mt-3">
                           <?php foreach ($data['calendarLegend'] as $l) : ?>
                             <span class="badge mr-1"
@@ -185,7 +185,7 @@
                       <h3 class="card-title"><i class="fas fa-clock"></i> Monitoring Hari Ini</h3>
                   </div>
                   <div class="card-body">
-                    <?php if (!empty($data['monitoringHariIni'])) : ?>
+                    <?php if (!empty($data['monitoringHariIni']) && is_array($data['monitoringHariIni'])) : ?>
                       <div id="monitoringCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
                           <div class="carousel-inner">
                               <?php foreach ($data['monitoringHariIni'] as $index => $jadwal) : ?>
@@ -242,7 +242,7 @@
 
                 <div class="card-body p-0">
                   <ul class="list-group list-group-flush">
-                    <?php if (!empty($data['aktivitasTerakhir'])) : ?>
+                    <?php if (!empty($data['aktivitasTerakhir']) && is_array($data['aktivitasTerakhir'])) : ?>
                       <?php foreach ($data['aktivitasTerakhir'] as $a) : ?>
                         <li class="list-group-item">
                           <div class="d-flex justify-content-between align-items-center">
@@ -279,7 +279,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Data Matakuliah</span>
-                <span class="info-box-number"><?php echo $data['jumlahDataMatakuliah']; ?></span>
+                <span class="info-box-number"><?php echo htmlspecialchars($data['jumlahDataMatakuliah'] ?? 0); ?></span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -289,7 +289,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Data Laboratorium</span>
-                <span class="info-box-number"><?php echo $data['jumlahDataRuangan']; ?></span>
+                <span class="info-box-number"><?php echo htmlspecialchars($data['jumlahDataRuangan'] ?? 0); ?></span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -299,7 +299,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Data Kelas</span>
-                <span class="info-box-number"><?php echo $data['jumlahDataKelas']; ?></span>
+                <span class="info-box-number"><?php echo htmlspecialchars($data['jumlahDataKelas'] ?? 0); ?></span>
               </div>
               <!-- /.info-box-content -->
             </div>
@@ -309,7 +309,7 @@
 
               <div class="info-box-content">
                 <span class="info-box-text">Data Jurusan</span>
-                <span class="info-box-number"><?php echo $data['jumlahDataJurusan']; ?></span>
+                <span class="info-box-number"><?php echo htmlspecialchars($data['jumlahDataJurusan'] ?? 0); ?></span>
               </div>
               <!-- /.info-box-content -->
             </div>
