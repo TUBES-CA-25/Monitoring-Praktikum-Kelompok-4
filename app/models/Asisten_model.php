@@ -36,7 +36,6 @@ class Asisten_model {
             echo "</pre>";
             die; // Menghentikan sistem agar error terbaca
         }
-        $this->db->execute();
 
         return $this->db->rowCount();
     }

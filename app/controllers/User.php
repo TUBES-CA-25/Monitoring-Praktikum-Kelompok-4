@@ -68,23 +68,26 @@ class User extends Controller {
         // Jika upload sukses dan ada file baru, pakai file baru. Jika tidak, pakai yang lama.
         $data['photo_profil'] = ($uploadProfil['status'] && !$uploadProfil['no_upload']) 
                                 ? $uploadProfil['nama_file'] 
-                                : $asistenLama['photo_profil'];
+                                : ($asistenLama ? $asistenLama['photo_profil'] : null);
 
         // 3. Upload TTD
         $uploadTTD = $this->prosesUpload('photo_path', 'public/img/signature/', 'ttd_' . $id_user);
         $data['photo_path'] = ($uploadTTD['status'] && !$uploadTTD['no_upload']) 
                             ? $uploadTTD['nama_file'] 
-                            : $asistenLama['photo_path'];
+                            : ($asistenLama ? $asistenLama['photo_path'] : null);
 
         // 4. Update Database (Tabel User)
         $updateUser = $this->model('User_model')->ubahDataUser($data);
         
-        // 5. Update Database (Tabel Asisten - Khusus Foto & TTD)
-        $updateAsisten = $this->model('Asisten_model')->updateFilesByUserId(
-            $id_user, 
-            $data['photo_profil'], 
-            $data['photo_path']
-        );
+        // 5. Update Database (Tabel Asisten - Khusus Foto & TTD) jika user adalah asisten
+        $updateAsisten = 0;
+        if ($asistenLama) {
+            $updateAsisten = $this->model('Asisten_model')->updateFilesByUserId(
+                $id_user, 
+                $data['photo_profil'], 
+                $data['photo_path']
+            );
+        }
 
         if ($updateUser >= 0 && $updateAsisten >= 0) {
             Flasher::setFlash('Berhasil', 'diperbarui', 'success');
@@ -150,11 +153,14 @@ class User extends Controller {
         // Ambil data lama agar nama_user dan username tidak hilang
         $userLama = $this->model('User_model')->getUserById($id_user);
 
+        // Jika password diisi, hash. Jika kosong, pertahankan password lama.
+        $password = !empty($passwordBaru) ? hash('sha256', $passwordBaru) : $userLama['password'];
+
         $dataUpdate = [
             'id_user'   => $id_user,
             'username'  => $_POST['username'],
             'nama_user' => $userLama['nama_user'],
-            'password'  => hash('sha256', $passwordBaru), // Hash dilakukan DISINI saja
+            'password'  => $password,
             'role'      => $userLama['role']
         ];
 

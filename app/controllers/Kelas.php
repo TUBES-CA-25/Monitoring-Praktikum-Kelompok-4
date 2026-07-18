@@ -24,8 +24,6 @@ class Kelas extends Controller {
         $this->isAdmin();
         $data['jurusanOptions'] = $this->model('Kelas_model')->tampilJurusan();
 
-        $this->view('kelas/index', $data);
-
         if($this->model('Kelas_model')->tambah($_POST) > 0){
             Flasher::setFlash(' berhasil ditambahkan', '', 'success');
         }else{

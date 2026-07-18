@@ -94,7 +94,7 @@ class Mentoring_model{
                             -- mst_asisten.nama_asisten
                         FROM
                             trs_mentoring
-                        JOIN
+                        LEFT JOIN
                             mst_asisten ON trs_mentoring.id_asisten_pengganti = mst_asisten.id_asisten
                         JOIN
                             trs_frekuensi ON trs_mentoring.id_frekuensi = trs_frekuensi.id_frekuensi;");
@@ -179,19 +179,6 @@ class Mentoring_model{
         return $result['count'];
     }
 
-    public function getHariIni($id_asisten) {
-        $this->db->query("
-            SELECT j.id_jadwal, m.nama_matkul, j.jam_mulai, j.jam_selesai, r.nama_ruangan
-            FROM jadwal_praktikum j
-            JOIN mst_matakuliah m ON j.id_matkul = m.id_matkul
-            JOIN mst_ruangan r ON j.id_ruangan = r.id_ruangan
-            WHERE j.id_asisten = :id
-              AND j.tanggal = CURDATE()
-            LIMIT 1
-        ");
-        $this->db->bind('id', $id_asisten);
-        return $this->db->single();
-    }
 
     public function getCalendarAsisten($id_asisten)
     {

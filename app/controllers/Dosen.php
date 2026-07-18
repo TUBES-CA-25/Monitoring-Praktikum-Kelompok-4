@@ -20,7 +20,6 @@ class Dosen extends Controller {
 
     public function tambah(){
         $this->isAdmin();
-        $this->view('dosen/index');
 
         if($this->model('Dosen_model')->tambah($_POST) > 0){
             Flasher::setFlash(' berhasil ditambahkan', '', 'success');

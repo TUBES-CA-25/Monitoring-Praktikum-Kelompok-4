@@ -4,6 +4,8 @@ class Login extends Controller {
     public function index()
     {
         $data['title'] = 'Login Page';
+        $data['remember_username'] = isset($_COOKIE['remember_username']) ? $_COOKIE['remember_username'] : '';
+        $data['remember_password'] = isset($_COOKIE['remember_password']) ? base64_decode($_COOKIE['remember_password']) : '';
 
         if (isset($_SESSION['id_user'])) {
             header('Location: ' . BASEURL . '/home');
@@ -27,6 +29,19 @@ class Login extends Controller {
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
                 $_SESSION['nama_user'] = $user['nama_user'];
+
+                // Logika Remember Me
+                if (isset($_POST['remember'])) {
+                    setcookie('id_user', $user['id_user'], time() + (86400 * 30), '/'); // 30 hari
+                    setcookie('key', hash('sha256', $user['username']), time() + (86400 * 30), '/');
+                    
+                    // Untuk form autofill
+                    setcookie('remember_username', $username, time() + (86400 * 30), '/');
+                    setcookie('remember_password', base64_encode($password), time() + (86400 * 30), '/');
+                } else {
+                    setcookie('remember_username', '', time() - 3600, '/');
+                    setcookie('remember_password', '', time() - 3600, '/');
+                }
 
                 $is_password_default = $this->model('Login_model')->isDefaultPassword($password);
 
@@ -57,6 +72,11 @@ class Login extends Controller {
     public function logout(){
         session_unset();
         session_destroy();
+
+        // Hapus cookie Remember Me
+        setcookie('id_user', '', time() - 3600, '/');
+        setcookie('key', '', time() - 3600, '/');
+
         header('Location: ' . BASEURL . '/login');
         exit;
     }

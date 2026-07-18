@@ -24,7 +24,7 @@ class Dosen_model{
 
     public function prosesUbah($data){
         if ($_FILES['photo_path']['error'] === UPLOAD_ERR_NO_FILE) {
-            $photo_path = $this->getPhotoPathByID($data['id_asisten']);
+            $photo_path = $this->getPhotoPathByID($data['id_dosen']);
         } else {
             $photo_path = $this->uploadPhoto();
         }

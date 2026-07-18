@@ -78,6 +78,7 @@ class Mentoring extends Controller {
             Flasher::setFlash(' tidak berhasil dihapus', '', 'danger');
         }
         header('Location: '.BASEURL. '/mentoring');
+        exit;
     }
 
     public function prosesHapus($id, $id_frekuensi){

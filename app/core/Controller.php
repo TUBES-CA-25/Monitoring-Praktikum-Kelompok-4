@@ -5,13 +5,36 @@ class Controller{
     protected $id_asisten;
 
     public function __construct(){
-        session_start(); 
+        if (session_status() === PHP_SESSION_NONE) {
+            // Konfigurasi session agar bertahan selama 24 jam (86400 detik)
+            ini_set('session.gc_maxlifetime', 86400);
+            session_set_cookie_params(86400);
+            session_start(); 
+        }
+        $this->db = new Database();
+
+        // Logika Remember Me (Auto-Login)
+        if (!isset($_SESSION['id_user']) && isset($_COOKIE['id_user']) && isset($_COOKIE['key'])) {
+            $id_user = $_COOKIE['id_user'];
+            $key = $_COOKIE['key'];
+
+            $this->db->query("SELECT * FROM mst_user WHERE id_user = :id");
+            $this->db->bind('id', $id_user);
+            $user = $this->db->single();
+
+            if ($user && $key === hash('sha256', $user['username'])) {
+                $_SESSION['id_user'] = $user['id_user'];
+                $_SESSION['username'] = $user['username'];
+                $_SESSION['role'] = $user['role'];
+                $_SESSION['nama_user'] = $user['nama_user'];
+            }
+        }
+
         if (isset($_SESSION['role'])) {
             $this->id_asisten = isset($_SESSION['id_asisten']) ? $_SESSION['id_asisten'] : null;
         } else {
             $this->id_asisten = null;
         }
-        $this->db = new Database();
     }
 
     public function view($view, $data = []){

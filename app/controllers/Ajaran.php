@@ -21,7 +21,6 @@ class Ajaran extends Controller {
 
     public function tambah(){
         $this->isAdmin();
-        $this->view('ajaran/index');
 
         if($this->model('Ajaran_model')->tambah($_POST) > 0){
             Flasher::setFlash(' berhasil ditambahkan', '', 'success');
