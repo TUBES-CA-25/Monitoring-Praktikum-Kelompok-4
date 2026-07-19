@@ -208,6 +208,7 @@ class Mentoring_model{
 
     public function getAktivitasTerakhirAsisten($id_asisten) {
         $this->db->query("SELECT 
+                            f.id_frekuensi,
                             mk.nama_matkul, 
                             r.nama_ruangan AS ruangan, 
                             m.tanggal,

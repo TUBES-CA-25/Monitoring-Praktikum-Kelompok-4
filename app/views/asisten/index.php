@@ -20,50 +20,84 @@
       <div class="container-fluid">
         <div class="row">
           <?php if ($_SESSION['role'] == 'Asisten') : ?>
-            <div class="col-md-4">
-              <div class="card">
-                  <div class="card-header">
-                      <div class="card-tools">
-                          <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                              <i class="fas fa-minus"></i>
-                          </button>
-                          <button type="button" class="btn btn-tool" data-card-widget="remove">
-                              <i class="fas fa-times"></i>
-                          </button>
-                      </div>
-                  </div>
-                  <div class="card-body p-0">
-                      <div class="d-md-flex justify-content-center align-items-center" style="height: 100%;">
-                          <div class="p-1 flex-fill" style="overflow: hidden; display: flex; justify-content: center; align-items: center;">
-                              <div id="world-map-markers" style="text-align: center;">
-                                  <div class="col-md-12 mt-3 pb-3 mb-3">
-                                      <div class="overflow-auto">
-                                          <?php foreach ($data['asisten'] as $asisten) : ?>
-                                              <img src="<?= BASEURL; ?>/<?= $asisten['photo_profil'] ?>" 
-                                                   alt="Foto" 
-                                                   class="img-thumbnail"
-                                                   style="width: 150px; height: 200px; object-fit: cover; object-position: top; border-radius: 10px;">
-                                          <?php endforeach; ?>
-                                      </div>
-                                  </div>
+            <div class="col-md-12">
+              <div class="card card-primary card-outline shadow-sm">
+                  <div class="card-body">
+                      <?php 
+                          $a = isset($data['asisten'][0]) ? $data['asisten'][0] : null; 
+                          $u = isset($data['user'][0]) ? $data['user'][0] : null; 
+                      ?>
+                      <?php if ($u && $a): ?>
+                      <div class="row align-items-center">
+                          <!-- Bagian Kiri: Foto Profil -->
+                          <div class="col-md-4 text-center border-right">
+                              <img class="profile-user-img img-fluid img-circle shadow-sm mb-3"
+                                   src="<?= BASEURL; ?>/<?= $a['photo_profil'] ?>" 
+                                   alt="Foto Profil"
+                                   style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%;">
+                              <h3 class="profile-username" style="font-weight: 600;"><?= $u['nama_user']; ?></h3>
+                              <p class="text-muted"><span class="badge badge-primary px-3 py-2" style="font-size: 0.9rem;">Asisten Praktikum</span></p>
+                          </div>
+                          
+                          <!-- Bagian Kanan: Detail Informasi -->
+                          <div class="col-md-8 px-4">
+                              <h4 class="mb-4 text-primary" style="font-weight: 600;"><i class="fas fa-info-circle"></i> Detail Informasi Asisten</h4>
+                              <table class="table table-hover table-borderless">
+                                  <tbody>
+                                      <tr>
+                                        <td width="30%" class="text-muted">Username / Email</td>
+                                        <td style="font-weight: 500;"><?= $u['username']; ?></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-muted">Stambuk</td>
+                                        <td style="font-weight: 500;"><?= $a['stambuk']; ?></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-muted">Nama Lengkap</td>
+                                        <td style="font-weight: 500;"><?= $a['nama_asisten']; ?></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-muted">Angkatan</td>
+                                        <td style="font-weight: 500;"><?= $a['angkatan']; ?></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-muted">Jenis Kelamin</td>
+                                        <td style="font-weight: 500;"><?= $a['jenis_kelamin']; ?></td>
+                                      </tr>
+                                      <tr>
+                                        <td class="text-muted align-middle">Tanda Tangan Digital</td>
+                                        <td>
+                                          <?php if (!empty($a['photo_path'])): ?>
+                                              <img src="<?= BASEURL; ?>/<?= $a['photo_path'] ?>" alt="Foto TTD" class="img-thumbnail shadow-sm" style="max-height: 80px;">
+                                          <?php else: ?>
+                                              <span class="badge bg-secondary">Tidak ada</span>
+                                          <?php endif; ?>
+                                        </td>
+                                      </tr>
+                                  </tbody>
+                              </table>
+                              <div class="text-right mt-4 pt-3 border-top">
+                                  <a href="javascript:void(0);" 
+                                    class="btn btn-primary px-4" 
+                                    data-bs-toggle="modal" 
+                                    data-bs-target="#myModal"
+                                    onclick="change('User', '<?= $u['id_user']; ?>')">
+                                    <i class="fa fa-edit mr-1"></i> Edit Profil
+                                  </a>
                               </div>
                           </div>
-                      </div></div>
+                      </div>
+                      <?php endif; ?>
+                  </div>
               </div>
-          </div>
+            </div>
           <?php endif; ?>
 
           <?php if ($_SESSION['role'] == 'Admin') : ?>
           <div class="col-md-12">
-          <?php endif; ?>
-          <?php if ($_SESSION['role'] == 'Asisten') : ?>
-          <div class="col-md-8">
-          <?php endif; ?>
             <div class="card">
               <div class="card-header">
-                <?php if ($_SESSION['role'] == 'Admin') : ?>
                   <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary button-style" onclick="add('Asisten')">Tambah</a>
-                  <?php endif; ?>
                 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -80,7 +114,6 @@
                     <div id="world-map-markers">
                         <div class="col-md-12 mt-3 pb-3 mb-3">
                           <div class="overflow-auto">
-                          <?php if ($_SESSION['role'] == 'Admin') : ?>
                             <table id="myTable" class="table" style="width:100%">
                               <thead class="table-light">
                                 <tr>
@@ -90,14 +123,10 @@
                                   <th scope="col" class="text-center">Angkatan</th>
                                   <th scope="col">Status</th>
                                   <th scope="col" class="text-center">Jenis Kelamin</th>
-                                  <?php if ($_SESSION['role'] == 'Admin') : ?>
                                   <th scope="col">Nama User</th>
-                                  <?php endif; ?>
                                   <th scope="col" class="text-center">Foto Profil</th>
                                   <th scope="col" class="text-center">Tanda Tangan</th>
-                                  <?php if ($_SESSION['role'] == 'Admin') : ?>
                                   <th scope="col"  style="width:15%" class="text-center">Menu</th>
-                                  <?php endif; ?>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -109,9 +138,7 @@
                                       <td class="text-center"><?= $asisten['angkatan'];?></td>
                                       <td><?= $asisten['status'];?></td>
                                       <td class="text-center"><?= $asisten['jenis_kelamin'];?></td>
-                                      <?php if ($_SESSION['role'] == 'Admin') : ?>
-                                      <td><?= $asisten['username'];?></td>
-                                      <?php endif; ?>                                     
+                                      <td><?= $asisten['username'];?></td>                                     
                                       
                                       <td class="text-center">
                                           <img src="<?= BASEURL; ?>/<?= $asisten['photo_profil'] ?>" 
@@ -129,71 +156,14 @@
                                   <?php endforeach; ?>
                                 </tbody>
                             </table>
-                            <?php endif; ?>                                     
-
-
-                            <?php if ($_SESSION['role'] == 'Asisten') : ?>
-  
-                            <?php 
-                                $u = isset($data['user'][0]) ? $data['user'][0] : null; 
-                                $a = isset($data['asisten'][0]) ? $data['asisten'][0] : null;
-                            ?>
-
-                            <?php if ($u && $a): ?>
-                            <table class="table table-hover table-borderless">
-                              <tbody>
-                                  <tr>
-                                    <td width="30%">Username</td>
-                                    <td><?= $u['username']; ?></td>
-                                  </tr>
-                                  <tr>
-                                    <td>Stambuk</td>
-                                    <td><?= $a['stambuk']; ?></td>
-                                  </tr>
-                                  <tr>
-                                    <td>Nama</td>
-                                    <td><?= $a['nama_asisten']; ?></td>
-                                  </tr>
-                                  <tr>
-                                    <td>Angkatan</td>
-                                    <td><?= $a['angkatan']; ?></td>
-                                  </tr>
-                                  <tr>
-                                    <td>Jenis Kelamin</td>
-                                    <td><?= $a['jenis_kelamin']; ?></td>
-                                  </tr>
-                                  <tr>
-                                    <td>Tanda Tangan</td>
-                                    <td>
-                                      <?php if (!empty($a['photo_path'])): ?>
-                                          <img src="<?= BASEURL; ?>/<?= $a['photo_path'] ?>" alt="Foto" style="max-width: 100px; max-height: 100px;">
-                                      <?php else: ?>
-                                          -
-                                      <?php endif; ?>
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <td colspan="2" class="text-center">
-                                        <a href="javascript:void(0);" 
-                                          class="btn btn-primary btn-sm button-style" 
-                                          data-bs-toggle="modal" 
-                                          data-bs-target="#myModal"
-                                          onclick="change('User', '<?= $u['id_user']; ?>')">
-                                          <i class="fa fa-edit"></i> Edit Profil
-                                        </a>
-                                    </td>
-                                  </tr>
-                              </tbody>
-                            </table>
-                            <?php endif; ?>
-
-                          <?php endif; ?>
-                              </div>
+                          </div>
                         </div>
                     </div>
                   </div>
                 </div></div>
               </div>
+          </div>
+          <?php endif; ?>
           </div>
           </div>
         </div></section>

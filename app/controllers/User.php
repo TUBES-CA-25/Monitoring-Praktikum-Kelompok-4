@@ -90,12 +90,20 @@ class User extends Controller {
         }
 
         if ($updateUser >= 0 && $updateAsisten >= 0) {
+            // Perbarui session agar foto profil langsung berubah di sidebar
+            if ($id_user == $_SESSION['id_user']) {
+                $_SESSION['photo_profil'] = $data['photo_profil'];
+            }
             Flasher::setFlash('Berhasil', 'diperbarui', 'success');
         } else {
             Flasher::setFlash('Gagal', 'memperbarui data', 'danger');
         }
 
-        header('Location: ' . BASEURL . '/User');
+        if (isset($_SESSION['role']) && $_SESSION['role'] == 'Asisten') {
+            header('Location: ' . BASEURL . '/asisten');
+        } else {
+            header('Location: ' . BASEURL . '/user');
+        }
         exit;
     }
 
@@ -150,7 +158,7 @@ class User extends Controller {
         $id_user = $_POST['id_user'];
         $passwordBaru = $_POST['password'];
         
-        // Ambil data lama agar nama_user dan username tidak hilang
+        // Ambil data lama agar properti yang tidak diubah tetap aman
         $userLama = $this->model('User_model')->getUserById($id_user);
 
         // Jika password diisi, hash. Jika kosong, pertahankan password lama.
@@ -159,15 +167,28 @@ class User extends Controller {
         $dataUpdate = [
             'id_user'   => $id_user,
             'username'  => $_POST['username'],
-            'nama_user' => $userLama['nama_user'],
+            'nama_user' => $_POST['nama_user'],
             'password'  => $password,
-            'role'      => $userLama['role']
+            'role'      => $userLama['role'],
+            'photo_path'=> $userLama['photo_path'] ?? null // pertahankan photo_path lama
         ];
 
-        if ($this->model('User_model')->ubahDataUser($dataUpdate) >= 0) {
-            Flasher::setFlash('Berhasil', 'Password Admin telah diperbarui', 'success');
+        // 2. Upload Foto Profil Admin
+        $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', 'admin_profil_' . $id_user);
+        
+        // Jika ada file terupload sukses, gunakan file baru. Jika tidak, gunakan file lama.
+        $dataUpdate['photo_profil'] = ($uploadProfil['status'] && !$uploadProfil['no_upload']) 
+                                ? $uploadProfil['nama_file'] 
+                                : ($userLama['photo_profil'] ?? null);
+
+        if ($this->model('User_model')->ubahDataUserLengkap($dataUpdate) >= 0) {
+            // Perbarui session agar langsung terlihat perubahannya
+            $_SESSION['nama_user'] = $dataUpdate['nama_user'];
+            $_SESSION['username'] = $dataUpdate['username'];
+            $_SESSION['photo_profil'] = $dataUpdate['photo_profil'];
+            Flasher::setFlash('Berhasil', 'Profil Admin telah diperbarui', 'success');
         } else {
-            Flasher::setFlash('Gagal', 'Gagal memperbarui password', 'danger');
+            Flasher::setFlash('Gagal', 'Gagal memperbarui profil', 'danger');
         }
 
         header('Location: ' . BASEURL . '/user/profil');

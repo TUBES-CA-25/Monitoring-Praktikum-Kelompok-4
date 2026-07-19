@@ -8,64 +8,84 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-4">
-                    <div class="card card-primary card-outline">
-                        <div class="card-body box-profile">
-                            <div class="text-center">
-                                <img class="profile-user-img img-fluid img-circle"
-                                     src="<?= BASEURL ?>/public/img/user.png"
-                                     alt="User profile picture">
-                            </div>
-                            <h3 class="profile-username text-center">
-                                <?= $data['user']['nama_user'] ?? $_SESSION['nama_user']; ?>
-                            </h3>
-                            <p class="text-muted text-center"><?= $_SESSION['role']; ?></p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-md-8">
-                    <div class="card">
-                        <div class="card-header p-2">
-                            <h3 class="card-title ml-2">Detail Informasi</h3>
-                        </div>
+                <div class="col-md-12">
+                    <div class="card card-primary card-outline shadow-sm">
                         <div class="card-body">
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">Email (Username)</label>
-                                <div class="col-sm-9">
-                                    <p class="form-control-plaintext"><?= $data['user']['username'] ?? $_SESSION['username']; ?></p>
+                            <div class="row align-items-center">
+                                <!-- Bagian Kiri: Foto Profil -->
+                                <div class="col-md-4 text-center border-right">
+                                    <?php $foto = !empty($data['user']['photo_profil']) ? BASEURL . '/' . $data['user']['photo_profil'] : BASEURL . '/public/img/user.png'; ?>
+                                    <img class="profile-user-img img-fluid img-circle shadow-sm mb-3"
+                                         src="<?= $foto ?>"
+                                         alt="User profile picture"
+                                         style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%;">
+                                    <h3 class="profile-username" style="font-weight: 600;">
+                                        <?= $data['user']['nama_user'] ?? $_SESSION['nama_user']; ?>
+                                    </h3>
+                                    <p class="text-muted"><span class="badge badge-primary px-3 py-2" style="font-size: 0.9rem;"><?= $_SESSION['role']; ?></span></p>
                                 </div>
-                            </div>
-                            <div class="form-group row">
-                                <label class="col-sm-3 col-form-label">Role</label>
-                                <div class="col-sm-9">
-                                    <input type="hidden" name="id_user" value="<?= $data['user']['id_user'] ?? $_SESSION['id_user']; ?>">
-                                </div>
-                            </div>
-                            <?php if ($_SESSION['role'] == 'Admin') : ?>
-                                <hr>
-                                <form action="<?= BASEURL; ?>/user/updateProfil" method="post">
-                                    <div class="form-group row">
-                                        <label class="col-sm-3 col-form-label text-primary">Password Baru</label>
-                                        <div class="col-sm-9">
-                                            <input type="hidden" name="username" value="<?= $data['user']['username'] ?? $_SESSION['username']; ?>">
-                                            <input type="password" name="password" class="form-control" placeholder="Masukkan password baru untuk mengganti" required>
-                                            <small class="text-muted">Masukkan password baru Anda untuk meningkatkan keamanan.</small>
-                                            <input type="hidden" name="id_user" value="<?= $data['user']['id_user'] ?? $_SESSION['id_user']; ?>">
+                                
+                                <!-- Bagian Kanan: Detail & Ganti Password -->
+                                <div class="col-md-8 px-4">
+                                    <h4 class="mb-4 text-primary" style="font-weight: 600;"><i class="fas fa-info-circle"></i> Detail Informasi & Keamanan</h4>
+                                    
+                                    <?php if ($_SESSION['role'] == 'Admin') : ?>
+                                    <form action="<?= BASEURL; ?>/user/updateProfil" method="post" enctype="multipart/form-data">
+                                        <input type="hidden" name="id_user" value="<?= $data['user']['id_user'] ?? $_SESSION['id_user']; ?>">
+                                        
+                                        <div class="form-group row mb-4">
+                                            <label class="col-sm-3 col-form-label text-muted">Nama Lengkap</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="nama_user" class="form-control" value="<?= $data['user']['nama_user'] ?? $_SESSION['nama_user']; ?>" required>
+                                            </div>
                                         </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <button type="submit" class="btn btn-primary">
-                                            <i class="fas fa-key"></i> Update Password Admin
-                                        </button>
-                                    </div>
-                                </form>
-                            <?php else : ?>
-                                <div class="alert alert-info mt-3">
-                                    <i class="fas fa-info-circle"></i> Untuk perubahan data atau password, silakan hubungi Admin.
-                                </div>
-                            <?php endif; ?>
 
+                                        <div class="form-group row mb-4">
+                                            <label class="col-sm-3 col-form-label text-muted">Email (Username)</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" name="username" class="form-control" value="<?= $data['user']['username'] ?? $_SESSION['username']; ?>" required>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group row mb-4">
+                                            <label class="col-sm-3 col-form-label text-muted">Foto Profil</label>
+                                            <div class="col-sm-9">
+                                                <input type="file" name="photo_profil" class="form-control" accept="image/*">
+                                                <small class="text-muted mt-1 d-block">Biarkan kosong jika tidak ingin mengubah foto profil. Format JPG/PNG, max 5MB.</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <hr>
+                                        <h5 class="mt-4 mb-3" style="font-weight: 600;">Keamanan</h5>
+                                        
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label text-muted">Password Baru</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <input type="password" id="passwordInput" name="password" class="form-control" placeholder="Biarkan kosong jika tidak ingin ganti password">
+                                                    <div class="input-group-append">
+                                                        <button type="button" class="btn btn-outline-secondary" id="togglePassword">
+                                                            <i class="fa fa-eye" id="eyeIcon"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <small class="text-muted mt-1 d-block">Gunakan password yang kuat untuk meningkatkan keamanan akun Anda.</small>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="text-right mt-4 pt-3 border-top">
+                                            <button type="submit" class="btn btn-primary px-4">
+                                                <i class="fas fa-save mr-1"></i> Simpan Perubahan
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <?php else : ?>
+                                        <div class="alert alert-info mt-3">
+                                            <i class="fas fa-info-circle"></i> Untuk perubahan data atau password, silakan hubungi Admin.
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -73,3 +93,17 @@
         </div>
     </section>
 </div>
+
+<script>
+    document.getElementById('togglePassword')?.addEventListener('click', function () {
+        const passwordInput = document.getElementById('passwordInput');
+        const icon = document.getElementById('eyeIcon');
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+    });
+</script>

@@ -188,35 +188,39 @@
                     <?php if (!empty($data['monitoringHariIni']) && is_array($data['monitoringHariIni'])) : ?>
                       <div id="monitoringCarousel" class="carousel slide" data-ride="carousel" data-interval="false">
                           <div class="carousel-inner">
-                              <?php foreach ($data['monitoringHariIni'] as $index => $jadwal) : ?>
-                                  <div class="carousel-item <?= $index === 0 ? 'active' : ''; ?>">
-                                      <div class="monitoring-card p-3">
+                               <?php foreach ($data['monitoringHariIni'] as $index => $jadwal) : ?>
+                                   <div class="carousel-item <?= $index === 0 ? 'active' : ''; ?>">
+                                       <a href="<?= BASEURL; ?>/frekuensi/detail/<?= $jadwal['id_frekuensi']; ?>" 
+                                          class="text-decoration-none text-dark d-block"
+                                          style="cursor: pointer;">
+                                       <div class="monitoring-card p-3" style="transition: background 0.2s; border-radius: 8px;" 
+                                            onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background=''">
 
-                                          <p class="mb-1">
-                                              <strong>Mata Kuliah:</strong><br>
-                                              <?= $jadwal['nama_matkul']; ?>
-                                              (<?= $jadwal['kelas']; ?> - <?= $jadwal['frekuensi']; ?>)
-                                          </p>
+                                           <p class="mb-1">
+                                               <strong>Mata Kuliah:</strong><br>
+                                               <?= $jadwal['nama_matkul']; ?>
+                                               (<?= $jadwal['kelas']; ?> - <?= $jadwal['frekuensi']; ?>)
+                                           </p>
 
-                                          <p class="mb-1"><strong>Jam:</strong><br>
-                                              <span class="badge badge-secondary">
-                                                  <i class="fas fa-clock"></i>
-                                                  <?= substr($jadwal['jam_mulai'], 0, 5); ?> - <?= substr($jadwal['jam_selesai'], 0, 5); ?>
-                                              </span>
-                                          </p>
+                                           <p class="mb-1"><strong>Jam:</strong><br>
+                                               <span class="badge badge-secondary">
+                                                   <i class="fas fa-clock"></i>
+                                                   <?= substr($jadwal['jam_mulai'], 0, 5); ?> - <?= substr($jadwal['jam_selesai'], 0, 5); ?>
+                                               </span>
+                                           </p>
 
-                                          <p class="mb-2"><strong>Laboratorium:</strong><br>
-                                              <i class="fas fa-map-marker-alt"></i> <?= $jadwal['ruangan']; ?>
-                                          </p>
+                                           <p class="mb-2"><strong>Laboratorium:</strong><br>
+                                               <i class="fas fa-map-marker-alt"></i> <?= $jadwal['ruangan']; ?>
+                                           </p>
 
-                                          <a href="<?= BASEURL; ?>/frekuensi/detail/<?= $jadwal['id_frekuensi']; ?>"
-                                            class="btn btn-primary btn-sm btn-block">
-                                              <i class="fas fa-edit"></i> Isi Monitoring
-                                          </a>
+                                           <span class="btn btn-primary btn-sm btn-block">
+                                               <i class="fas fa-edit"></i> Isi Monitoring
+                                           </span>
 
-                                      </div>
-                                  </div>
-                              <?php endforeach; ?>
+                                       </div>
+                                       </a>
+                                   </div>
+                               <?php endforeach; ?>
                           </div>
                           <?php if (count($data['monitoringHariIni']) > 1) : ?>
                               <a class="carousel-control-prev" href="#monitoringCarousel" role="button" data-slide="prev">
@@ -244,20 +248,25 @@
                   <ul class="list-group list-group-flush">
                     <?php if (!empty($data['aktivitasTerakhir']) && is_array($data['aktivitasTerakhir'])) : ?>
                       <?php foreach ($data['aktivitasTerakhir'] as $a) : ?>
-                        <li class="list-group-item">
-                          <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                              <strong><?= $a['nama_matkul']; ?> (<?= $a['kelas']; ?>)</strong><br>
-                              <small class="text-muted">
-                                <i class="fas fa-map-marker-alt"></i> <?= $a['ruangan']; ?> • 
-                                <i class="fas fa-clock"></i> <?= substr($a['jam_mulai'], 0, 5); ?> - <?= substr($a['jam_selesai'], 0, 5); ?>
-                              </small><br>
-                              <small class="text-primary font-weight-bold">
-                                <i class="fas fa-calendar-day"></i> <?= $a['tanggal']; ?>
-                              </small>
+                        <li class="list-group-item list-group-item-action p-0">
+                          <a href="<?= BASEURL; ?>/frekuensi/detail/<?= $a['id_frekuensi']; ?>" 
+                             class="text-decoration-none text-dark d-block px-3 py-2"
+                             style="transition: background 0.2s;"
+                             onmouseover="this.style.background='#f0f4ff'" onmouseout="this.style.background=''">
+                            <div class="d-flex justify-content-between align-items-center">
+                              <div>
+                                <strong><?= $a['nama_matkul']; ?> (<?= $a['kelas']; ?>)</strong><br>
+                                <small class="text-muted">
+                                  <i class="fas fa-map-marker-alt"></i> <?= $a['ruangan']; ?> • 
+                                  <i class="fas fa-clock"></i> <?= substr($a['jam_mulai'], 0, 5); ?> - <?= substr($a['jam_selesai'], 0, 5); ?>
+                                </small><br>
+                                <small class="text-primary font-weight-bold">
+                                  <i class="fas fa-calendar-day"></i> <?= $a['tanggal']; ?>
+                                </small>
+                              </div>
+                              <span class="badge bg-success">Selesai</span>
                             </div>
-                            <span class="badge bg-success">Selesai</span>
-                          </div>
+                          </a>
                         </li>
                       <?php endforeach; ?>
                     <?php else : ?>

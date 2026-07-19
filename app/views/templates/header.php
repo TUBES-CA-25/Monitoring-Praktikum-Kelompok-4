@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title><?= $data['title'] ?? 'Restore Data'; ?></title>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="<?= BASEURL?>/public/css/bootstrap.min.css">
@@ -17,4 +17,6 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/2.1.2/css/dataTables.dataTables.css">
   <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.1.0/css/buttons.dataTables.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css">
+  <!-- Custom Responsive Style (load last to override) -->
+  <link rel="stylesheet" href="<?= BASEURL?>/public/css/style.css">
 </head>

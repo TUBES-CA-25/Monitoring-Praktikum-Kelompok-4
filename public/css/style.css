@@ -1,77 +1,86 @@
-/* POPPINS FONT */
+/* ========================================
+   IMPORT FONT
+   ======================================== */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-*{
+
+* {
     font-family: 'Poppins', sans-serif;
 }
-.wrapper{
-    background: #ececec;
-    padding: 0 20px 0 20px;
-}
-.main{
+
+/* ========================================
+   HALAMAN LOGIN
+   ======================================== */
+.main {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
+    padding: 15px;
+    background: #f4f6f9;
 }
-.side-image{
-    /* background-image: url("images/Fikom.jpg"); */
+
+.login-box-wrapper {
+    width: 100%;
+    max-width: 900px;
+    min-height: 500px;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 5px 5px 20px rgba(0,0,0,0.15);
+    overflow: hidden;
+}
+
+.side-image {
     background-image: url("Fikom.jpg");
     background-position: center;
     background-size: cover;
     background-repeat: no-repeat;
-    border-radius: 10px 0 0 10px;
+    border-radius: 12px 0 0 12px;
     position: relative;
+    min-height: 300px;
 }
-.row{
-  width:  900px;
-  height:550px;
-  border-radius: 10px;
-  background: #fff;
-  padding: 0px;
-  box-shadow: 5px 5px 10px 1px rgba(0,0,0,0.2);
-}
-.text{
+
+.text {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 90%;
+    text-align: center;
 }
-.text p{
+
+.text p {
     color: #fff;
-    font-size: 20px; 
+    font-size: 18px;
 }
-i{
-    font-weight: 400;
-    font-size: 15px;
+
+.right {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 30px 20px;
 }
-.right{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
+
+.input-box {
+    width: 100%;
+    max-width: 330px;
+    box-sizing: border-box;
 }
-.input-box{
-  width: 330px;
-  box-sizing: border-box;
-}
-img{
-    width: 35px;
-    position: absolute;
-    top: 30px;
-    left: 30px;
-}
-.input-box header{
+
+.input-box header {
     font-weight: 700;
     text-align: center;
-    margin-bottom: 45px;
+    margin-bottom: 30px;
 }
-.input-field{
+
+.input-field {
     display: flex;
     flex-direction: column;
     position: relative;
-    padding: 0 10px 0 10px;
+    padding: 0 10px;
 }
-.input{
+
+.input {
     height: 45px;
     width: 100%;
     background: transparent;
@@ -79,30 +88,29 @@ img{
     border-bottom: 1px solid rgba(0, 0, 0, 0.2);
     outline: none;
     margin-bottom: 20px;
-    /* color: #000; */
 }
-.input-box .input-field label{
+
+.input-box .input-field label {
     position: absolute;
     top: 10px;
     left: 10px;
     pointer-events: none;
     transition: .5s;
 }
-.input-field input:focus ~ label
-   {
+
+.input-field input:focus ~ label,
+.input-field input:valid ~ label {
     top: -10px;
     font-size: 13px;
-  }
-  .input-field input:valid ~ label
-  {
-   top: -10px;
-   font-size: 13px;
-   color: #000;
- }
- .input-field .input:focus, .input-field .input:valid{
+    color: #0066ff;
+}
+
+.input-field .input:focus,
+.input-field .input:valid {
     border-bottom: 1px solid #0066ff;
- }
- .submit{
+}
+
+.submit {
     border: none;
     outline: none;
     height: 45px;
@@ -110,46 +118,199 @@ img{
     color: #fff;
     border-radius: 5px;
     transition: .4s;
- }
- .submit:hover{
-    background: #0150c7(37, 95, 156, 0.937);
+    width: 100%;
+}
+
+.submit:hover {
+    background: #0052cc;
     color: #fff;
- }
- .signin{
+}
+
+.signin {
     text-align: center;
     font-size: small;
     margin-top: 25px;
 }
-span a{
+
+span a {
     text-decoration: none;
     font-weight: 700;
     color: #000;
     transition: .5s;
 }
-span a:hover{
+
+span a:hover {
     text-decoration: underline;
-    color: #000;
 }
-@media only screen and (max-width: 768px){
-    .side-image{
-        border-radius: 10px 10px 0 0;
+
+/* ========================================
+   DASHBOARD / ADMIN LAYOUT
+   ======================================== */
+.wrapper {
+    background: #f4f6f9;
+}
+
+/* ========================================
+   PROFIL CARD - RESPONSIF
+   ======================================== */
+@media (max-width: 767.98px) {
+    /* Hapus border vertikal antar kolom di mobile */
+    .border-right {
+        border-right: none !important;
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
     }
-    img{
-        width: 35px;
-        position: absolute;
-        top: 20px;
-        left: 47%;
+
+    /* Profil card: dari 2 kolom menjadi 1 kolom */
+    .profile-left-col {
+        border-right: none !important;
+        border-bottom: 1px solid #dee2e6;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
     }
-    .text{
-        position: absolute;
-        top: 70%;
-        text-align: center;
+
+    /* Tabel horizontal agar bisa di-scroll */
+    .overflow-auto table {
+        min-width: 600px;
     }
-    .text p, i{
-        font-size: 16px;
+
+    /* Teks right menjadi center di mobile */
+    .text-right {
+        text-align: center !important;
     }
-    .row{
-        max-width:420px;
+
+    /* Kartu profil lebih compact */
+    .card-body .row.align-items-center > div[class*="col-md-4"],
+    .card-body .row.align-items-center > div[class*="col-md-8"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        flex: 0 0 100% !important;
+    }
+}
+
+/* ========================================
+   SIDEBAR MOBILE
+   ======================================== */
+@media (max-width: 767.98px) {
+    /* Sidebar otomatis tersembunyi oleh AdminLTE, pastikan tombol toggle terlihat */
+    .main-header .navbar-nav .nav-item {
+        font-size: 14px;
+    }
+
+    /* Footer text lebih kecil */
+    .main-footer {
+        font-size: 12px;
+    }
+}
+
+/* ========================================
+   TABEL RESPONSIF
+   ======================================== */
+.table-responsive-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ========================================
+   CARD MONITORING HARI INI - RESPONSIF
+   ======================================== */
+.monitoring-card {
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+@media (max-width: 575.98px) {
+    /* Stack carousel full width di HP kecil */
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+        background-color: rgba(0,0,0,0.4);
+        border-radius: 50%;
+        padding: 10px;
+    }
+
+    /* Info box lebih compact */
+    .info-box {
+        min-height: 60px;
+    }
+
+    .info-box-icon {
+        width: 60px;
+        line-height: 60px;
+        font-size: 24px;
+    }
+}
+
+/* ========================================
+   FORM MODAL - RESPONSIF
+   ======================================== */
+@media (max-width: 575.98px) {
+    .modal-dialog {
+        margin: 10px;
+    }
+
+    .form-group.row {
+        flex-direction: column;
+    }
+
+    .form-group.row label.col-form-label,
+    .form-group.row .col-sm-9,
+    .form-group.row .col-sm-3 {
         width: 100%;
+        max-width: 100%;
+        flex: 0 0 100%;
+        padding: 0;
     }
+
+    .input-group {
+        flex-wrap: nowrap;
+    }
+}
+
+/* ========================================
+   LOGIN PAGE - MOBILE RESPONSIF
+   ======================================== */
+@media (max-width: 768px) {
+    .login-box-wrapper {
+        border-radius: 10px;
+    }
+
+    .side-image {
+        border-radius: 10px 10px 0 0;
+        min-height: 180px;
+    }
+
+    .text p {
+        font-size: 14px;
+    }
+
+    .right {
+        padding: 25px 15px;
+    }
+
+    .input-box {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .main {
+        padding: 10px;
+    }
+
+    .login-box-wrapper {
+        border-radius: 8px;
+    }
+
+    .side-image {
+        min-height: 140px;
+    }
+}
+
+/* ========================================
+   BUTTON STYLE
+   ======================================== */
+.button-style {
+    border-radius: 5px;
 }

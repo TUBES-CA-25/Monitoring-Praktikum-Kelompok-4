@@ -65,6 +65,7 @@
                                     <?php if ($_SESSION['role'] == 'Admin') : ?>
                                     <th scope="col">Role</th>
                                     <?php endif; ?>
+                                    <th scope="col" class="text-center">Foto Profil</th>
                                     <th scope="col"  style="width:15%" class="text-center">Menu</th>
                                   </tr>
                               </thead>                              
@@ -76,6 +77,10 @@
                                           <td><?= $user['username']; ?></td>
                                           <td>********</td>
                                           <td><?= $user['role']; ?></td>
+                                          <td align="center">
+                                              <?php $fotoUser = !empty($user['photo_profil']) ? BASEURL . '/' . $user['photo_profil'] : BASEURL . '/public/img/user.png'; ?>
+                                              <img src="<?= $fotoUser ?>" alt="Foto" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
+                                          </td>
                                           <td align="center">
                                               <a class="btn btn-primary btn-sm button-style text-center" onclick="change('User', '<?= $user['id_user']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
                                               <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('User', '<?= $user['id_user']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>

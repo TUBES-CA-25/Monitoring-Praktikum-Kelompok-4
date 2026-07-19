@@ -27,6 +27,7 @@ class Controller{
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];
                 $_SESSION['nama_user'] = $user['nama_user'];
+                $_SESSION['photo_profil'] = $user['photo_profil'] ?? null;
             }
         }
 
