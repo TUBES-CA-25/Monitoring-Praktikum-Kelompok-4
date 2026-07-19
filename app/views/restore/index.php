@@ -57,12 +57,40 @@ $title = $data['judul'] ?? 'Restore Data';
                                     <tr>
                                         <td><strong><?= $no++ ?></strong></td>
                                         <td>
-                                            <strong class="text-primary">
-                                                <!-- Menampilkan Nama Asisten dari dalam JSON -->
-                                                <?= $isi['nama_asisten'] ?? 'Data Tidak Dikenal' ?>
-                                            </strong>
-                                            <br>
-                                            <small class="text-muted">Stambuk: <?= $isi['stambuk'] ?? '-' ?></small>
+                                            <?php
+                                                // Tampilkan identitas berdasarkan jenis data
+                                                switch ($r['jenis_data']) {
+                                                    case 'mst_asisten':
+                                                        echo '<strong class="text-primary">' . htmlspecialchars($isi['nama_asisten'] ?? '-') . '</strong>';
+                                                        echo '<br><small class="text-muted">Stambuk: ' . htmlspecialchars($isi['stambuk'] ?? '-') . '</small>';
+                                                        break;
+                                                    case 'mst_dosen':
+                                                        echo '<strong class="text-primary">' . htmlspecialchars($isi['nama_dosen'] ?? '-') . '</strong>';
+                                                        echo '<br><small class="text-muted">NIP: ' . htmlspecialchars($isi['nip'] ?? '-') . '</small>';
+                                                        break;
+                                                    case 'mst_ruangan':
+                                                        echo '<strong class="text-primary">' . htmlspecialchars($isi['nama_ruangan'] ?? '-') . '</strong>';
+                                                        break;
+                                                    case 'mst_jurusan':
+                                                        echo '<strong class="text-primary">' . htmlspecialchars($isi['jurusan'] ?? '-') . '</strong>';
+                                                        echo '<br><small class="text-muted">Singkatan: ' . htmlspecialchars($isi['singkatan_jurusan'] ?? '-') . '</small>';
+                                                        break;
+                                                    case 'mst_kelas':
+                                                        echo '<strong class="text-primary">' . htmlspecialchars($isi['kelas'] ?? '-') . '</strong>';
+                                                        echo '<br><small class="text-muted">Angkatan: ' . htmlspecialchars($isi['angkatan'] ?? '-') . '</small>';
+                                                        break;
+                                                    case 'mst_matakuliah':
+                                                        echo '<strong class="text-primary">' . htmlspecialchars($isi['nama_matkul'] ?? '-') . '</strong>';
+                                                        echo '<br><small class="text-muted">SKS: ' . htmlspecialchars($isi['sks'] ?? '-') . '</small>';
+                                                        break;
+                                                    case 'mst_user':
+                                                        echo '<strong class="text-primary">' . htmlspecialchars($isi['nama_user'] ?? '-') . '</strong>';
+                                                        echo '<br><small class="text-muted">Username: ' . htmlspecialchars($isi['username'] ?? '-') . '</small>';
+                                                        break;
+                                                    default:
+                                                        echo '<span class="text-muted">Data Tidak Dikenal</span>';
+                                                }
+                                            ?>
                                         </td>
                                         <td>
                                             <span class="badge badge-info">

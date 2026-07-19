@@ -63,18 +63,25 @@ class User extends Controller {
             $data['password'] = hash('sha256', $data['password']);
         }
 
-        // 2. Upload Foto Profil
+        // 2. Upload Foto Profil (hanya ganti jika ada file baru yang diupload)
         $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', 'profil_' . $id_user);
-        // Jika upload sukses dan ada file baru, pakai file baru. Jika tidak, pakai yang lama.
-        $data['photo_profil'] = ($uploadProfil['status'] && !$uploadProfil['no_upload']) 
-                                ? $uploadProfil['nama_file'] 
-                                : ($asistenLama ? $asistenLama['photo_profil'] : null);
+        if ($uploadProfil['status'] === true && isset($uploadProfil['no_upload']) && !$uploadProfil['no_upload'] && !empty($uploadProfil['nama_file'])) {
+            // File baru berhasil diupload → pakai file baru
+            $data['photo_profil'] = $uploadProfil['nama_file'];
+        } else {
+            // Tidak ada upload baru → pertahankan file lama
+            $data['photo_profil'] = $asistenLama ? ($asistenLama['photo_profil'] ?? null) : ($userLama['photo_profil'] ?? null);
+        }
 
-        // 3. Upload TTD
+        // 3. Upload TTD (hanya ganti jika ada file baru yang diupload)
         $uploadTTD = $this->prosesUpload('photo_path', 'public/img/signature/', 'ttd_' . $id_user);
-        $data['photo_path'] = ($uploadTTD['status'] && !$uploadTTD['no_upload']) 
-                            ? $uploadTTD['nama_file'] 
-                            : ($asistenLama ? $asistenLama['photo_path'] : null);
+        if ($uploadTTD['status'] === true && isset($uploadTTD['no_upload']) && !$uploadTTD['no_upload'] && !empty($uploadTTD['nama_file'])) {
+            // File baru berhasil diupload → pakai file baru
+            $data['photo_path'] = $uploadTTD['nama_file'];
+        } else {
+            // Tidak ada upload baru → pertahankan file lama
+            $data['photo_path'] = $asistenLama ? ($asistenLama['photo_path'] ?? null) : ($userLama['photo_path'] ?? null);
+        }
 
         // 4. Update Database (Tabel User)
         $updateUser = $this->model('User_model')->ubahDataUser($data);
@@ -173,13 +180,13 @@ class User extends Controller {
             'photo_path'=> $userLama['photo_path'] ?? null // pertahankan photo_path lama
         ];
 
-        // 2. Upload Foto Profil Admin
+        // 2. Upload Foto Profil Admin (hanya ganti jika ada file baru)
         $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', 'admin_profil_' . $id_user);
-        
-        // Jika ada file terupload sukses, gunakan file baru. Jika tidak, gunakan file lama.
-        $dataUpdate['photo_profil'] = ($uploadProfil['status'] && !$uploadProfil['no_upload']) 
-                                ? $uploadProfil['nama_file'] 
-                                : ($userLama['photo_profil'] ?? null);
+        if ($uploadProfil['status'] === true && isset($uploadProfil['no_upload']) && !$uploadProfil['no_upload'] && !empty($uploadProfil['nama_file'])) {
+            $dataUpdate['photo_profil'] = $uploadProfil['nama_file'];
+        } else {
+            $dataUpdate['photo_profil'] = $userLama['photo_profil'] ?? null;
+        }
 
         if ($this->model('User_model')->ubahDataUserLengkap($dataUpdate) >= 0) {
             // Perbarui session agar langsung terlihat perubahannya
