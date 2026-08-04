@@ -1,7 +1,7 @@
 <form id="formTambahDataMentoring" action="<?= BASEURL ?>/Mentoring/tambah" method="post" autocomplete="off">
     <div class="row">
         <div class="col-12">
-            <input type="hidden" name="id_frekuensi" value="<?= $data['frekuensiOptions']['id_frekuensi']; ?>">
+            <input type="hidden" name="id_frekuensi" value="<?= e($data['frekuensiOptions']['id_frekuensi']) ?>">
 
             <div class="form-group mb-2">
                 <label class="font-weight-bold" style="font-size: 0.9rem;">Tanggal</label>
@@ -9,7 +9,7 @@
                     date_default_timezone_set('Asia/Makassar'); 
                     $tanggalHariIni = date("Y-m-d");
                 ?>
-                <input type="date" name="tanggal" class="form-control" value="<?= $tanggalHariIni; ?>" required>
+                <input type="date" name="tanggal" class="form-control" value="<?= e($tanggalHariIni) ?>" required>
             </div>
 
             <div class="form-group mb-2">
@@ -56,7 +56,7 @@
                 <select name="id_asisten_pengganti" class="form-control">
                     <option value="">Pilih Nama Asisten Pengganti</option>
                     <?php foreach ($data['asistenOptions'] as $asisten) : ?>
-                        <option value="<?= $asisten['id_asisten']; ?>"><?= $asisten['nama_asisten']; ?></option>
+                        <option value="<?= e($asisten['id_asisten']) ?>"><?= e($asisten['nama_asisten']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

@@ -1,33 +1,33 @@
 <div class="container">
     <form id="formUbahMentoring" action="<?= BASEURL?>/Mentoring/prosesUbah" method="post" autocomplete="off">
-        <input type="hidden" value="<?= $data['ubahdata']['id_mentoring']?>" name="id_mentoring">
-        <input type="hidden" value="<?= $data['ubahdata']['id_frekuensi']?>" name="id_frekuensi">
+        <input type="hidden" value="<?= e($data['ubahdata']['id_mentoring']) ?>" name="id_mentoring">
+        <input type="hidden" value="<?= e($data['ubahdata']['id_frekuensi']) ?>" name="id_frekuensi">
 
         <div class="row">
             <div class="col-12">  
                 <div class="form-group mb-1">
                     <label for="text" class="form-label">Tanggal</label>
-                    <input type="date" name="tanggal" class="form-control" value="<?= $data['ubahdata']['tanggal']; ?>" required>
+                    <input type="date" name="tanggal" class="form-control" value="<?= e($data['ubahdata']['tanggal']) ?>" required>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="uraian_materi" class="form-label">Uraian Materi</label>
-                    <textarea type="text" name="uraian_materi" class="form-control" placeholder="Masukkan Uraian Materi" required><?= $data['ubahdata']['uraian_materi']; ?></textarea>
+                    <textarea type="text" name="uraian_materi" class="form-control" placeholder="Masukkan Uraian Materi" required><?= e($data['ubahdata']['uraian_materi']) ?></textarea>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="uraian_tugas" class="form-label">Uraian Tugas</label>
-                    <textarea type="text" name="uraian_tugas" class="form-control" placeholder="Masukkan Uraian Tugas" required><?= $data['ubahdata']['uraian_tugas']; ?></textarea>
+                    <textarea type="text" name="uraian_tugas" class="form-control" placeholder="Masukkan Uraian Tugas" required><?= e($data['ubahdata']['uraian_tugas']) ?></textarea>
                 </div>
 
                 <div class="form-group mb-3">
                     <label for="hadir" class="form-label">Kehadiran Mahasiswa</label>
                     <div class="row">
                         <div class="col-6">
-                            <input type="number" name="hadir" class="form-control" placeholder="Jumlah Hadir" value="<?= $data['ubahdata']['hadir']; ?>" required>
+                            <input type="number" name="hadir" class="form-control" placeholder="Jumlah Hadir" value="<?= e($data['ubahdata']['hadir']) ?>" required>
                         </div>
                         <div class="col-6">
-                            <input type="number" name="alpa" class="form-control" placeholder="Jumlah Alpa" value="<?= $data['ubahdata']['alpa']; ?>" required>
+                            <input type="number" name="alpa" class="form-control" placeholder="Jumlah Alpa" value="<?= e($data['ubahdata']['alpa']) ?>" required>
                         </div>
                     </div>
                 </div>

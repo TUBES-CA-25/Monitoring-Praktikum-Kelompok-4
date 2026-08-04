@@ -36,4 +36,11 @@ class Login_model {
         $defaultPasswords = ['Admin', 'Dosen', 'Asisten'];
         return in_array($password, $defaultPasswords);
     }
+
+    public function updatePassword($id_user, $hashedPassword) {
+        $this->db->query("UPDATE " . $this->table . " SET password = :password WHERE id_user = :id_user");
+        $this->db->bind('password', $hashedPassword);
+        $this->db->bind('id_user', $id_user);
+        return $this->db->execute();
+    }
 }

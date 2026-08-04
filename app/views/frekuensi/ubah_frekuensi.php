@@ -1,6 +1,6 @@
 <div class="container">
     <form id="formUbahFrekuensi" action="<?= BASEURL?>/Frekuensi/prosesUbah" method="post" autocomplete="off">
-    <input type="hidden" value="<?= $data['ubahdata']['id_frekuensi']?>" name="id_frekuensi">
+    <input type="hidden" value="<?= e($data['ubahdata']['id_frekuensi']) ?>" name="id_frekuensi">
         <div class="row">
             <div class="col-12">
                 <div class="form-group mb-1">
@@ -8,8 +8,8 @@
                     <select id="id_jurusan" name="id_jurusan" class="form-control">
                         <option value="">Pilih Jurusan</option>
                         <?php foreach ($data['jurusanOptions'] as $jurusan) : ?>
-                            <option value="<?= $jurusan['id_jurusan']; ?>" data-singkatan="<?= $jurusan['singkatan_jurusan']; ?>" <?= ($jurusan['id_jurusan'] == $data['ubahdata']['id_jurusan']) ? 'selected' : ''; ?>>
-                                <?= $jurusan['jurusan']; ?>
+                            <option value="<?= e($jurusan['id_jurusan']) ?>" data-singkatan="<?= e($jurusan['singkatan_jurusan']) ?>" <?= ($jurusan['id_jurusan'] == $data['ubahdata']['id_jurusan']) ? 'selected' : ''; ?>>
+                                <?= e($jurusan['jurusan']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -19,15 +19,15 @@
                     <select id="id_matkul" name="id_matkul" class="form-control">
                         <option value="">Pilih Matakuliah</option>
                         <?php foreach ($data['matakuliahOptions'] as $matkul) : ?>
-                            <option value="<?= $matkul['id_matkul']; ?>" data-singkatan="<?= $matkul['singkatan']; ?>" <?= ($matkul['id_matkul'] == $data['ubahdata']['id_matkul']) ? 'selected' : ''; ?>>
-                                <?= $matkul['nama_matkul']; ?>
+                            <option value="<?= e($matkul['id_matkul']) ?>" data-singkatan="<?= e($matkul['singkatan']) ?>" <?= ($matkul['id_matkul'] == $data['ubahdata']['id_matkul']) ? 'selected' : ''; ?>>
+                                <?= e($matkul['nama_matkul']) ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
                 <div class="form-group mb-1">
                     <label for="frekuensi" class="form-label">Frekuensi</label>
-                    <input type="text" name="frekuensi" class="form-control " value="<?= $data['ubahdata']['frekuensi']?>" >
+                    <input type="text" name="frekuensi" class="form-control " value="<?= e($data['ubahdata']['frekuensi']) ?>" >
                 </div>
                 <div class="form-group mb-1">
                     <label for="id_tahun" class="form-label">Tahun Ajaran</label>
@@ -67,11 +67,11 @@
                     </div>
                     <div class="form-group col-md-4">
                         <label for="jam_mulai">Jam Mulai</label>
-                        <input type="time" name="jam_mulai" class="form-control" value="<?= $data['ubahdata']['jam_mulai']?>">
+                        <input type="time" name="jam_mulai" class="form-control" value="<?= e($data['ubahdata']['jam_mulai']) ?>">
                     </div>
                     <div class="form-group col-md-4">
                         <label for="jam_selesai">Jam Selesai</label>
-                        <input type="time" name="jam_selesai" class="form-control" value="<?= $data['ubahdata']['jam_selesai']?>">
+                        <input type="time" name="jam_selesai" class="form-control" value="<?= e($data['ubahdata']['jam_selesai']) ?>">
                     </div>
                 </div>
                 <div class="form-group mb-1">

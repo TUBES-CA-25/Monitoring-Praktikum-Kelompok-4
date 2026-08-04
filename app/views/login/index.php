@@ -303,14 +303,49 @@
         }
 
         /* Responsive */
-        @media (max-width: 480px) {
-            .login-card {
-                padding: 32px 24px;
-                border-radius: 20px;
+        @media (max-width: 576px) {
+            .login-container {
+                padding: 10px;
+                max-width: 100%;
             }
 
-            .login-container {
-                padding: 15px;
+            .login-card {
+                padding: 30px 20px;
+                border-radius: 16px;
+            }
+
+            .logo-area img {
+                width: 60px;
+                height: 60px;
+                margin-bottom: 12px;
+            }
+
+            .logo-area h1 {
+                font-size: 1.2rem;
+            }
+
+            .logo-area p {
+                font-size: 0.7rem;
+            }
+
+            .form-control-login {
+                height: 44px;
+                font-size: 0.85rem;
+            }
+
+            .btn-login {
+                height: 44px;
+                font-size: 0.85rem;
+            }
+        }
+        
+        @media (max-width: 360px) {
+            .login-card {
+                padding: 24px 16px;
+            }
+
+            .logo-area h1 {
+                font-size: 1.1rem;
             }
         }
     </style>
@@ -369,7 +404,6 @@
                            name="password"
                            class="form-control-login"
                            placeholder="Masukkan password"
-                           value="<?= isset($data['remember_password']) ? htmlspecialchars($data['remember_password']) : '' ?>"
                            required>
                     <span class="toggle-pw" id="togglePassword">
                         <i class="fas fa-eye" id="eyeIcon"></i>

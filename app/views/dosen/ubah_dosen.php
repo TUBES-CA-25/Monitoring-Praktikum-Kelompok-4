@@ -1,15 +1,15 @@
 <div class="container">
     <form id="formUbahDosen" action="<?= BASEURL?>/Dosen/prosesUbah" method="post" autocomplete="off" enctype="multipart/form-data">
-    <input type="hidden" value="<?= $data['ubahdata']['id_dosen']?>" name="id_dosen">
+    <input type="hidden" value="<?= e($data['ubahdata']['id_dosen']) ?>" name="id_dosen">
         <div class="row">
             <div class="col-12">
                 <div class="form-group mb-1">
                     <label for="nip" class="form-label">NIP</label>
-                    <input type="text" name="nip" class="form-control " value="<?= $data['ubahdata']['nip']?>" >
+                    <input type="text" name="nip" class="form-control " value="<?= e($data['ubahdata']['nip']) ?>" >
                 </div>
                 <div class="form-group mb-1">
                     <label for="nama_dosen" class="form-label">Nama Dosen</label>
-                    <input type="text" name="nama_dosen" class="form-control " value="<?= $data['ubahdata']['nama_dosen']?>" >
+                    <input type="text" name="nama_dosen" class="form-control " value="<?= e($data['ubahdata']['nama_dosen']) ?>" >
                 </div>
                 <div class="form-group mb-3">
                     <label for="formFile" class="form-label">Masukkan Foto TTD</label>

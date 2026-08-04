@@ -1,6 +1,6 @@
 <div class="container">
     <form id="formUbahKelas" action="<?= BASEURL?>/Kelas/prosesUbah" method="post" autocomplete="off">
-    <input type="hidden" value="<?= $data['ubahdata']['id_kelas']?>" name="id_kelas">
+    <input type="hidden" value="<?= e($data['ubahdata']['id_kelas']) ?>" name="id_kelas">
         <div class="row">
             <div class="col-12">
                 <div class="form-group mb-1">
@@ -16,11 +16,11 @@
                 </div>
                 <div class="form-group mb-1">
                     <label for="kelas" class="form-label">Kelas</label>
-                    <input type="text" name="kelas" class="form-control " value="<?= $data['ubahdata']['kelas']?>" >
+                    <input type="text" name="kelas" class="form-control " value="<?= e($data['ubahdata']['kelas']) ?>" >
                 </div>
                 <div class="form-group mb-1">
                     <label for="angkatan" class="form-label">Angkatan</label>
-                    <input type="number" name="angkatan" class="form-control " value="<?= $data['ubahdata']['angkatan']?>" >
+                    <input type="number" name="angkatan" class="form-control " value="<?= e($data['ubahdata']['angkatan']) ?>" >
                 </div>
                 <br>
                 <div class="text-center">

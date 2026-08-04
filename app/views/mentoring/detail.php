@@ -3,13 +3,13 @@
         <div class="container-fluid">
         <?php if (isset($_SESSION['message'])): ?>
             <div class="alert alert-info">
-                <?= $_SESSION['message']; ?>
+                <?= e($_SESSION['message']) ?>
                 <?php unset($_SESSION['message']); ?>
             </div>
         <?php endif; ?>
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h3><?= $data['title']; ?></h3>
+                    <h3><?= e($data['title']) ?></h3>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -17,7 +17,7 @@
                         <li class="breadcrumb-item"><a href="<?= BASEURL?>">Home</a></li>
                         <?php endif; ?>
                         <li class="breadcrumb-item"><a href="<?= BASEURL ?>/frekuensi">Jadwal Praktikum</a></li>
-                        <li class="breadcrumb-item active"><?= $data['title']; ?></li>
+                        <li class="breadcrumb-item active"><?= e($data['title']) ?></li>
                     </ol>
                 </div>
             </div>
@@ -29,14 +29,14 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary shadow-sm" onclick="add('Mentoring', '<?= $data['frekuensi']['id_frekuensi']; ?>')">
+                            <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary shadow-sm" onclick="add('Mentoring', '<?= e($data['frekuensi']['id_frekuensi']) ?>')">
                                 <i class="fas fa-plus"></i> Tambah
                             </a>
                             <?php if ($_SESSION['role'] == 'Admin') : ?>
-                                <!-- <a href="<?= BASEURL; ?>/mentoring/export_excel/<?= $data['frekuensi']['id_frekuensi']; ?>" class="btn btn-success shadow-sm ml-2">
+                                <!-- <a href="<?= BASEURL; ?>/mentoring/export_excel/<?= e($data['frekuensi']['id_frekuensi']) ?>" class="btn btn-success shadow-sm ml-2">
                                     <i class="fas fa-file-excel"></i> Export Excel
                                 </a> -->
-                                <a href="<?= BASEURL; ?>/mentoring/export_pdf/<?= $data['detail']['id_frekuensi']; ?>" target="_blank" class="btn btn-danger shadow-sm ml-2">
+                                <a href="<?= BASEURL; ?>/mentoring/export_pdf/<?= e($data['detail']['id_frekuensi']) ?>" target="_blank" class="btn btn-danger shadow-sm ml-2">
                                     <i class="fas fa-file-pdf"></i> Export PDF
                                 </a>
                             <?php endif; ?>
@@ -50,7 +50,7 @@
                                 <div style="margin: 0 20px; width: 100%;">
                                     <strong>MONITORING PRAKTIKUM</strong><br>
                                     <strong>LABORATORIUM KOMPUTER - FAKULTAS ILMU KOMPUTER</strong><br>
-                                    <strong>SEMESTER: <span><?= $data['detail']['semester']; ?> <?= $data['detail']['tahun_ajaran']; ?></span></strong>
+                                    <strong>SEMESTER: <span><?= e($data['detail']['semester']) ?> <?= e($data['detail']['tahun_ajaran']) ?></span></strong>
                                 </div>
                                 <div>
                                     <img src="<?= BASEURL; ?>/public/img/ICLabs-logo.png" alt="Logo ICLabs" style="max-width: 80px; max-height: 80px;">
@@ -60,7 +60,7 @@
                                     <img src="<?= BASEURL; ?>/public/img/UMI-logo.png" alt="Logo UMI" style="max-width: 80px; max-height: 80px;">
                                     <strong>MONITORING PRAKTIKUM</strong>
                                     <strong>LABORATORIUM KOMPUTER - FAKULTAS ILMU KOMPUTER</strong>
-                                    <strong>SEMESTER <span>: <?= $data['detail']['semester']; ?> <?= $data['detail']['tahun_ajaran']; ?></span></strong>
+                                    <strong>SEMESTER <span>: <?= e($data['detail']['semester']) ?> <?= e($data['detail']['tahun_ajaran']) ?></span></strong>
                                     <img src="<?= BASEURL; ?>/public/img/ICLabs-logo.png" alt="Logo ICLabs" style="max-width: 80px; max-height: 80px;">
                                 </div> -->
                                 <!-- <br> -->
@@ -73,10 +73,10 @@
                                             <span>Hari / Jam</span> 
                                         </div>
                                         <div class="frek-value d-flex flex-column">
-                                            <span>: <?= $data['detail']['kode_matkul']; ?></span> 
-                                            <span>: <?= $data['detail']['nama_matkul']; ?></span> 
-                                            <span>: <?= $data['detail']['frekuensi']; ?></span> 
-                                            <span>: <?= $data['detail']['hari']; ?>/<?= date('H:i', strtotime($data['detail']['jam_mulai'])); ?>-<?= date('H:i', strtotime($data['detail']['jam_selesai'])); ?></span>
+                                            <span>: <?= e($data['detail']['kode_matkul']) ?></span> 
+                                            <span>: <?= e($data['detail']['nama_matkul']) ?></span> 
+                                            <span>: <?= e($data['detail']['frekuensi']) ?></span> 
+                                            <span>: <?= e($data['detail']['hari']) ?>/<?= date('H:i', strtotime($data['detail']['jam_mulai'])); ?>-<?= date('H:i', strtotime($data['detail']['jam_selesai'])); ?></span>
                                         </div>
                                     </div>
                                     <div class="column-2 d-flex flex-row gap-3">
@@ -87,10 +87,10 @@
                                             <span>Asisten 2</span> 
                                         </div>
                                         <div class="frek-value d-flex flex-column">
-                                            <span>: <?= $data['detail']['nama_ruangan']; ?></span> 
-                                            <span>: <?= $data['detail']['nama_dosen']; ?></span> 
-                                            <span>: <?= $data['detail']['asisten_1']; ?></span> 
-                                            <span>: <?= $data['detail']['asisten_2']; ?></span> 
+                                            <span>: <?= e($data['detail']['nama_ruangan']) ?></span> 
+                                            <span>: <?= e($data['detail']['nama_dosen']) ?></span> 
+                                            <span>: <?= e($data['detail']['asisten_1']) ?></span> 
+                                            <span>: <?= e($data['detail']['asisten_2']) ?></span> 
                                         </div>
                                     </div>
                                 </div>
@@ -123,16 +123,16 @@
                                                 foreach ($data['mentoring'] as $mentoring): 
                                                     $no++;?>
                                                     <tr class="table-row">
-                                                        <td class="text-center"><?= $no;?></td>
-                                                        <td class="text-center"><?= $mentoring['tanggal']; ?></td>
-                                                        <td><?= $mentoring['uraian_materi']; ?></td>
-                                                        <td><?= $mentoring['uraian_tugas']; ?></td>
-                                                        <td class="text-center"><?= $mentoring['hadir']; ?></td>
-                                                        <td class="text-center"><?= $mentoring['alpa']; ?></td>
+                                                        <td class="text-center"><?= e($no) ?></td>
+                                                        <td class="text-center"><?= e($mentoring['tanggal']) ?></td>
+                                                        <td><?= e($mentoring['uraian_materi']) ?></td>
+                                                        <td><?= e($mentoring['uraian_tugas']) ?></td>
+                                                        <td class="text-center"><?= e($mentoring['hadir']) ?></td>
+                                                        <td class="text-center"><?= e($mentoring['alpa']) ?></td>
                                                         
                                                         <td class="text-center">
                                                             <?php if ($mentoring['status_dosen'] === 'Hadir'): ?>
-                                                                <img src="<?= BASEURL; ?>/<?= $data['detail']['photo_path'] ?>" alt="Foto" style="max-width: 80px; max-height: 80px;">
+                                                                <img src="<?= BASEURL; ?>/<?= e($data['detail']['photo_path']) ?>" alt="Foto" style="max-width: 80px; max-height: 80px;">
                                                             <?php else: ?>
                                                                 <span>-</span>
                                                             <?php endif; ?>
@@ -140,7 +140,7 @@
                                                         
                                                         <td class="text-center">
                                                             <?php if ($mentoring['status_asisten1'] === 'Hadir'): ?>
-                                                                <img src="<?= BASEURL; ?>/<?= $data['detail']['photo_path_asisten1'] ?>" alt="Foto" style="max-width: 80px; max-height: 80px;">
+                                                                <img src="<?= BASEURL; ?>/<?= e($data['detail']['photo_path_asisten1']) ?>" alt="Foto" style="max-width: 80px; max-height: 80px;">
                                                             <?php else: ?>
                                                                 <span>-</span>
                                                             <?php endif; ?>
@@ -148,13 +148,13 @@
                                                         
                                                         <td class="text-center">
                                                             <?php if ($mentoring['status_asisten2'] === 'Hadir'): ?>
-                                                                <img src="<?= BASEURL; ?>/<?= $data['detail']['photo_path_asisten2'] ?>" alt="Foto" style="max-width: 80px; max-height: 80px;">
+                                                                <img src="<?= BASEURL; ?>/<?= e($data['detail']['photo_path_asisten2']) ?>" alt="Foto" style="max-width: 80px; max-height: 80px;">
                                                             <?php else: ?>
                                                                 <span>-</span>
                                                             <?php endif; ?>
                                                         </td>
                                                         
-                                                        <td class="text-center"><?= $mentoring['nama_asisten_pengganti']; ?></td>
+                                                        <td class="text-center"><?= e($mentoring['nama_asisten_pengganti']) ?></td>
 
                                                         <!-- PENAMBAHAN AKSI UBAH DAN HAPUS (rafli) -->
 
@@ -163,8 +163,8 @@
                                                             class="btn btn-success btn-sm modalUbah me-1 mb-1"
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#myModal"
-                                                            data-id="<?= $mentoring['id_mentoring']; ?>"
-                                                            onclick="change('Mentoring', <?= $mentoring['id_mentoring']; ?>)"
+                                                            data-id="<?= e($mentoring['id_mentoring']) ?>"
+                                                            onclick="change('Mentoring', <?= e($mentoring['id_mentoring']) ?>)"
                                                             title="Edit">
                                                             <i class="fas fa-edit"></i>
                                                             </a>
@@ -173,7 +173,7 @@
                                                             class="btn btn-danger btn-sm me-1 mb-1"
                                                             data-bs-toggle="modal" 
                                                             data-bs-target="#myModal"
-                                                            onclick="hapusMentoring('<?= $mentoring['id_mentoring']; ?>', '<?= $data['detail']['id_frekuensi']; ?>')"
+                                                            onclick="hapusMentoring('<?= e($mentoring['id_mentoring']) ?>', '<?= e($data['detail']['id_frekuensi']) ?>')"
                                                             title="Hapus"> 
                                                             <i class="fas fa-trash"></i>
                                                             </a>
@@ -185,7 +185,7 @@
                                             endif;  
                                             for ($i = $no + 1; $i <= 12; $i++): ?>
                                                 <tr class="table-row">
-                                                    <td class="text-center"><?= $i; ?></td>
+                                                    <td class="text-center"><?= e($i) ?></td>
                                                     <td class="text-center"></td>
                                                     <td></td>
                                                     <td></td>

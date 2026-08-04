@@ -2,7 +2,7 @@
     <!-- GUNAKAN ID FORM YANG SAMA DENGAN REFERENSI -->
     <form id="formUbahMatakuliah" action="<?= BASEURL?>/Matakuliah/prosesUbah" method="post" autocomplete="off">
         <!-- HIDDEN ID -->
-        <input type="hidden" value="<?= $data['ubahdata']['id_matkul']?>" name="id_matkul">
+        <input type="hidden" value="<?= e($data['ubahdata']['id_matkul']) ?>" name="id_matkul">
         
         <div class="row">
             <div class="col-12">
@@ -10,21 +10,21 @@
                 <div class="form-group mb-1">
                     <label for="kode_matkul" class="form-label">Kode Matakuliah</label>
                     <input type="text" name="kode_matkul" class="form-control" 
-                           value="<?= $data['ubahdata']['kode_matkul']?>">
+                           value="<?= e($data['ubahdata']['kode_matkul']) ?>">
                 </div>
                 
                 <!-- NAMA MATKUL -->
                 <div class="form-group mb-1">
                     <label for="nama_matkul" class="form-label">Matakuliah</label>
                     <input type="text" name="nama_matkul" class="form-control" 
-                           value="<?= $data['ubahdata']['nama_matkul']?>">
+                           value="<?= e($data['ubahdata']['nama_matkul']) ?>">
                 </div>
                 
                 <!-- SINGKATAN -->
                 <div class="form-group mb-1">
                     <label for="singkatan" class="form-label">Singkatan</label>
                     <input type="text" name="singkatan" class="form-control" 
-                           value="<?= $data['ubahdata']['singkatan']?>">
+                           value="<?= e($data['ubahdata']['singkatan']) ?>">
                 </div>
                 
                 <!-- JURUSAN DROPDOWN (YANG BARU) -->
@@ -33,9 +33,9 @@
                     <select name="id_jurusan" id="id_jurusan" class="form-control" required>
                         <option value="">Pilih Jurusan</option>
                         <?php foreach ($data['jurusanOptions'] as $jurusan) : ?>
-                            <option value="<?= $jurusan['id_jurusan'] ?>" 
+                            <option value="<?= e($jurusan['id_jurusan']) ?>" 
                                 <?= ($jurusan['id_jurusan'] == $data['ubahdata']['id_jurusan']) ? 'selected' : '' ?>>
-                                <?= $jurusan['jurusan'] ?> (<?= $jurusan['singkatan_jurusan'] ?>)
+                                <?= e($jurusan['jurusan']) ?> (<?= e($jurusan['singkatan_jurusan']) ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -55,7 +55,7 @@
                 <div class="form-group mb-1">
                     <label for="sks" class="form-label">SKS</label>
                     <input type="number" name="sks" class="form-control" 
-                           value="<?= $data['ubahdata']['sks']?>">
+                           value="<?= e($data['ubahdata']['sks']) ?>">
                 </div>
                 
                 <br>

@@ -3,14 +3,14 @@
     <div class="container-fluid">
       <div class="row mb-2">
         <div class="col-sm-6">
-          <h3><?= $data['title']; ?></h3>
+          <h3><?= e($data['title']) ?></h3>
         </div>
         <div class="col-sm-6">
           <ol class="breadcrumb float-sm-right">
             <?php if ($_SESSION['role'] == 'Admin') : ?>
               <li class="breadcrumb-item"><a href="<?= BASEURL ?>">Home</a></li>
             <?php endif; ?>
-            <li class="breadcrumb-item active"><?= $data['title']; ?></li>
+            <li class="breadcrumb-item active"><?= e($data['title']) ?></li>
           </ol>
         </div>
       </div>
@@ -76,23 +76,23 @@
                                 <tbody>
                                   <?php $no=0; foreach ($data['frekuensi_asisten'] as $frekuensi) : $no++; ?>
                                     <tr>
-                                      <td class="text-center"><?= $no; ?></td>
-                                      <td class="text-center"><?= $frekuensi['frekuensi']; ?></td>
-                                      <td class="text-center"><?= $frekuensi['kode_matkul']; ?></td>
-                                      <td><?= $frekuensi['nama_matkul']; ?></td>
-                                      <td class="text-center"><?= $frekuensi['tahun_ajaran']; ?></td>
-                                      <td class="text-center"><?= $frekuensi['kelas']; ?></td>
-                                      <td><?= $frekuensi['hari']; ?>/<?= date('H:i', strtotime($frekuensi['jam_mulai'])); ?>-<?= date('H:i', strtotime($frekuensi['jam_selesai'])); ?></td>
-                                      <td><?= $frekuensi['nama_ruangan']; ?></td>
-                                      <td><?= $frekuensi['nama_dosen']; ?></td>
-                                      <td><?= $frekuensi['asisten_1']; ?></td>
-                                      <td><?= $frekuensi['asisten_2']; ?></td>
+                                      <td class="text-center"><?= e($no) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['frekuensi']) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['kode_matkul']) ?></td>
+                                      <td><?= e($frekuensi['nama_matkul']) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['tahun_ajaran']) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['kelas']) ?></td>
+                                      <td><?= e($frekuensi['hari']) ?>/<?= date('H:i', strtotime($frekuensi['jam_mulai'])); ?>-<?= date('H:i', strtotime($frekuensi['jam_selesai'])); ?></td>
+                                      <td><?= e($frekuensi['nama_ruangan']) ?></td>
+                                      <td><?= e($frekuensi['nama_dosen']) ?></td>
+                                      <td><?= e($frekuensi['asisten_1']) ?></td>
+                                      <td><?= e($frekuensi['asisten_2']) ?></td>
                                       <td align="center">
                                         <?php if ($_SESSION['role'] == 'Admin') : ?>
-                                        <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Frekuensi', '<?= $frekuensi['id_frekuensi']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
-                                        <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Frekuensi', '<?= $frekuensi['id_frekuensi']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
+                                        <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Frekuensi', '<?= e($frekuensi['id_frekuensi']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                                        <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Frekuensi', '<?= e($frekuensi['id_frekuensi']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
                                         <?php endif; ?>
-                                        <a class="btn btn-primary btn-sm button-style text-center" href="<?= BASEURL ?>/frekuensi/detail/<?= $frekuensi['id_frekuensi']; ?>" role="button"><i class="fa fa-list"></i></a>
+                                        <a class="btn btn-primary btn-sm button-style text-center" href="<?= BASEURL ?>/frekuensi/detail/<?= e($frekuensi['id_frekuensi']) ?>" role="button"><i class="fa fa-list"></i></a>
                                       </td>
                                     </tr>
                                   <?php endforeach; ?>
@@ -152,23 +152,23 @@
                                 <tbody>
                                   <?php $no=0; foreach ($data['frekuensi'] as $frekuensi) : $no++; ?>
                                     <tr>
-                                      <td class="text-center"><?= $no; ?></td>
-                                      <td class="text-center"><?= $frekuensi['frekuensi']; ?></td>
-                                      <td class="text-center"><?= $frekuensi['kode_matkul']; ?></td>
-                                      <td><?= $frekuensi['nama_matkul']; ?></td>
-                                      <td class="text-center"><?= $frekuensi['tahun_ajaran']; ?></td>
-                                      <td class="text-center"><?= $frekuensi['kelas']; ?></td>
-                                      <td><?= $frekuensi['hari']; ?>/<?= date('H:i', strtotime($frekuensi['jam_mulai'])); ?>-<?= date('H:i', strtotime($frekuensi['jam_selesai'])); ?></td>
-                                      <td><?= $frekuensi['nama_ruangan']; ?></td>
-                                      <td><?= $frekuensi['nama_dosen']; ?></td>
-                                      <td><?= $frekuensi['asisten_1']; ?></td>
-                                      <td><?= $frekuensi['asisten_2']; ?></td>
+                                      <td class="text-center"><?= e($no) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['frekuensi']) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['kode_matkul']) ?></td>
+                                      <td><?= e($frekuensi['nama_matkul']) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['tahun_ajaran']) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['kelas']) ?></td>
+                                      <td><?= e($frekuensi['hari']) ?>/<?= date('H:i', strtotime($frekuensi['jam_mulai'])); ?>-<?= date('H:i', strtotime($frekuensi['jam_selesai'])); ?></td>
+                                      <td><?= e($frekuensi['nama_ruangan']) ?></td>
+                                      <td><?= e($frekuensi['nama_dosen']) ?></td>
+                                      <td><?= e($frekuensi['asisten_1']) ?></td>
+                                      <td><?= e($frekuensi['asisten_2']) ?></td>
                                       <td align="center">
                                         <?php if ($_SESSION['role'] == 'Admin') : ?>
-                                        <a class="btn btn-primary btn-sm button-style text-center me-1 mb-1" onclick="change('Frekuensi', '<?= $frekuensi['id_frekuensi']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
-                                        <a class="btn btn-danger btn-sm button-style text-center me-1 mb-1" onclick="deleteData('Frekuensi', '<?= $frekuensi['id_frekuensi']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
+                                        <a class="btn btn-primary btn-sm button-style text-center me-1 mb-1" onclick="change('Frekuensi', '<?= e($frekuensi['id_frekuensi']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                                        <a class="btn btn-danger btn-sm button-style text-center me-1 mb-1" onclick="deleteData('Frekuensi', '<?= e($frekuensi['id_frekuensi']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
                                         <?php endif; ?>
-                                        <a class="btn btn-primary btn-sm button-style text-center me-1 mb-1" href="<?= BASEURL ?>/frekuensi/detail/<?= $frekuensi['id_frekuensi']; ?>" role="button"><i class="fa fa-list"></i></a>
+                                        <a class="btn btn-primary btn-sm button-style text-center me-1 mb-1" href="<?= BASEURL ?>/frekuensi/detail/<?= e($frekuensi['id_frekuensi']) ?>" role="button"><i class="fa fa-list"></i></a>
                                       </td>
                                     </tr>
                                   <?php endforeach; ?>
@@ -196,13 +196,13 @@
                             <select id="tahunAjaranFilter" name="id_tahun_filter" class="form-control form-control-sm mr-2">
                                 <option value="">-- Semua Tahun Ajaran --</option>
                                 <?php foreach ($data['ajaranOptions'] as $ajaran) : ?>
-                                    <option value="<?= $ajaran['id_tahun']; ?>" 
+                                    <option value="<?= e($ajaran['id_tahun']) ?>" 
                                         <?php 
                                             if(isset($_POST['id_tahun_filter']) && $_POST['id_tahun_filter'] == $ajaran['id_tahun']) {
                                                 echo 'selected';
                                             } 
                                         ?>>
-                                        <?= $ajaran['tahun_ajaran']; ?>
+                                        <?= e($ajaran['tahun_ajaran']) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -242,20 +242,20 @@
                                 <tbody>
                                   <?php $no=0; foreach ($data['frekuensi'] as $frekuensi) : $no++; ?>
                                     <tr>
-                                      <td class="text-center"><?= $no; ?></td>
-                                      <td class="text-center"><?= $frekuensi['frekuensi']; ?></td>
-                                      <td class="text-center"><?= $frekuensi['kode_matkul']; ?></td>
-                                      <td><?= $frekuensi['nama_matkul']; ?></td>
-                                      <td class="text-center"><?= $frekuensi['tahun_ajaran']; ?></td>
-                                      <td class="text-center"><?= $frekuensi['kelas']; ?></td>
-                                      <td><?= $frekuensi['hari']; ?>/<?= date('H:i', strtotime($frekuensi['jam_mulai'])); ?>-<?= date('H:i', strtotime($frekuensi['jam_selesai'])); ?></td>
-                                      <td><?= $frekuensi['nama_ruangan']; ?></td>
-                                      <td><?= $frekuensi['nama_dosen']; ?></td>
-                                      <td><?= $frekuensi['asisten_1']; ?></td>
-                                      <td><?= $frekuensi['asisten_2']; ?></td>
+                                      <td class="text-center"><?= e($no) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['frekuensi']) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['kode_matkul']) ?></td>
+                                      <td><?= e($frekuensi['nama_matkul']) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['tahun_ajaran']) ?></td>
+                                      <td class="text-center"><?= e($frekuensi['kelas']) ?></td>
+                                      <td><?= e($frekuensi['hari']) ?>/<?= date('H:i', strtotime($frekuensi['jam_mulai'])); ?>-<?= date('H:i', strtotime($frekuensi['jam_selesai'])); ?></td>
+                                      <td><?= e($frekuensi['nama_ruangan']) ?></td>
+                                      <td><?= e($frekuensi['nama_dosen']) ?></td>
+                                      <td><?= e($frekuensi['asisten_1']) ?></td>
+                                      <td><?= e($frekuensi['asisten_2']) ?></td>
                                       <td align="center" style="white-space: nowrap;">
                                           <a class="btn btn-success btn-sm button-style text-center me-1 mb-1" 
-                                            onclick="change('Frekuensi', '<?= $frekuensi['id_frekuensi']; ?>')" 
+                                            onclick="change('Frekuensi', '<?= e($frekuensi['id_frekuensi']) ?>')" 
                                             role="button" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#myModal"
@@ -264,7 +264,7 @@
                                           </a>
 
                                           <a class="btn btn-danger btn-sm button-style text-center me-1 mb-1" 
-                                            onclick="deleteData('Frekuensi', '<?= $frekuensi['id_frekuensi']; ?>')" 
+                                            onclick="deleteData('Frekuensi', '<?= e($frekuensi['id_frekuensi']) ?>')" 
                                             role="button" 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#myModal"
@@ -273,7 +273,7 @@
                                           </a>
 
                                           <a class="btn btn-info btn-sm button-style text-center me-1 mb-1" 
-                                            href="<?= BASEURL ?>/frekuensi/detail/<?= $frekuensi['id_frekuensi']; ?>" 
+                                            href="<?= BASEURL ?>/frekuensi/detail/<?= e($frekuensi['id_frekuensi']) ?>" 
                                             role="button"
                                             title="Detail">
                                             <i class="fa fa-list"></i>

@@ -23,9 +23,8 @@ class User extends Controller {
         $this->isAdmin();
         $data = $_POST;
         
-        // Enkripsi password saat tambah user baru
         if (!empty($data['password'])) {
-            $data['password'] = hash('sha256', $data['password']);
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         }
 
         if ($this->model('User_model')->tambah($data) > 0) {
@@ -53,14 +52,13 @@ class User extends Controller {
         $userLama = $this->model('User_model')->getUserById($id_user);
         $asistenLama = $this->model('Asisten_model')->getByUserId($id_user); 
 
-        // 1. Password SHA-256
-        // LOGIKA PASSWORD YANG BENAR
+        // 1. Password
         if (empty($data['password'])) {
             // Jika input kosong, ambil password lama (sudah dalam bentuk hash)
             $data['password'] = $userLama['password'];
         } else {
-            // Jika diisi, baru kita hash menggunakan SHA-256
-            $data['password'] = hash('sha256', $data['password']);
+            // Jika diisi, gunakan bcrypt
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         }
 
         // 2. Upload Foto Profil (hanya ganti jika ada file baru yang diupload)
@@ -168,32 +166,27 @@ class User extends Controller {
         // Ambil data lama agar properti yang tidak diubah tetap aman
         $userLama = $this->model('User_model')->getUserById($id_user);
 
-        // Jika password diisi, hash. Jika kosong, pertahankan password lama.
-        $password = !empty($passwordBaru) ? hash('sha256', $passwordBaru) : $userLama['password'];
+        // Jika password diisi, hash dengan bcrypt. Jika kosong, pertahankan password lama.
+        $password = !empty($passwordBaru) ? password_hash($passwordBaru, PASSWORD_DEFAULT) : $userLama['password'];
 
         $dataUpdate = [
             'id_user'   => $id_user,
             'username'  => $_POST['username'],
             'nama_user' => $_POST['nama_user'],
             'password'  => $password,
-            'role'      => $userLama['role'],
-            'photo_path'=> $userLama['photo_path'] ?? null // pertahankan photo_path lama
+            'role'      => $userLama['role']
         ];
-
-        // 2. Upload Foto Profil Admin (hanya ganti jika ada file baru)
-        $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', 'admin_profil_' . $id_user);
-        if ($uploadProfil['status'] === true && isset($uploadProfil['no_upload']) && !$uploadProfil['no_upload'] && !empty($uploadProfil['nama_file'])) {
-            $dataUpdate['photo_profil'] = $uploadProfil['nama_file'];
-        } else {
-            $dataUpdate['photo_profil'] = $userLama['photo_profil'] ?? null;
-        }
 
         if ($this->model('User_model')->ubahDataUserLengkap($dataUpdate) >= 0) {
             // Perbarui session agar langsung terlihat perubahannya
             $_SESSION['nama_user'] = $dataUpdate['nama_user'];
             $_SESSION['username'] = $dataUpdate['username'];
-            $_SESSION['photo_profil'] = $dataUpdate['photo_profil'];
-            Flasher::setFlash('Berhasil', 'Profil Admin telah diperbarui', 'success');
+            
+            if (!empty($passwordBaru)) {
+                Flasher::setFlash('Berhasil', 'Profil dan Password telah diperbarui', 'success');
+            } else {
+                Flasher::setFlash('Berhasil', 'Profil Admin telah diperbarui', 'success');
+            }
         } else {
             Flasher::setFlash('Gagal', 'Gagal memperbarui profil', 'danger');
         }
@@ -203,47 +196,5 @@ class User extends Controller {
     }
 
 
-    public function uploadFoto($namaOrang, $fotoLama)
-    {
-        $namaFile = $_FILES['photo_profil']['name'];
-        $ukuranFile = $_FILES['photo_profil']['size'];
-        $tmpName = $_FILES['photo_profil']['tmp_name'];
 
-        $ekstensiGambarValid = ['jpg', 'jpeg', 'png'];
-        $ekstensiGambar = explode('.', $namaFile);
-        $ekstensiGambar = strtolower(end($ekstensiGambar));
-
-        if (!in_array($ekstensiGambar, $ekstensiGambarValid)) {
-            Flasher::setFlash('gagal', 'upload! Format harus jpg/jpeg/png', 'danger');
-            $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
-            header('Location: ' . BASEURL . ($role == 'Asisten' ? '/asisten' : '/user'));
-            exit;
-        }
-
-        if ($ukuranFile > 2000000) {
-            Flasher::setFlash('gagal', 'upload! Ukuran max 2MB', 'danger');
-            $role = isset($_SESSION['role']) ? $_SESSION['role'] : null;
-            header('Location: ' . BASEURL . ($role == 'Asisten' ? '/asisten' : '/user'));
-            exit;
-        }
-
-        $namaBersih = preg_replace('/[^A-Za-z0-9]/', '_', $namaOrang);
-        $namaFileBaru = $namaBersih . '_profil.' . $ekstensiGambar;
-
-        // Gunakan __DIR__ untuk path yang reliable
-        // __DIR__ = /.../.../app/controllers
-        // Naik 2 level ke project root = /.../.../monitoring-praktikum
-        $projectRoot = dirname(dirname(__DIR__));
-        $targetDirSystem = $projectRoot . DIRECTORY_SEPARATOR . 'public' . DIRECTORY_SEPARATOR . 'img' . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . $namaFileBaru;
-        $targetPath = 'public/img/uploads/' . $namaFileBaru;
-
-        if (!empty($fotoLama) && file_exists($fotoLama)) {
-            if ($fotoLama != $targetPath) {
-                unlink($fotoLama);
-            }
-        }
-
-        move_uploaded_file($tmpName, $targetDirSystem);
-        return $targetPath;
-    }
 }

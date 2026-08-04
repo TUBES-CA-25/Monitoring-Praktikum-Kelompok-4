@@ -19,26 +19,7 @@ class User_model{
         return $this->db->rowCount();
     }
 
-    public function updateDataUser($data) {
-        $query = "UPDATE mst_user SET username = :username";
-        
-        if (!empty($data['password'])) {
-            $query .= ", password = :password";
-        }
-        
-        $query .= " WHERE id_user = :id_user";
 
-        $this->db->query($query);
-        $this->db->bind('username', $data['username']);
-        $this->db->bind('id_user', $data['id_user']);
-        
-        if (!empty($data['password'])) {
-            $this->db->bind('password', hash('sha256', $data['password']));
-        }
-
-        $this->db->execute();
-        return $this->db->rowCount();
-    }
 
     public function getUserById($id) {
         $this->db->query("SELECT * FROM mst_user WHERE id_user = :id");
@@ -119,9 +100,7 @@ class User_model{
                     nama_user = :nama,
                     username = :username,
                     password = :password,
-                    role = :role,
-                    photo_profil = :photo_profil,
-                    photo_path = :photo_path
+                    role = :role
                 WHERE id_user = :id_user";
         
         $this->db->query($query);
@@ -129,8 +108,6 @@ class User_model{
         $this->db->bind('username', $data['username']);
         $this->db->bind('password', $data['password']);
         $this->db->bind('role', $data['role']);
-        $this->db->bind('photo_profil', $data['photo_profil']);
-        $this->db->bind('photo_path', $data['photo_path']);
         $this->db->bind('id_user', $data['id_user']);
 
         return $this->db->execute();

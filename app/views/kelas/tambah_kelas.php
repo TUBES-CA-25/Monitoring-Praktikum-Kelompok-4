@@ -6,7 +6,7 @@
                 <select name="id_jurusan" class="form-control" required>
                     <option value="">Pilih Jurusan</option>
                     <?php foreach ($data['jurusanOptions'] as $jurusan) : ?>
-                        <option value="<?= $jurusan['id_jurusan']; ?>"><?= $jurusan['jurusan']; ?></option>
+                        <option value="<?= e($jurusan['id_jurusan']) ?>"><?= e($jurusan['jurusan']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

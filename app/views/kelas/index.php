@@ -5,12 +5,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h3><?= $data['title'];?></h3> 
+            <h3><?= e($data['title']) ?></h3> 
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?= BASEURL?>">Home</a></li>
-              <li class="breadcrumb-item active"><?= $data['title'];?></li>
+              <li class="breadcrumb-item active"><?= e($data['title']) ?></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -61,14 +61,14 @@
                                 <tbody>
                                   <?php $no=0; foreach  ($data['kelas'] as $kelas) : $no++;?>
                                   <tr>
-                                      <td class="text-middle" align="center"><?= $no;?></td>
-                                      <td><?= $kelas['jurusan'];?></td>
-                                      <td><?= $kelas['kelas'];?></td>
-                                      <td><?= $kelas['angkatan'];?></td>
+                                      <td class="text-middle" align="center"><?= e($no) ?></td>
+                                      <td><?= e($kelas['jurusan']) ?></td>
+                                      <td><?= e($kelas['kelas']) ?></td>
+                                      <td><?= e($kelas['angkatan']) ?></td>
                                       <td align="center">
                                         <!-- <div class="btn" aria-label="Basic outlined example"> -->
-                                          <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Kelas', '<?= $kelas['id_kelas']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
-                                          <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Kelas', '<?= $kelas['id_kelas']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
+                                          <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Kelas', '<?= e($kelas['id_kelas']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                                          <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Kelas', '<?= e($kelas['id_kelas']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
                                       <!-- </div> -->
                                     </td>
                                   </tr>

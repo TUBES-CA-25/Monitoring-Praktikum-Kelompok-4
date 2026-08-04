@@ -22,8 +22,8 @@
                     <select name="id_jurusan" id="id_jurusan" class="form-control" required>
                         <option value="">Pilih Jurusan</option>
                         <?php foreach ($data['jurusanOptions'] as $jurusan) : ?>
-                            <option value="<?= $jurusan['id_jurusan'] ?>">
-                                <?= $jurusan['jurusan'] ?> (<?= $jurusan['singkatan_jurusan'] ?>)
+                            <option value="<?= e($jurusan['id_jurusan']) ?>">
+                                <?= e($jurusan['jurusan']) ?> (<?= e($jurusan['singkatan_jurusan']) ?>)
                             </option>
                         <?php endforeach; ?>
                     </select>

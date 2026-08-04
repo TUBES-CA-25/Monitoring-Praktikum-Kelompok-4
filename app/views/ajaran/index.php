@@ -3,12 +3,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h3><?= $data['title'];?></h3> 
+            <h3><?= e($data['title']) ?></h3> 
           </div>
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?= BASEURL?>">Home</a></li>
-              <li class="breadcrumb-item active"><?= $data['title'];?></li>
+              <li class="breadcrumb-item active"><?= e($data['title']) ?></li>
             </ol>
           </div>
         </div>
@@ -51,11 +51,11 @@
                                 <tbody>
                                     <?php $no=0; foreach  ($data['ajaran'] as $ajaran) : $no++;?>
                                         <tr>
-                                            <td class="text-middle" align="center"><?= $no;?></td>
-                                            <td><?= $ajaran['tahun_ajaran'];?></td>
+                                            <td class="text-middle" align="center"><?= e($no) ?></td>
+                                            <td><?= e($ajaran['tahun_ajaran']) ?></td>
                                             <td align="center">
-                                                <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Ajaran', '<?= $ajaran['id_tahun']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
-                                                <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Ajaran', '<?= $ajaran['id_tahun']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
+                                                <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Ajaran', '<?= e($ajaran['id_tahun']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                                                <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Ajaran', '<?= e($ajaran['id_tahun']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>

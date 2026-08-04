@@ -5,12 +5,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h3><?= $data['title'];?></h3> 
+            <h3><?= e($data['title']) ?></h3> 
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?= BASEURL?>">Home</a></li>
-              <li class="breadcrumb-item active"><?= $data['title'];?></li>
+              <li class="breadcrumb-item active"><?= e($data['title']) ?></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -65,25 +65,22 @@
                                     <?php if ($_SESSION['role'] == 'Admin') : ?>
                                     <th scope="col">Role</th>
                                     <?php endif; ?>
-                                    <th scope="col" class="text-center">Foto Profil</th>
+
                                     <th scope="col"  style="width:15%" class="text-center">Menu</th>
                                   </tr>
                               </thead>                              
                               <tbody>
                                   <?php $no = 0; foreach ($data['user'] as $user) : $no++; ?>
                                       <tr>
-                                          <td class="text-middle" align="center"><?= $no; ?></td>
-                                          <td><?= $user['nama_user']; ?></td>
-                                          <td><?= $user['username']; ?></td>
+                                          <td class="text-middle" align="center"><?= e($no) ?></td>
+                                          <td><?= e($user['nama_user']) ?></td>
+                                          <td><?= e($user['username']) ?></td>
                                           <td>********</td>
-                                          <td><?= $user['role']; ?></td>
+                                          <td><?= e($user['role']) ?></td>
+
                                           <td align="center">
-                                              <?php $fotoUser = !empty($user['photo_profil']) ? BASEURL . '/' . $user['photo_profil'] : BASEURL . '/public/img/user.png'; ?>
-                                              <img src="<?= $fotoUser ?>" alt="Foto" style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
-                                          </td>
-                                          <td align="center">
-                                              <a class="btn btn-primary btn-sm button-style text-center" onclick="change('User', '<?= $user['id_user']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
-                                              <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('User', '<?= $user['id_user']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
+                                              <a class="btn btn-primary btn-sm button-style text-center" onclick="change('User', '<?= e($user['id_user']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                                              <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('User', '<?= e($user['id_user']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
                                           </td>
                                       </tr>
                                   <?php endforeach; ?>
@@ -95,29 +92,29 @@
                             <?php foreach  ($data['asisten'] as $asisten) : ?>
                               <tr>
                                 <td>StambuKK</td>
-                                <td><?= $asisten['stambuk'];?></td>
+                                <td><?= e($asisten['stambuk']) ?></td>
                               </tr>
                               <tr>
-                                <td><?= $asisten['nama_asisten'];?></td>
+                                <td><?= e($asisten['nama_asisten']) ?></td>
                               </tr>
                               <tr>
-                                <td><?= $asisten['angkatan'];?></td>
+                                <td><?= e($asisten['angkatan']) ?></td>
                               </tr>
                               <tr>
-                                <td><?= $asisten['status'];?></td>
+                                <td><?= e($asisten['status']) ?></td>
                               </tr>
                               <tr>
-                                <td><?= $asisten['jenis_kelamin'];?></td>
+                                <td><?= e($asisten['jenis_kelamin']) ?></td>
                               </tr>
                               <tr>
-                                <td><?= $asisten['id_user'];?></td>
+                                <td><?= e($asisten['id_user']) ?></td>
                               </tr>
                               <tr>
-                                <td class="text-center"><img src="<?= BASEURL; ?>/<?= $asisten['photo_path'] ?>" alt="Foto" style="max-width: 100px; max-height: 100px;"></td>
+                                <td class="text-center"><img src="<?= BASEURL; ?>/<?= e($asisten['photo_path']) ?>" alt="Foto" style="max-width: 100px; max-height: 100px;"></td>
                               </tr>
                               <tr>
                                 <td align="center">
-                                    <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Asisten', '<?= $asisten['id_asisten']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                                    <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Asisten', '<?= e($asisten['id_asisten']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
                                 </td>
                               </tr>
                             <?php endforeach; ?>
@@ -164,31 +161,31 @@
                                   <?php $no = 0; foreach ($data['user'] as $user) : $no++; ?>
                                       <tr>
                                         <td width="30%">Username</td>
-                                        <td><?= $user['username']; ?></td>
+                                        <td><?= e($user['username']) ?></td>
                                       </tr>
                                       <tr>
                                         <td>Stambuk</td>
-                                        <td><?= $user['nama_user']; ?></td>
+                                        <td><?= e($user['nama_user']) ?></td>
                                       </tr>
                                       <tr>
                                         <td>Nama</td>
-                                        <td><?= $user['nama_user']; ?></td>
+                                        <td><?= e($user['nama_user']) ?></td>
                                       </tr>
                                       <tr>
                                         <td>Angkatan</td>
-                                        <td><?= $user['username']; ?></td>
+                                        <td><?= e($user['username']) ?></td>
                                       </tr>
                                       <tr>
                                         <td>Jenis Kelamin</td>
-                                        <td><?= $user['username']; ?></td>
+                                        <td><?= e($user['username']) ?></td>
                                       </tr>
                                       <tr>
                                         <td>Tanda Tangan</td>
-                                        <td><?= $user['username']; ?></td>
+                                        <td><?= e($user['username']) ?></td>
                                       </tr>
                                       <tr>
                                         <td colspan="2">
-                                            <a class="btn btn-primary btn-sm button-style text-center" onclick="change('User', '<?= $user['id_user']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                                            <a class="btn btn-primary btn-sm button-style text-center" onclick="change('User', '<?= e($user['id_user']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
                                         </td>
                                       </tr>
                                     <?php endforeach; ?>

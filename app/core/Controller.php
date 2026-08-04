@@ -22,7 +22,7 @@ class Controller{
             $this->db->bind('id', $id_user);
             $user = $this->db->single();
 
-            if ($user && $key === hash('sha256', $user['username'])) {
+            if ($user && $key === hash('sha256', $user['username'] . $user['password'])) {
                 $_SESSION['id_user'] = $user['id_user'];
                 $_SESSION['username'] = $user['username'];
                 $_SESSION['role'] = $user['role'];

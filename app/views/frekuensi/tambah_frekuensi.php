@@ -6,8 +6,8 @@
                 <select id="id_jurusan" name="id_jurusan" class="form-control" required>
                     <option value="">Pilih Jurusan</option>
                     <?php foreach ($data['jurusanOptions'] as $jurusan) : ?>
-                        <option value="<?= $jurusan['id_jurusan']; ?>" data-singkatan="<?= $jurusan['singkatan_jurusan']; ?>">
-                            <?= $jurusan['jurusan']; ?>
+                        <option value="<?= e($jurusan['id_jurusan']) ?>" data-singkatan="<?= e($jurusan['singkatan_jurusan']) ?>">
+                            <?= e($jurusan['jurusan']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -17,8 +17,8 @@
                 <select id="id_matkul" name="id_matkul" class="form-control" required>
                     <option value="">Pilih Matakuliah</option>
                     <?php foreach ($data['matakuliahOptions'] as $matkul) : ?>
-                        <option value="<?= $matkul['id_matkul']; ?>" data-singkatan="<?= $matkul['singkatan']; ?>">
-                            <?= $matkul['nama_matkul']; ?>
+                        <option value="<?= e($matkul['id_matkul']) ?>" data-singkatan="<?= e($matkul['singkatan']) ?>">
+                            <?= e($matkul['nama_matkul']) ?>
                         </option>
                     <?php endforeach; ?>
                 </select>
@@ -33,7 +33,7 @@
                 <select name="id_tahun" class="form-control" required>
                     <option value="">Pilih Tahun Ajaran</option>
                     <?php foreach ($data['ajaranOptions'] as $ajaran) : ?>
-                        <option value="<?= $ajaran['id_tahun']; ?>"><?= $ajaran['tahun_ajaran']; ?></option>
+                        <option value="<?= e($ajaran['id_tahun']) ?>"><?= e($ajaran['tahun_ajaran']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -42,7 +42,7 @@
                 <select name="id_kelas" class="form-control" required>
                     <option value="">Pilih Kelas</option>
                     <?php foreach ($data['frekuensiOptions'] as $kelas) : ?>
-                        <option value="<?= $kelas['id_kelas']; ?>"><?= $kelas['kelas']; ?> - <?= $kelas['angkatan']; ?></option>
+                        <option value="<?= e($kelas['id_kelas']) ?>"><?= e($kelas['kelas']) ?> - <?= e($kelas['angkatan']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -74,7 +74,7 @@
                 <select name="id_ruangan" class="form-control" required>
                     <option value="">Pilih Laboratorium</option>
                     <?php foreach ($data['ruanganOptions'] as $dosen) : ?>
-                        <option value="<?= $dosen['id_ruangan']; ?>"><?= $dosen['nama_ruangan']; ?></option>
+                        <option value="<?= e($dosen['id_ruangan']) ?>"><?= e($dosen['nama_ruangan']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -83,7 +83,7 @@
                 <select name="id_dosen" class="form-control" required>
                     <option value="">Pilih Nama Dosen</option>
                     <?php foreach ($data['dosenOptions'] as $dosen) : ?>
-                        <option value="<?= $dosen['id_dosen']; ?>"><?= $dosen['nama_dosen']; ?></option>
+                        <option value="<?= e($dosen['id_dosen']) ?>"><?= e($dosen['nama_dosen']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -92,7 +92,7 @@
                 <select name="id_asisten1" class="form-control">
                     <option value="">Pilih Nama Asisten 1</option>
                     <?php foreach ($data['asistenOptions'] as $asisten) : ?>
-                        <option value="<?= $asisten['id_asisten']; ?>"><?= $asisten['nama_asisten']; ?></option>
+                        <option value="<?= e($asisten['id_asisten']) ?>"><?= e($asisten['nama_asisten']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>
@@ -101,7 +101,7 @@
                 <select name="id_asisten2" class="form-control">
                     <option value="">Pilih Nama Asisten 2</option>
                     <?php foreach ($data['asistenOptions'] as $asisten) : ?>
-                        <option value="<?= $asisten['id_asisten']; ?>"><?= $asisten['nama_asisten']; ?></option>
+                        <option value="<?= e($asisten['id_asisten']) ?>"><?= e($asisten['nama_asisten']) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

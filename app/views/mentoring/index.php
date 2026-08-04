@@ -5,12 +5,12 @@ Content Wrapper. Contains page content -->
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h3><?= $data['title'];?></h3> 
+            <h3><?= e($data['title']) ?></h3> 
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="<?= BASEURL?>">Home</a></li>
-              <li class="breadcrumb-item active"><?= $data['title'];?></li>
+              <li class="breadcrumb-item active"><?= e($data['title']) ?></li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -96,22 +96,22 @@ Content Wrapper. Contains page content -->
                                     <tbody>
                                       <?php $no=0; foreach  ($data['mentoring'] as $mentoring) : $no++;?>
                                           <tr>
-                                            <td class="text-middle" align="center"><?= $no;?></td>
-                                            <td><?= $mentoring['tanggal'];?></td>
-                                            <td><?= $mentoring['uraian_materi'];?></td>
-                                            <td><?= $mentoring['uraian_tugas'];?></td>
-                                            <td><?= $mentoring['nama_asisten'];?></td>
-                                            <td><?= $mentoring['kode_matkul'];?></td>
-                                            <td><?= $mentoring['nama_matkul'];?></td>
-                                            <td><?= $mentoring['frekuensi'];?></td>
-                                            <td><?= $mentoring['jadwal'];?></td>
-                                            <td><?= $mentoring['nama_ruangan'];?></td>
-                                            <td><?= $mentoring['nama_dosen'];?></td>
-                                            <td><?= $mentoring['nama_asisten'];?></td>
-                                            <td><?= $mentoring['nama_asisten'];?></td>
+                                            <td class="text-middle" align="center"><?= e($no) ?></td>
+                                            <td><?= e($mentoring['tanggal']) ?></td>
+                                            <td><?= e($mentoring['uraian_materi']) ?></td>
+                                            <td><?= e($mentoring['uraian_tugas']) ?></td>
+                                            <td><?= e($mentoring['nama_asisten']) ?></td>
+                                            <td><?= e($mentoring['kode_matkul']) ?></td>
+                                            <td><?= e($mentoring['nama_matkul']) ?></td>
+                                            <td><?= e($mentoring['frekuensi']) ?></td>
+                                            <td><?= e($mentoring['jadwal']) ?></td>
+                                            <td><?= e($mentoring['nama_ruangan']) ?></td>
+                                            <td><?= e($mentoring['nama_dosen']) ?></td>
+                                            <td><?= e($mentoring['nama_asisten']) ?></td>
+                                            <td><?= e($mentoring['nama_asisten']) ?></td>
                                             <td align="center">
-                                              <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Mentoring', '<?= $mentoring['id_mentoring']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
-                                              <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Mentoring', '<?= $mentoring['id_mentoring']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
+                                              <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Mentoring', '<?= e($mentoring['id_mentoring']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                                              <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Mentoring', '<?= e($mentoring['id_mentoring']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
                                             </td>
                                           </tr>
                                       <?php endforeach; ?>

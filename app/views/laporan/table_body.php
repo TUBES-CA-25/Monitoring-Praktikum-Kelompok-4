@@ -16,27 +16,27 @@
     ?>
     <tr>
         <td><?= $no++; ?></td>
-        <td><?= $row['prodi']; ?></td>
-        <td class="text-left"><?= $row['nama_matkul']; ?></td>
-        <td><?= $row['kelas']; ?></td>
-        <td><?= $row['frekuensi']; ?></td>
-        <td><?= $row['hari']; ?>, <?= $row['jam_mulai']; ?>-<?= $row['jam_selesai']; ?></td>
-        <td><?= $row['nama_ruangan']; ?></td>
-        <td><?= $row['nama_dosen']; ?></td>
-        <td><?= $row['asisten1']; ?></td>
-        <td><?= $row['asisten2']; ?></td>
-        <td><b><?= $total; ?></b></td>
+        <td><?= e($row['prodi']) ?></td>
+        <td class="text-left"><?= e($row['nama_matkul']) ?></td>
+        <td><?= e($row['kelas']) ?></td>
+        <td><?= e($row['frekuensi']) ?></td>
+        <td><?= e($row['hari']) ?>, <?= e($row['jam_mulai']) ?>-<?= e($row['jam_selesai']) ?></td>
+        <td><?= e($row['nama_ruangan']) ?></td>
+        <td><?= e($row['nama_dosen']) ?></td>
+        <td><?= e($row['asisten1']) ?></td>
+        <td><?= e($row['asisten2']) ?></td>
+        <td><b><?= e($total) ?></b></td>
         
-        <td class="bg-light"><?= $h_dosen; ?></td>
-        <td class="bg-light"><?= $th_dosen; ?></td>
+        <td class="bg-light"><?= e($h_dosen) ?></td>
+        <td class="bg-light"><?= e($th_dosen) ?></td>
         <td class="bg-light"><b><?= number_format($p_dosen, 0); ?>%</b></td>
         
-        <td><?= $h_asis1; ?></td>
-        <td><?= $th_asis1; ?></td>
+        <td><?= e($h_asis1) ?></td>
+        <td><?= e($th_asis1) ?></td>
         <td><b><?= number_format($p_asis1, 0); ?>%</b></td>
         
-        <td class="bg-light"><?= $h_asis2; ?></td>
-        <td class="bg-light"><?= $th_asis2; ?></td>
+        <td class="bg-light"><?= e($h_asis2) ?></td>
+        <td class="bg-light"><?= e($th_asis2) ?></td>
         <td class="bg-light"><b><?= number_format($p_asis2, 0); ?>%</b></td>
     </tr>
     <?php endforeach; ?>

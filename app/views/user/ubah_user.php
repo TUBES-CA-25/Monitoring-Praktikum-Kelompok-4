@@ -3,8 +3,8 @@
     <form id="formUbahUser" action="<?= BASEURL ?>/User/prosesUbah" method="post" autocomplete="off" enctype="multipart/form-data">
         
         <!-- Hidden ID -->
-        <input type="hidden" value="<?= $data['ubahdata']['id_user'] ?>" name="id_user">
-        <input type="hidden" value="<?= $data['ubahdata']['role'] ?>" name="role">
+        <input type="hidden" value="<?= e($data['ubahdata']['id_user']) ?>" name="id_user">
+        <input type="hidden" value="<?= e($data['ubahdata']['role']) ?>" name="role">
 
         <div class="row">
             <div class="col-12">

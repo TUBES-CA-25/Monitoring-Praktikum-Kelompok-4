@@ -106,17 +106,17 @@ $title = $data['judul'] ?? 'Restore Data';
                                             <div class="btn-group btn-group-sm">
                                                 <!-- Tombol Lihat Detail -->
                                                 <button type="button" class="btn btn-info" 
-                                                        data-toggle="modal" data-target="#modal-detail-<?= $id ?>">
+                                                        data-toggle="modal" data-target="#modal-detail-<?= e($id) ?>">
                                                     <i class="fas fa-eye"></i> Detail
                                                 </button>
                                                 <!-- Tombol Restore (Redirect ke controller method kembalikan) -->
-                                                <a href="<?= BASEURL; ?>/restore/kembalikan/<?= $id ?>" 
+                                                <a href="<?= BASEURL; ?>/restore/kembalikan/<?= e($id) ?>" 
                                                    class="btn btn-success" 
                                                    onclick="return confirm('Kembalikan data ini?')">
                                                     <i class="fas fa-redo-alt"></i> Restore
                                                 </a>
                                                 <!-- Tombol Hapus (Redirect ke controller method hapusPermanen) -->
-                                                <a href="<?= BASEURL; ?>/restore/hapusPermanen/<?= $id ?>" 
+                                                <a href="<?= BASEURL; ?>/restore/hapusPermanen/<?= e($id) ?>" 
                                                    class="btn btn-danger" 
                                                    onclick="return confirm('Hapus permanen dari sistem?')">
                                                     <i class="fas fa-trash"></i> Hapus
@@ -126,7 +126,7 @@ $title = $data['judul'] ?? 'Restore Data';
                                     </tr>
 
                                     <!-- Modal Detail -->
-                                    <div class="modal fade" id="modal-detail-<?= $id ?>" tabindex="-1" role="dialog">
+                                    <div class="modal fade" id="modal-detail-<?= e($id) ?>" tabindex="-1" role="dialog">
                                         <div class="modal-dialog modal-lg">
                                             <div class="modal-content">
                                                 <div class="modal-header bg-info">

@@ -39,21 +39,21 @@
         <div style="width: 100%;">
             <strong>MONITORING PRAKTIKUM</strong><br>
             <strong>LABORATORIUM KOMPUTER - FAKULTAS ILMU KOMPUTER</strong><br>
-            <strong>SEMESTER: <?= $data['detail']['tahun_ajaran']; ?></strong>
+            <strong>SEMESTER: <?= e($data['detail']['tahun_ajaran']) ?></strong>
         </div>
         <img src="<?= BASEURL; ?>/public/img/ICLabs-logo.png" width="80">
     </div>
 
     <div class="row mb-3" style="font-weight: bold;">
         <div class="col-6">
-            Kode Matakuliah : <?= $data['detail']['kode_matkul']; ?><br>
-            Nama Matakuliah : <?= $data['detail']['nama_matkul']; ?><br>
-            Frekuensi : <?= $data['detail']['frekuensi']; ?>
+            Kode Matakuliah : <?= e($data['detail']['kode_matkul']) ?><br>
+            Nama Matakuliah : <?= e($data['detail']['nama_matkul']) ?><br>
+            Frekuensi : <?= e($data['detail']['frekuensi']) ?>
         </div>
         <div class="col-6 text-right">
-            Ruangan : <?= $data['detail']['nama_ruangan']; ?><br>
-            Dosen : <?= $data['detail']['nama_dosen']; ?><br>
-            Jadwal : <?= $data['detail']['hari']; ?>/<?= date('H:i', strtotime($data['detail']['jam_mulai'])); ?>
+            Ruangan : <?= e($data['detail']['nama_ruangan']) ?><br>
+            Dosen : <?= e($data['detail']['nama_dosen']) ?><br>
+            Jadwal : <?= e($data['detail']['hari']) ?>/<?= date('H:i', strtotime($data['detail']['jam_mulai'])); ?>
         </div>
     </div>
 
@@ -83,12 +83,12 @@
                 foreach($data['mentoring'] as $m) : 
                     $no++; ?>
                 <tr>
-                    <td class="text-center"><?= $no; ?></td>
-                    <td class="text-center"><?= $m['tanggal']; ?></td>
-                    <td><?= $m['uraian_materi']; ?></td>
-                    <td><?= $m['uraian_tugas']; ?></td>
-                    <td class="text-center"><?= $m['hadir']; ?></td>
-                    <td class="text-center"><?= $m['alpa']; ?></td>
+                    <td class="text-center"><?= e($no) ?></td>
+                    <td class="text-center"><?= e($m['tanggal']) ?></td>
+                    <td><?= e($m['uraian_materi']) ?></td>
+                    <td><?= e($m['uraian_tugas']) ?></td>
+                    <td class="text-center"><?= e($m['hadir']) ?></td>
+                    <td class="text-center"><?= e($m['alpa']) ?></td>
                     <td class="text-center">
                         <?php if($m['status_dosen']=='Hadir'): ?>
                             <img src="<?= BASEURL.'/'.$data['detail']['photo_path']; ?>">
@@ -104,14 +104,14 @@
                             <img src="<?= BASEURL.'/'.$data['detail']['photo_path_asisten2']; ?>">
                         <?php endif; ?>
                     </td>
-                    <td class="text-center"><?= $m['nama_asisten_pengganti']; ?></td>
+                    <td class="text-center"><?= e($m['nama_asisten_pengganti']) ?></td>
                 </tr>
                 <?php endforeach; 
             endif; ?>
 
             <?php for($i = $no + 1; $i <= 12; $i++) : ?>
                 <tr style="height: 45px;">
-                    <td class="text-center"><?= $i; ?></td>
+                    <td class="text-center"><?= e($i) ?></td>
                     <td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
                 </tr>
             <?php endfor; ?>

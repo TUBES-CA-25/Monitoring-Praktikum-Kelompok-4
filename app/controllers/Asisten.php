@@ -27,40 +27,6 @@ class Asisten extends Controller {
         $this->view('asisten/tambah_asisten', $data);
     }
 
-    // public function tambah(){
-    //     $this->isAdmin();
-    //     $data = $_POST;
-
-    //     $namaBersih = preg_replace('/[^A-Za-z0-9]/', '_', $data['nama_asisten']);
-        
-    //     $namaFileCustom = $namaBersih; 
-
-    //     $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', $namaFileCustom . '_profil');
-
-    //     if ($uploadProfil['status'] == false && $uploadProfil['error_code'] != 4) {
-    //         Flasher::setFlash('Gagal upload profil: ' . $uploadProfil['pesan'], '', 'danger');
-    //         header('Location: '.BASEURL. '/asisten');
-    //         exit;
-    //     }
-    //     $data['photo_profil'] = $uploadProfil['nama_file']; 
-
-    //     $uploadSignature = $this->prosesUpload('photo_path', 'public/img/signature/', $namaFileCustom . '_ttd');
-
-    //     if ($uploadSignature['status'] == false && $uploadSignature['error_code'] != 4) {
-    //         Flasher::setFlash('Gagal upload TTD: ' . $uploadSignature['pesan'], '', 'danger');
-    //         header('Location: '.BASEURL. '/asisten');
-    //         exit;
-    //     }
-    //     $data['photo_path'] = $uploadSignature['nama_file'];
-
-    //     if($this->model('Asisten_model')->tambah($data) > 0){
-    //         Flasher::setFlash('berhasil ditambahkan', '', 'success');
-    //     } else {
-    //         Flasher::setFlash('tidak berhasil ditambahkan', '', 'danger');
-    //     }
-    //     header('Location: '.BASEURL. '/asisten');
-    //     exit;
-    // }
 
     public function tambah()
     {

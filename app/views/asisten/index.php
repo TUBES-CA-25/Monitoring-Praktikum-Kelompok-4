@@ -7,13 +7,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h3><?= $data['title'];?></h3> 
+            <h3><?= e($data['title']) ?></h3> 
           </div><div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <?php if ($_SESSION['role'] == 'Admin') : ?>
               <li class="breadcrumb-item"><a href="<?= BASEURL?>">Home</a></li>
               <?php endif; ?>
-              <li class="breadcrumb-item active"><?= $data['title'];?></li>
+              <li class="breadcrumb-item active"><?= e($data['title']) ?></li>
             </ol>
           </div></div></div></div>
     <section class="content">
@@ -32,10 +32,10 @@
                           <!-- Bagian Kiri: Foto Profil -->
                           <div class="col-md-4 text-center border-right">
                               <img class="profile-user-img img-fluid img-circle shadow-sm mb-3"
-                                   src="<?= BASEURL; ?>/<?= $a['photo_profil'] ?>" 
+                                   src="<?= BASEURL; ?>/<?= e($a['photo_profil']) ?>" 
                                    alt="Foto Profil"
                                    style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%;">
-                              <h3 class="profile-username" style="font-weight: 600;"><?= $u['nama_user']; ?></h3>
+                              <h3 class="profile-username" style="font-weight: 600;"><?= e($u['nama_user']) ?></h3>
                               <p class="text-muted"><span class="badge badge-primary px-3 py-2" style="font-size: 0.9rem;">Asisten Praktikum</span></p>
                           </div>
                           
@@ -46,29 +46,29 @@
                                   <tbody>
                                       <tr>
                                         <td width="30%" class="text-muted">Username / Email</td>
-                                        <td style="font-weight: 500;"><?= $u['username']; ?></td>
+                                        <td style="font-weight: 500;"><?= e($u['username']) ?></td>
                                       </tr>
                                       <tr>
                                         <td class="text-muted">Stambuk</td>
-                                        <td style="font-weight: 500;"><?= $a['stambuk']; ?></td>
+                                        <td style="font-weight: 500;"><?= e($a['stambuk']) ?></td>
                                       </tr>
                                       <tr>
                                         <td class="text-muted">Nama Lengkap</td>
-                                        <td style="font-weight: 500;"><?= $a['nama_asisten']; ?></td>
+                                        <td style="font-weight: 500;"><?= e($a['nama_asisten']) ?></td>
                                       </tr>
                                       <tr>
                                         <td class="text-muted">Angkatan</td>
-                                        <td style="font-weight: 500;"><?= $a['angkatan']; ?></td>
+                                        <td style="font-weight: 500;"><?= e($a['angkatan']) ?></td>
                                       </tr>
                                       <tr>
                                         <td class="text-muted">Jenis Kelamin</td>
-                                        <td style="font-weight: 500;"><?= $a['jenis_kelamin']; ?></td>
+                                        <td style="font-weight: 500;"><?= e($a['jenis_kelamin']) ?></td>
                                       </tr>
                                       <tr>
                                         <td class="text-muted align-middle">Tanda Tangan Digital</td>
                                         <td>
                                           <?php if (!empty($a['photo_path'])): ?>
-                                              <img src="<?= BASEURL; ?>/<?= $a['photo_path'] ?>" alt="Foto TTD" class="img-thumbnail shadow-sm" style="max-height: 80px;">
+                                              <img src="<?= BASEURL; ?>/<?= e($a['photo_path']) ?>" alt="Foto TTD" class="img-thumbnail shadow-sm" style="max-height: 80px;">
                                           <?php else: ?>
                                               <span class="badge bg-secondary">Tidak ada</span>
                                           <?php endif; ?>
@@ -81,7 +81,7 @@
                                     class="btn btn-primary px-4" 
                                     data-bs-toggle="modal" 
                                     data-bs-target="#myModal"
-                                    onclick="change('User', '<?= $u['id_user']; ?>')">
+                                    onclick="change('User', '<?= e($u['id_user']) ?>')">
                                     <i class="fa fa-edit mr-1"></i> Edit Profil
                                   </a>
                               </div>
@@ -132,25 +132,25 @@
                                 <tbody>
                                   <?php $no=0; foreach  ($data['asisten'] as $asisten) : $no++;?>
                                     <tr>
-                                      <td class="text-middle" align="center"><?= $no;?></td>
-                                      <td class="text-center"><?= $asisten['stambuk'];?></td>
-                                      <td><?= $asisten['nama_asisten'];?></td>
-                                      <td class="text-center"><?= $asisten['angkatan'];?></td>
-                                      <td><?= $asisten['status'];?></td>
-                                      <td class="text-center"><?= $asisten['jenis_kelamin'];?></td>
-                                      <td><?= $asisten['username'];?></td>                                     
+                                      <td class="text-middle" align="center"><?= e($no) ?></td>
+                                      <td class="text-center"><?= e($asisten['stambuk']) ?></td>
+                                      <td><?= e($asisten['nama_asisten']) ?></td>
+                                      <td class="text-center"><?= e($asisten['angkatan']) ?></td>
+                                      <td><?= e($asisten['status']) ?></td>
+                                      <td class="text-center"><?= e($asisten['jenis_kelamin']) ?></td>
+                                      <td><?= e($asisten['username']) ?></td>                                     
                                       
                                       <td class="text-center">
-                                          <img src="<?= BASEURL; ?>/<?= $asisten['photo_profil'] ?>" 
+                                          <img src="<?= BASEURL; ?>/<?= e($asisten['photo_profil']) ?>" 
                                                alt="Foto" 
                                                style="width: 90px; height: 120px; object-fit: cover; border-radius: 5px;">
                                       </td>
                                       
-                                      <td class="text-center"><img src="<?= BASEURL; ?>/<?= $asisten['photo_path'] ?>" alt="Foto" style="max-width: 100px; max-height: 100px;"></td>                                     
+                                      <td class="text-center"><img src="<?= BASEURL; ?>/<?= e($asisten['photo_path']) ?>" alt="Foto" style="max-width: 100px; max-height: 100px;"></td>                                     
                                       
                                       <td align="center">
-                                        <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Asisten', '<?= $asisten['id_asisten']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
-                                        <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Asisten', '<?= $asisten['id_asisten']; ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
+                                        <a class="btn btn-primary btn-sm button-style text-center" onclick="change('Asisten', '<?= e($asisten['id_asisten']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-edit"></i></a>
+                                        <a class="btn btn-danger btn-sm button-style text-center" onclick="deleteData('Asisten', '<?= e($asisten['id_asisten']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-trash"></i></a>
                                       </td>
                                     </tr>
                                   <?php endforeach; ?>

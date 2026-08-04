@@ -45,24 +45,24 @@ header("Content-Disposition: attachment; filename=Rekap_Kehadiran_".$data['tahun
         ?>
         <tr>
             <td><?= $no++; ?></td>
-            <td><?= $row['prodi']; ?></td>
-            <td><?= $row['nama_matkul']; ?></td>
-            <td><?= $row['kelas']; ?></td>
-            <td><?= $row['frekuensi']; ?></td>
-            <td><?= $row['hari']; ?>, <?= $row['jam_mulai']; ?></td>
-            <td><?= $row['nama_ruangan']; ?></td>
-            <td><?= $row['nama_dosen']; ?></td>
-            <td><?= $row['asisten1']; ?></td>
-            <td><?= $row['asisten2']; ?></td>
-            <td><?= $total; ?></td>
-            <td><?= $row['hadir_dosen']; ?></td>
-            <td><?= $th_dosen; ?></td>
+            <td><?= e($row['prodi']) ?></td>
+            <td><?= e($row['nama_matkul']) ?></td>
+            <td><?= e($row['kelas']) ?></td>
+            <td><?= e($row['frekuensi']) ?></td>
+            <td><?= e($row['hari']) ?>, <?= e($row['jam_mulai']) ?></td>
+            <td><?= e($row['nama_ruangan']) ?></td>
+            <td><?= e($row['nama_dosen']) ?></td>
+            <td><?= e($row['asisten1']) ?></td>
+            <td><?= e($row['asisten2']) ?></td>
+            <td><?= e($total) ?></td>
+            <td><?= e($row['hadir_dosen']) ?></td>
+            <td><?= e($th_dosen) ?></td>
             <td><?= number_format($p_dosen, 0); ?>%</td>
-            <td><?= $row['hadir_asisten1']; ?></td>
-            <td><?= $th_asis1; ?></td>
+            <td><?= e($row['hadir_asisten1']) ?></td>
+            <td><?= e($th_asis1) ?></td>
             <td><?= number_format($p_asis1, 0); ?>%</td>
-            <td><?= $row['hadir_asisten2']; ?></td>
-            <td><?= $th_asis2; ?></td>
+            <td><?= e($row['hadir_asisten2']) ?></td>
+            <td><?= e($th_asis2) ?></td>
             <td><?= number_format($p_asis2, 0); ?>%</td>
         </tr>
         <?php endforeach; ?>
