@@ -231,6 +231,102 @@ class Asisten extends Controller {
         exit;
     }
 
+    public function importExcel() {
+        $this->isAdmin();
+        
+        if (isset($_FILES['file_excel']['name']) && $_FILES['file_excel']['name'] != '') {
+            $allowed_ext = ['csv'];
+            $ext = pathinfo($_FILES['file_excel']['name'], PATHINFO_EXTENSION);
+            
+            if (in_array(strtolower($ext), $allowed_ext)) {
+                $file = fopen($_FILES['file_excel']['tmp_name'], 'r');
+                $successCount = 0;
+                $failCount = 0;
+                $isFirstRow = true;
+                
+                while (($row = fgetcsv($file, 1000, ";")) !== FALSE) {
+                    if ($isFirstRow) {
+                        $isFirstRow = false;
+                        continue;
+                    }
+                    
+                    $email    = trim(isset($row[0]) ? $row[0] : '');
+                    $stambuk  = trim(isset($row[1]) ? $row[1] : '');
+                    $nama     = trim(isset($row[2]) ? $row[2] : '');
+                    $angkatan = trim(isset($row[3]) ? $row[3] : '');
+                    $status   = trim(isset($row[4]) ? $row[4] : '');
+                    $jk       = trim(isset($row[5]) ? $row[5] : '');
+                    
+                    if (empty($email) || empty($stambuk) || empty($nama)) {
+                        $failCount++;
+                        continue;
+                    }
+                    
+                    if ($this->model('User_model')->getUserByUsername($email) || 
+                        $this->model('Asisten_model')->cekStambuk($stambuk)) {
+                        $failCount++;
+                        continue;
+                    }
+                    
+                    $passwordHash = hash('sha256', 'iclabs-umi');
+                    $dataUser = [
+                        'nama_user' => $nama, 
+                        'username'  => $email,
+                        'password'  => $passwordHash,
+                        'role'      => 'Asisten'
+                    ];
+                    
+                    $id_user = $this->model('User_model')->tambah($dataUser);
+                    if ($id_user > 0) {
+                        $newUser = $this->model('User_model')->getUserByUsername($email);
+                        $dataAsisten = [
+                            'stambuk'       => $stambuk,
+                            'nama_asisten'  => $nama,
+                            'angkatan'      => $angkatan,
+                            'status'        => $status,
+                            'jenis_kelamin' => $jk,
+                            'id_user'       => $newUser['id_user'],
+                            'photo_profil'  => null,
+                            'photo_path'    => null
+                        ];
+                        
+                        if ($this->model('Asisten_model')->tambah($dataAsisten) > 0) {
+                            $successCount++;
+                        } else {
+                            $this->model('User_model')->prosesHapus($newUser['id_user']);
+                            $failCount++;
+                        }
+                    } else {
+                        $failCount++;
+                    }
+                }
+                fclose($file);
+                
+                Flasher::setFlash("Import Selesai. $successCount sukses, $failCount gagal/duplikat.", 'Info', 'info');
+            } else {
+                Flasher::setFlash('Format file harus .csv (Comma Delimited)', 'Error', 'danger');
+            }
+        } else {
+            Flasher::setFlash('Pilih file terlebih dahulu!', 'Error', 'warning');
+        }
+        
+        header('Location: ' . BASEURL . '/asisten');
+        exit;
+    }
+
+    public function downloadTemplate() {
+        $this->isAdmin();
+        $filename = "Template_Asisten_" . date('Ymd') . ".csv";
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '";');
+        
+        $file = fopen('php://output', 'w');
+        fputcsv($file, ['Username (Email)', 'Stambuk', 'Nama Asisten', 'Angkatan', 'Status (Asisten/Calon Asisten)', 'Jenis Kelamin (Pria/Wanita)'], ";");
+        fputcsv($file, ['contoh@student.umi.ac.id', '13020210001', 'Fulan', '2021', 'Asisten', 'Pria'], ";");
+        fclose($file);
+        exit;
+    }
+
     private function validateAkun($username, $password)
     {
         $username = trim(strtolower($username));

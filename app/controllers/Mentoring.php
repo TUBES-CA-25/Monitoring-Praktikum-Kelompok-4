@@ -115,4 +115,80 @@ class Mentoring extends Controller {
         $this->view('mentoring/export_pdf', $data);
         $this->view('templates/footer', $data);
     }
+
+    public function importExcel() {
+        if (isset($_FILES['file_excel']['name']) && $_FILES['file_excel']['name'] != '') {
+            $allowed_ext = ['csv'];
+            $ext = pathinfo($_FILES['file_excel']['name'], PATHINFO_EXTENSION);
+            
+            if (in_array(strtolower($ext), $allowed_ext)) {
+                
+                $file = fopen($_FILES['file_excel']['tmp_name'], 'r');
+                $successCount = 0;
+                $failCount = 0;
+                $isFirstRow = true;
+                
+                while (($row = fgetcsv($file, 1000, ";")) !== FALSE) {
+                    if ($isFirstRow) {
+                        $isFirstRow = false;
+                        continue; 
+                    }
+                    
+                    $data = [
+                        'id_frekuensi'        => trim(isset($row[0]) ? $row[0] : ''),
+                        'tanggal'             => trim(isset($row[1]) ? $row[1] : ''),
+                        'uraian_materi'       => trim(isset($row[2]) ? $row[2] : ''),
+                        'uraian_tugas'        => trim(isset($row[3]) ? $row[3] : ''),
+                        'hadir'               => trim(isset($row[4]) ? $row[4] : ''),
+                        'alpa'                => trim(isset($row[5]) ? $row[5] : ''),
+                        'status_dosen'        => trim(isset($row[6]) ? $row[6] : ''),
+                        'status_asisten1'     => trim(isset($row[7]) ? $row[7] : ''),
+                        'status_asisten2'     => trim(isset($row[8]) ? $row[8] : ''),
+                        'id_asisten_pengganti'=> trim(isset($row[9]) ? $row[9] : '')
+                    ];
+                    
+                    if (empty($data['id_frekuensi']) || empty($data['tanggal'])) {
+                        $failCount++;
+                        continue;
+                    }
+                    
+                    $result = $this->model('Mentoring_model')->tambah($data);
+                    if ($result) {
+                        $successCount++;
+                    } else {
+                        $failCount++;
+                    }
+                }
+                fclose($file);
+                
+                Flasher::setFlash("Import Selesai. $successCount sukses, $failCount gagal.", 'Info', 'info');
+                
+            } else {
+                Flasher::setFlash('Format file harus .csv (Comma Delimited)', 'Error', 'danger');
+            }
+        } else {
+            Flasher::setFlash('Pilih file terlebih dahulu!', 'Error', 'warning');
+        }
+        
+        $id_frekuensi = isset($_POST['id_frekuensi']) ? $_POST['id_frekuensi'] : (isset($data['id_frekuensi']) ? $data['id_frekuensi'] : null);
+        if ($id_frekuensi) {
+            header('Location: ' . BASEURL . '/frekuensi/detail/' . $id_frekuensi);
+        } else {
+            header('Location: ' . BASEURL . '/frekuensi');
+        }
+        exit;
+    }
+
+    public function downloadTemplate() {
+        $this->isAdmin();
+        $filename = "Template_Monitoring_" . date('Ymd') . ".csv";
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '";');
+        
+        $file = fopen('php://output', 'w');
+        fputcsv($file, ['ID Frekuensi', 'Tanggal (YYYY-MM-DD)', 'Uraian Materi', 'Uraian Tugas', 'Hadir', 'Alpa', 'Dosen (Hadir/kosong)', 'Asisten 1 (Hadir/kosong)', 'Asisten 2 (Hadir/kosong)', 'ID Asisten Pengganti'], ";");
+        fputcsv($file, ['1', '2026-08-01', 'Pengenalan HTML', 'Tugas Form', '30', '2', 'Hadir', 'Hadir', 'Hadir', ''], ";");
+        fclose($file);
+        exit;
+    }
 }

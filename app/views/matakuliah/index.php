@@ -32,7 +32,8 @@
             <!-- MAP & BOX PANE -->
             <div class="card">
               <div class="card-header">
-                <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary button-style" onclick="add('Matakuliah')">Tambah</a>
+                <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary button-style" onclick="add('Matakuliah')"><i class="fas fa-plus"></i> Tambah</a>
+                <a data-bs-toggle="modal" data-bs-target="#importExcelModal" class="btn btn-success button-style"><i class="fas fa-file-excel"></i> Import Excel</a>
                 
                 <div class="card-tools">
                   <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -99,5 +100,36 @@
       </div><!--/. container-fluid -->
     </section>
     <!-- /.content -->
+
+    <!-- Modal Import Excel -->
+    <div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header bg-success text-white">
+            <h5 class="modal-title" id="importExcelModalLabel"><i class="fas fa-file-excel"></i> Import Data Matakuliah</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <form action="<?= BASEURL; ?>/Matakuliah/importExcel" method="post" enctype="multipart/form-data">
+            <div class="modal-body">
+              <div class="form-group mb-3">
+                <a href="<?= BASEURL; ?>/Matakuliah/downloadTemplate" class="btn btn-info btn-sm text-white">
+                    <i class="fas fa-download"></i> Download Template CSV
+                </a>
+              </div>
+              <div class="form-group">
+                <label for="file_excel">Pilih File Data (.csv)</label>
+                <input type="file" class="form-control" name="file_excel" id="file_excel" accept=".csv" required>
+                <small class="form-text text-muted">Format kolom (A-F): Kode Matkul, Matakuliah, Singkatan, ID Jurusan, Semester, SKS. Baris pertama akan diabaikan (header).</small>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+              <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Import</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
   </div>
   <!-- /.content-wrapper -->

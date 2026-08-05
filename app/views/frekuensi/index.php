@@ -116,6 +116,7 @@
                   <div class="card-header">
                   <?php if ($_SESSION['role'] == 'Admin') : ?>
                     <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary button-style" onclick="add('Frekuensi')">Tambah</a>
+                    <a data-bs-toggle="modal" data-bs-target="#importExcelModal" class="btn btn-success button-style"><i class="fas fa-file-excel"></i> Import CSV</a>
                     <?php endif; ?>
                     <div class="card-tools">
                       <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -213,6 +214,7 @@
                       </div>
                         <div class="button-section">
                             <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary btn-sm button-style" onclick="add('Frekuensi')">Tambah</a>
+                            <a data-bs-toggle="modal" data-bs-target="#importExcelModal" class="btn btn-success btn-sm button-style"><i class="fas fa-file-excel"></i> Import CSV</a>
                         </div>
                       </div>
                     </div>
@@ -297,4 +299,34 @@
       </div>
     </div>
   </section>
+</div>
+
+<!-- Modal Import Excel Frekuensi -->
+<div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="importExcelModalLabel"><i class="fas fa-file-excel"></i> Import Data Jadwal Frekuensi</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="<?= BASEURL; ?>/Frekuensi/importExcel" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <a href="<?= BASEURL; ?>/Frekuensi/downloadTemplate" class="btn btn-info btn-sm text-white">
+                            <i class="fas fa-download"></i> Download Template CSV
+                        </a>
+                    </div>
+                    <div class="form-group">
+                        <label for="file_excel">Pilih File Data (.csv)</label>
+                        <input type="file" class="form-control" name="file_excel" id="file_excel" accept=".csv" required>
+                        <small class="form-text text-muted">Format kolom (A-L): ID Jurusan, ID Matakuliah, Frekuensi, ID Tahun, ID Kelas, Hari (Senin-Minggu), Jam Mulai, Jam Selesai, ID Ruangan, ID Dosen, ID Asisten 1 (Opsional), ID Asisten 2 (Opsional).</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>

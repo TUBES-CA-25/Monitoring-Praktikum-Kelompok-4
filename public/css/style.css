@@ -314,3 +314,29 @@ span a:hover {
 .button-style {
     border-radius: 5px;
 }
+
+/* ========================================
+   DATATABLES LAYOUT FIX
+   ======================================== */
+div.dataTables_wrapper div.dataTables_filter {
+    text-align: right;
+}
+div.dataTables_wrapper div.dataTables_filter input {
+    margin-left: 0.5em;
+    display: inline-block;
+    width: auto;
+}
+@media (min-width: 768px) {
+    div.dataTables_wrapper div.dataTables_filter {
+        float: right;
+    }
+    div.dataTables_wrapper div.dataTables_length {
+        float: left;
+    }
+    /* Clearfix for the row if needed */
+    div.dataTables_wrapper div.row:first-child::after {
+        content: "";
+        display: table;
+        clear: both;
+    }
+}

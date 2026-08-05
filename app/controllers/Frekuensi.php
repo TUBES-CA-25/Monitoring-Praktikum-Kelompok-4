@@ -167,4 +167,77 @@ class Frekuensi extends Controller {
         echo json_encode($data);
         exit;
     }
+    public function importExcel() {
+        $this->isAdmin();
+        
+        if (isset($_FILES['file_excel']['name']) && $_FILES['file_excel']['name'] != '') {
+            $allowed_ext = ['csv'];
+            $ext = pathinfo($_FILES['file_excel']['name'], PATHINFO_EXTENSION);
+            
+            if (in_array(strtolower($ext), $allowed_ext)) {
+                $file = fopen($_FILES['file_excel']['tmp_name'], 'r');
+                $successCount = 0;
+                $failCount = 0;
+                $isFirstRow = true;
+                
+                while (($row = fgetcsv($file, 1000, ";")) !== FALSE) {
+                    if ($isFirstRow) {
+                        $isFirstRow = false;
+                        continue; 
+                    }
+                    
+                    $data = [
+                        'id_jurusan'  => trim(isset($row[0]) ? $row[0] : ''),
+                        'id_matkul'   => trim(isset($row[1]) ? $row[1] : ''),
+                        'frekuensi'   => trim(isset($row[2]) ? $row[2] : ''),
+                        'id_tahun'    => trim(isset($row[3]) ? $row[3] : ''),
+                        'id_kelas'    => trim(isset($row[4]) ? $row[4] : ''),
+                        'hari'        => trim(isset($row[5]) ? $row[5] : ''),
+                        'jam_mulai'   => trim(isset($row[6]) ? $row[6] : ''),
+                        'jam_selesai' => trim(isset($row[7]) ? $row[7] : ''),
+                        'id_ruangan'  => trim(isset($row[8]) ? $row[8] : ''),
+                        'id_dosen'    => trim(isset($row[9]) ? $row[9] : ''),
+                        'id_asisten1' => trim(isset($row[10]) ? $row[10] : ''),
+                        'id_asisten2' => trim(isset($row[11]) ? $row[11] : '')
+                    ];
+                    
+                    if (empty($data['id_jurusan']) || empty($data['id_matkul']) || empty($data['frekuensi'])) {
+                        $failCount++;
+                        continue;
+                    }
+                    
+                    $result = $this->model('Frekuensi_model')->tambah($data);
+                    if ($result > 0) {
+                        $successCount++;
+                    } else {
+                        $failCount++;
+                    }
+                }
+                fclose($file);
+                
+                Flasher::setFlash("Import Selesai. $successCount sukses, $failCount gagal.", 'Info', 'info');
+                
+            } else {
+                Flasher::setFlash('Format file harus .csv (Comma Delimited)', 'Error', 'danger');
+            }
+        } else {
+            Flasher::setFlash('Pilih file terlebih dahulu!', 'Error', 'warning');
+        }
+        
+        header('Location: ' . BASEURL . '/frekuensi');
+        exit;
+    }
+
+    public function downloadTemplate() {
+        $this->isAdmin();
+        $filename = "Template_Jadwal_Frekuensi_" . date('Ymd') . ".csv";
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '";');
+        
+        $file = fopen('php://output', 'w');
+        fputcsv($file, ['ID Jurusan', 'ID Matakuliah', 'Frekuensi', 'ID Tahun', 'ID Kelas', 'Hari (Senin-Minggu)', 'Jam Mulai (HH:MM)', 'Jam Selesai (HH:MM)', 'ID Ruangan', 'ID Dosen', 'ID Asisten 1 (Opsional)', 'ID Asisten 2 (Opsional)'], ";");
+        fputcsv($file, ['1', '2', 'TI_PW-1', '1', '1', 'Senin', '08:00', '10:00', '1', '1', '1', '2'], ";");
+        fclose($file);
+        exit;
+    }
 }

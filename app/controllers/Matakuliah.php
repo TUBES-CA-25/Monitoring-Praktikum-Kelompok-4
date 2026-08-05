@@ -69,7 +69,73 @@ class Matakuliah extends Controller {
         header('Location: '.BASEURL. '/matakuliah');
         exit;
     }
-    
+    public function importExcel() {
+        $this->isAdmin();
+        
+        if (isset($_FILES['file_excel']['name']) && $_FILES['file_excel']['name'] != '') {
+            $allowed_ext = ['csv'];
+            $ext = pathinfo($_FILES['file_excel']['name'], PATHINFO_EXTENSION);
+            
+            if (in_array(strtolower($ext), $allowed_ext)) {
+                $file = fopen($_FILES['file_excel']['tmp_name'], 'r');
+                $successCount = 0;
+                $failCount = 0;
+                $isFirstRow = true;
+                
+                while (($row = fgetcsv($file, 1000, ";")) !== FALSE) {
+                    if ($isFirstRow) {
+                        $isFirstRow = false;
+                        continue;
+                    }
+                    
+                    $data = [
+                        'kode_matkul' => trim(isset($row[0]) ? $row[0] : ''),
+                        'nama_matkul' => trim(isset($row[1]) ? $row[1] : ''),
+                        'singkatan'   => trim(isset($row[2]) ? $row[2] : ''),
+                        'id_jurusan'  => trim(isset($row[3]) ? $row[3] : ''),
+                        'semester'    => trim(isset($row[4]) ? $row[4] : ''),
+                        'sks'         => trim(isset($row[5]) ? $row[5] : '')
+                    ];
+                    
+                    if (empty($data['kode_matkul']) || empty($data['nama_matkul'])) {
+                        $failCount++;
+                        continue;
+                    }
+                    
+                    $result = $this->model('Matakuliah_model')->tambah($data);
+                    if ($result > 0) {
+                        $successCount++;
+                    } else {
+                        $failCount++;
+                    }
+                }
+                fclose($file);
+                
+                Flasher::setFlash("Import Selesai. $successCount sukses, $failCount gagal/duplikat.", 'Info', 'info');
+            } else {
+                Flasher::setFlash('Format file harus .csv (Comma Delimited)', 'Error', 'danger');
+            }
+        } else {
+            Flasher::setFlash('Pilih file terlebih dahulu!', 'Error', 'warning');
+        }
+        
+        header('Location: ' . BASEURL . '/matakuliah');
+        exit;
+    }
+
+    public function downloadTemplate() {
+        $this->isAdmin();
+        $filename = "Template_Matakuliah_" . date('Ymd') . ".csv";
+        header('Content-Type: text/csv');
+        header('Content-Disposition: attachment; filename="' . $filename . '";');
+        
+        $file = fopen('php://output', 'w');
+        fputcsv($file, ['Kode Matkul', 'Matakuliah (Nama Matkul)', 'Singkatan', 'ID Jurusan', 'Semester (GANJIL / GENAP)', 'SKS'], ";");
+        fputcsv($file, ['MK001', 'Pemrograman Web', 'PW', '1', 'GANJIL', '3'], ";");
+        fclose($file);
+        exit;
+    }
+
     public function getMatakuliahByJurusan(){
         $id_jurusan = $_POST['id_jurusan'];
         $data['matakuliahOptions'] = $this->model('Matakuliah_model')->getMatakuliahByJurusan($id_jurusan);

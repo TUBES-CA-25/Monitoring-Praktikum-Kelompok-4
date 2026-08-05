@@ -32,6 +32,9 @@
                             <a data-bs-toggle="modal" data-bs-target="#myModal" class="btn btn-primary shadow-sm" onclick="add('Mentoring', '<?= e($data['frekuensi']['id_frekuensi']) ?>')">
                                 <i class="fas fa-plus"></i> Tambah
                             </a>
+                            <a data-bs-toggle="modal" data-bs-target="#importExcelModal" class="btn btn-success shadow-sm ml-2">
+                                <i class="fas fa-file-excel"></i> Import CSV
+                            </a>
                             <?php if ($_SESSION['role'] == 'Admin') : ?>
                                 <!-- <a href="<?= BASEURL; ?>/mentoring/export_excel/<?= e($data['frekuensi']['id_frekuensi']) ?>" class="btn btn-success shadow-sm ml-2">
                                     <i class="fas fa-file-excel"></i> Export Excel
@@ -208,4 +211,35 @@
             </div>
         </div>
     </section>
+</div>
+
+<!-- Modal Import Excel -->
+<div class="modal fade" id="importExcelModal" tabindex="-1" aria-labelledby="importExcelModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="importExcelModalLabel"><i class="fas fa-file-excel"></i> Import Data Monitoring</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="<?= BASEURL; ?>/Mentoring/importExcel" method="post" enctype="multipart/form-data">
+                <div class="modal-body">
+                    <div class="form-group mb-3">
+                        <a href="<?= BASEURL; ?>/Mentoring/downloadTemplate" class="btn btn-info btn-sm text-white">
+                            <i class="fas fa-download"></i> Download Template CSV
+                        </a>
+                    </div>
+                    <div class="form-group">
+                        <label for="file_excel">Pilih File Data (.csv)</label>
+                        <input type="hidden" name="id_frekuensi" value="<?= e($data['detail']['id_frekuensi']) ?>">
+                        <input type="file" class="form-control" name="file_excel" id="file_excel" accept=".csv" required>
+                        <small class="form-text text-muted">Format kolom (A-J): ID Frekuensi, Tanggal (YYYY-MM-DD), Uraian Materi, Uraian Tugas, Hadir, Alpa, Dosen (Hadir/kosong), Asisten 1 (Hadir/kosong), Asisten 2 (Hadir/kosong), ID Asisten Pengganti. Baris pertama (header) akan diabaikan.</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success"><i class="fas fa-upload"></i> Import</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
