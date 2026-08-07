@@ -180,42 +180,98 @@ class Frekuensi extends Controller {
                 $failCount = 0;
                 $isFirstRow = true;
                 
+                $db = new Database;
+                
                 while (($row = fgetcsv($file, 1000, ";")) !== FALSE) {
                     if ($isFirstRow) {
                         $isFirstRow = false;
                         continue; 
                     }
                     
-                    $data = [
-                        'id_jurusan'  => trim(isset($row[0]) ? $row[0] : ''),
-                        'id_matkul'   => trim(isset($row[1]) ? $row[1] : ''),
-                        'frekuensi'   => trim(isset($row[2]) ? $row[2] : ''),
-                        'id_tahun'    => trim(isset($row[3]) ? $row[3] : ''),
-                        'id_kelas'    => trim(isset($row[4]) ? $row[4] : ''),
-                        'hari'        => trim(isset($row[5]) ? $row[5] : ''),
-                        'jam_mulai'   => trim(isset($row[6]) ? $row[6] : ''),
-                        'jam_selesai' => trim(isset($row[7]) ? $row[7] : ''),
-                        'id_ruangan'  => trim(isset($row[8]) ? $row[8] : ''),
-                        'id_dosen'    => trim(isset($row[9]) ? $row[9] : ''),
-                        'id_asisten1' => trim(isset($row[10]) ? $row[10] : ''),
-                        'id_asisten2' => trim(isset($row[11]) ? $row[11] : '')
-                    ];
+                    $frekuensi_val = trim(isset($row[0]) ? $row[0] : '');
+                    $kode_matkul   = trim(isset($row[1]) ? $row[1] : '');
+                    $tahun_ajaran  = trim(isset($row[3]) ? $row[3] : '');
+                    $kelas_val     = trim(isset($row[4]) ? $row[4] : '');
+                    $hari_val      = trim(isset($row[5]) ? $row[5] : '');
+                    $jam_mulai     = trim(isset($row[6]) ? $row[6] : '');
+                    $jam_selesai   = trim(isset($row[7]) ? $row[7] : '');
+                    $ruangan_val   = trim(isset($row[8]) ? $row[8] : '');
+                    $dosen_val     = trim(isset($row[9]) ? $row[9] : '');
+                    $asisten1_val  = trim(isset($row[10]) ? $row[10] : '');
+                    $asisten2_val  = trim(isset($row[11]) ? $row[11] : '');
                     
-                    if (empty($data['id_jurusan']) || empty($data['id_matkul']) || empty($data['frekuensi'])) {
+                    if (empty($frekuensi_val) || empty($kode_matkul)) {
                         $failCount++;
                         continue;
                     }
                     
-                    $result = $this->model('Frekuensi_model')->tambah($data);
-                    if ($result > 0) {
-                        $successCount++;
+                    // Lookups
+                    $db->query("SELECT id_matkul, id_jurusan FROM mst_matakuliah WHERE kode_matkul = :kode LIMIT 1");
+                    $db->bind('kode', $kode_matkul);
+                    $matkul = $db->single();
+                    
+                    $db->query("SELECT id_tahun FROM mst_tahun_ajaran WHERE tahun_ajaran = :tahun LIMIT 1");
+                    $db->bind('tahun', $tahun_ajaran);
+                    $tahun = $db->single();
+                    
+                    $db->query("SELECT id_kelas FROM mst_kelas WHERE kelas = :kelas LIMIT 1");
+                    $db->bind('kelas', $kelas_val);
+                    $kelas = $db->single();
+                    
+                    $db->query("SELECT id_ruangan FROM mst_ruangan WHERE nama_ruangan = :ruang LIMIT 1");
+                    $db->bind('ruang', $ruangan_val);
+                    $ruang = $db->single();
+                    
+                    $db->query("SELECT id_dosen FROM mst_dosen WHERE nama_dosen = :dosen LIMIT 1");
+                    $db->bind('dosen', $dosen_val);
+                    $dosen = $db->single();
+                    
+                    $id_asisten1 = null;
+                    if(!empty($asisten1_val)) {
+                        $db->query("SELECT id_asisten FROM mst_asisten WHERE nama_asisten = :asisten1 LIMIT 1");
+                        $db->bind('asisten1', $asisten1_val);
+                        $as1 = $db->single();
+                        if($as1) $id_asisten1 = $as1['id_asisten'];
+                    }
+                    
+                    $id_asisten2 = null;
+                    if(!empty($asisten2_val)) {
+                        $db->query("SELECT id_asisten FROM mst_asisten WHERE nama_asisten = :asisten2 LIMIT 1");
+                        $db->bind('asisten2', $asisten2_val);
+                        $as2 = $db->single();
+                        if($as2) $id_asisten2 = $as2['id_asisten'];
+                    }
+                    
+                    if($matkul && $tahun && $kelas && $ruang && $dosen) {
+                        $data = [
+                            'frekuensi'   => $frekuensi_val,
+                            'id_jurusan'  => $matkul['id_jurusan'],
+                            'id_matkul'   => $matkul['id_matkul'],
+                            'id_tahun'    => $tahun['id_tahun'],
+                            'id_kelas'    => $kelas['id_kelas'],
+                            'hari'        => $hari_val,
+                            'jam_mulai'   => $jam_mulai,
+                            'jam_selesai' => $jam_selesai,
+                            'id_ruangan'  => $ruang['id_ruangan'],
+                            'id_dosen'    => $dosen['id_dosen'],
+                            'id_asisten1' => $id_asisten1,
+                            'id_asisten2' => $id_asisten2
+                        ];
+                        
+                        $result = $this->model('Frekuensi_model')->tambah($data);
+                        if ($result > 0) {
+                            $successCount++;
+                        } else {
+                            $failCount++;
+                        }
                     } else {
+                        // Jika lookup gagal (data tidak ditemukan)
                         $failCount++;
                     }
                 }
                 fclose($file);
                 
-                Flasher::setFlash("Import Selesai. $successCount sukses, $failCount gagal.", 'Info', 'info');
+                Flasher::setFlash("Import Selesai. $successCount sukses, $failCount gagal (Format/Data Tidak Valid).", 'Info', 'info');
                 
             } else {
                 Flasher::setFlash('Format file harus .csv (Comma Delimited)', 'Error', 'danger');
@@ -235,8 +291,8 @@ class Frekuensi extends Controller {
         header('Content-Disposition: attachment; filename="' . $filename . '";');
         
         $file = fopen('php://output', 'w');
-        fputcsv($file, ['ID Jurusan', 'ID Matakuliah', 'Frekuensi', 'ID Tahun', 'ID Kelas', 'Hari (Senin-Minggu)', 'Jam Mulai (HH:MM)', 'Jam Selesai (HH:MM)', 'ID Ruangan', 'ID Dosen', 'ID Asisten 1 (Opsional)', 'ID Asisten 2 (Opsional)'], ";");
-        fputcsv($file, ['1', '2', 'TI_PW-1', '1', '1', 'Senin', '08:00', '10:00', '1', '1', '1', '2'], ";");
+        fputcsv($file, ['Frekuensi', 'Kode Matakuliah', 'Nama Matakuliah (Hanya Referensi)', 'Tahun Ajaran (Misal: 2024/2025)', 'Kelas (Misal: A1)', 'Hari', 'Jam Mulai (HH:MM)', 'Jam Selesai (HH:MM)', 'Nama Ruangan', 'Nama Dosen', 'Nama Asisten 1 (Opsional)', 'Nama Asisten 2 (Opsional)'], ";");
+        fputcsv($file, ['TI_PW-1', 'MK001', 'Pemrograman Web', '2024/2025', 'A1', 'Senin', '08:00', '10:00', 'Lab Komputer 1', 'Dr. Fulan, S.Kom., M.Kom.', 'Asisten Fulan', 'Asisten Fulan 2'], ";");
         fclose($file);
         exit;
     }

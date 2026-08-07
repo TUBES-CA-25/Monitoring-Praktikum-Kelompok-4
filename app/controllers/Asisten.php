@@ -250,12 +250,12 @@ class Asisten extends Controller {
                         continue;
                     }
                     
-                    $email    = trim(isset($row[0]) ? $row[0] : '');
-                    $stambuk  = trim(isset($row[1]) ? $row[1] : '');
-                    $nama     = trim(isset($row[2]) ? $row[2] : '');
-                    $angkatan = trim(isset($row[3]) ? $row[3] : '');
-                    $status   = trim(isset($row[4]) ? $row[4] : '');
-                    $jk       = trim(isset($row[5]) ? $row[5] : '');
+                    $stambuk  = trim(isset($row[0]) ? $row[0] : '');
+                    $nama     = trim(isset($row[1]) ? $row[1] : '');
+                    $angkatan = trim(isset($row[2]) ? $row[2] : '');
+                    $status   = trim(isset($row[3]) ? $row[3] : '');
+                    $jk       = trim(isset($row[4]) ? $row[4] : '');
+                    $email    = trim(isset($row[5]) ? $row[5] : '');
                     
                     if (empty($email) || empty($stambuk) || empty($nama)) {
                         $failCount++;
@@ -321,8 +321,8 @@ class Asisten extends Controller {
         header('Content-Disposition: attachment; filename="' . $filename . '";');
         
         $file = fopen('php://output', 'w');
-        fputcsv($file, ['Username (Email)', 'Stambuk', 'Nama Asisten', 'Angkatan', 'Status (Asisten/Calon Asisten)', 'Jenis Kelamin (Pria/Wanita)'], ";");
-        fputcsv($file, ['contoh@student.umi.ac.id', '13020210001', 'Fulan', '2021', 'Asisten', 'Pria'], ";");
+        fputcsv($file, ['Stambuk', 'Nama Asisten', 'Angkatan', 'Status (Asisten/Calon Asisten)', 'Jenis Kelamin (Pria/Wanita)', 'Username (Email)'], ";");
+        fputcsv($file, ['13020210001', 'Fulan', '2021', 'Asisten', 'Pria', 'contoh@student.umi.ac.id'], ";");
         fclose($file);
         exit;
     }

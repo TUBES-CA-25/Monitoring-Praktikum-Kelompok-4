@@ -187,7 +187,7 @@
                   <div class="form-group">
                     <label for="file_excel">Pilih File Data (.csv)</label>
                     <input type="file" class="form-control" name="file_excel" id="file_excel" accept=".csv" required>
-                    <small class="form-text text-muted">Format kolom (A-F): Username (Email), Stambuk, Nama Asisten, Angkatan, Status (Asisten/Calon Asisten), Jenis Kelamin (Pria/Wanita). Baris pertama akan diabaikan (sebagai header).</small>
+                    <small class="form-text text-muted">Format kolom (A-F): Stambuk, Nama Asisten, Angkatan, Status (Asisten/Calon Asisten), Jenis Kelamin (Pria/Wanita), Username (Email). Baris pertama akan diabaikan (sebagai header).</small>
                   </div>
                 </div>
                 <div class="modal-footer">

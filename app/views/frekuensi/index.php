@@ -319,7 +319,7 @@
                     <div class="form-group">
                         <label for="file_excel">Pilih File Data (.csv)</label>
                         <input type="file" class="form-control" name="file_excel" id="file_excel" accept=".csv" required>
-                        <small class="form-text text-muted">Format kolom (A-L): ID Jurusan, ID Matakuliah, Frekuensi, ID Tahun, ID Kelas, Hari (Senin-Minggu), Jam Mulai, Jam Selesai, ID Ruangan, ID Dosen, ID Asisten 1 (Opsional), ID Asisten 2 (Opsional).</small>
+                        <small class="form-text text-muted">Format kolom (A-L): Frekuensi, Kode Matakuliah, Nama Matakuliah, Tahun Ajaran, Kelas, Hari, Jam Mulai, Jam Selesai, Nama Ruangan, Nama Dosen, Nama Asisten 1 (Opsional), Nama Asisten 2 (Opsional).</small>
                     </div>
                 </div>
                 <div class="modal-footer">
