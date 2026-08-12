@@ -22,14 +22,14 @@
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <?php if ($_SESSION['role'] == 'Asisten') : ?>
           <li class="nav-item">
-            <a class="nav-link active" id="jadwal-frekuensi-tab" data-toggle="tab" href="#jadwal-frekuensi" role="tab" aria-controls="jadwal-frekuensi" aria-selected="true">Jadwal Frekuensi</a>
+            <a class="nav-link active" id="jadwal-frekuensi-tab" data-bs-toggle="tab" href="#jadwal-frekuensi" role="tab" aria-controls="jadwal-frekuensi" aria-selected="true">Jadwal Frekuensi</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" id="jadwal-frekuensi2-tab" data-toggle="tab" href="#jadwal-frekuensi2" role="tab" aria-controls="jadwal-frekuensi2" aria-selected="false">Jadwal Frekuensi Keseluruhan</a>
+            <a class="nav-link" id="jadwal-frekuensi2-tab" data-bs-toggle="tab" href="#jadwal-frekuensi2" role="tab" aria-controls="jadwal-frekuensi2" aria-selected="false">Jadwal Frekuensi Keseluruhan</a>
           </li>
         <?php elseif ($_SESSION['role'] == 'Admin') : ?>
           <li class="nav-item">
-            <a class="nav-link active" id="jadwal-frekuensi2-tab" data-toggle="tab" href="#jadwal-frekuensi2" role="tab" aria-controls="jadwal-frekuensi2" aria-selected="true">Jadwal Frekuensi Keseluruhan</a>
+            <a class="nav-link active" id="jadwal-frekuensi2-tab" data-bs-toggle="tab" href="#jadwal-frekuensi2" role="tab" aria-controls="jadwal-frekuensi2" aria-selected="true">Jadwal Frekuensi Keseluruhan</a>
           </li>
         <?php endif; ?>
       </ul>

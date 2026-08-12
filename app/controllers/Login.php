@@ -4,7 +4,14 @@ class Login extends Controller {
     public function index()
     {
         $data['title'] = 'Login Page';
-        $data['remember_username'] = isset($_COOKIE['remember_username']) ? $_COOKIE['remember_username'] : '';
+        
+        // Prioritaskan session old_username jika baru saja gagal login
+        if (isset($_SESSION['old_username'])) {
+            $data['remember_username'] = $_SESSION['old_username'];
+            unset($_SESSION['old_username']); // Hapus setelah dibaca
+        } else {
+            $data['remember_username'] = isset($_COOKIE['remember_username']) ? $_COOKIE['remember_username'] : '';
+        }
 
         if (isset($_SESSION['id_user'])) {
             header('Location: ' . BASEURL . '/home');
@@ -15,8 +22,11 @@ class Login extends Controller {
     }
 
     public function login() {
-        $username = $_POST['username'];
+        $username = trim($_POST['username']);
         $password = $_POST['password'];
+
+        // Simpan username sementara agar tidak hilang jika login gagal
+        $_SESSION['old_username'] = $username;
 
         $user = $this->model('Login_model')->getUser($username);
 
@@ -48,7 +58,8 @@ class Login extends Controller {
             }
 
             if ($isPasswordValid) {
-                // Bersihkan session rate limit
+                // Bersihkan session sementara
+                unset($_SESSION['old_username']);
                 unset($_SESSION['login_attempts']);
                 unset($_SESSION['locked_until']);
 

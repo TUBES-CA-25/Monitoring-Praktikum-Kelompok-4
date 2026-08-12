@@ -163,6 +163,17 @@
             $('#myTable').DataTable();
         }
 
+        // Perbaiki bug DataTables di dalam Tab Bootstrap (Jadwal Keseluruhan)
+        $('a[data-bs-toggle="tab"]').on('shown.bs.tab', function(e){
+            $($.fn.dataTable.tables(true)).DataTable().columns.adjust();
+        });
+
+        // Buka tab secara otomatis jika ada hash di URL (misal: #jadwal-frekuensi2)
+        let hash = window.location.hash;
+        if (hash) {
+            $('.nav-tabs a[href="' + hash + '"]').tab('show');
+        }
+
         if ($('#example').length) {
             $('#example').DataTable({
                 dom: 'Bfrtip',

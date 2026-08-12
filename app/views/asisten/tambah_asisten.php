@@ -1,4 +1,4 @@
-<form id="formTambahDataAsisten" action="<?= BASEURL ?>/asisten/tambah" method="post" autocomplete="off" enctype="multipart/form-data">
+<form id="formTambahAsistenKhusus" action="<?= BASEURL ?>/asisten/tambah" method="post" autocomplete="off" enctype="multipart/form-data">
     <div class="row">
         <div class="col-12">            
             
@@ -26,7 +26,7 @@
                 <div class="input-group">
                     <input type="password" name="password" id="passwordInput" class="form-control" placeholder="(Opsional) Default: iclabs-umi">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                        <button class="btn btn-outline-secondary" type="button" onclick="window.togglePwdModal(this)">
                             <i class="fas fa-eye"></i>
                         </button>
                     </div>
@@ -80,11 +80,28 @@
                 </small>
             </div><br>
         </div>
+        </div>
+        <div class="col-12 text-center mt-3">
+            <button type="submit" class="btn btn-primary">Tambah Data</button>
+            <button type="button" class="btn btn-secondary ml-2" data-bs-dismiss="modal">Batal</button>
+        </div>
     </div>
 </form>
 <?php unset($_SESSION['old']); ?>
 
 <script>
+window.togglePwdModal = function(btn) {
+    const pwdInput = document.getElementById('passwordInput');
+    const icon = btn.querySelector('i');
+    if (pwdInput.type === 'password') {
+        pwdInput.type = 'text';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+        pwdInput.type = 'password';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+};
+
 // Validasi file upload real-time
 function validateImageFile(input) {
     const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
@@ -122,7 +139,7 @@ document.querySelector('input[name="photo_path"]').addEventListener('change', fu
 });
 
 // Validasi form submit
-document.getElementById('formTambahDataAsisten').addEventListener('submit', function(e) {
+document.getElementById('formTambahAsistenKhusus').addEventListener('submit', function(e) {
     const form = this;
     
     // Cek select fields tidak boleh kosong

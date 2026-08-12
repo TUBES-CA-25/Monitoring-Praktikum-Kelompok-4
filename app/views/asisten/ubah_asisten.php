@@ -11,7 +11,7 @@
                 
                 <div class="form-group mb-3">
                     <label for="usernameInput" class="form-label">Username (Email)</label>
-                    <input type="email" name="username" id="usernameInput" class="form-control" 
+                    <input type="text" name="username" id="usernameInput" class="form-control" 
                         value="<?= htmlspecialchars($data['ubahdata']['username'] ?? '', ENT_QUOTES, 'UTF-8') ?>" required>
                 </div>
                 
@@ -21,8 +21,8 @@
                         <input type="password" name="password" id="passwordInput" class="form-control" 
                                placeholder="Kosongkan jika tidak ingin mengubah password">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
-                                <i class="fas fa-eye" id="eyeIcon"></i>
+                            <button class="btn btn-outline-secondary" type="button" onclick="window.togglePwdModal(this)">
+                                <i class="fas fa-eye"></i>
                             </button>
                         </div>
                     </div>
@@ -98,10 +98,9 @@
 </div>
 
 <script>
-// Toggle Password Visibility
-document.getElementById('togglePassword')?.addEventListener('click', function() {
+window.togglePwdModal = function(btn) {
     const pwdInput = document.getElementById('passwordInput');
-    const icon = document.getElementById('eyeIcon');
+    const icon = btn.querySelector('i');
     if (pwdInput.type === 'password') {
         pwdInput.type = 'text';
         icon.classList.replace('fa-eye', 'fa-eye-slash');
@@ -109,7 +108,7 @@ document.getElementById('togglePassword')?.addEventListener('click', function() 
         pwdInput.type = 'password';
         icon.classList.replace('fa-eye-slash', 'fa-eye');
     }
-});
+};
 
 // Validasi Form saat Submit (Ukuran & Format File)
 document.getElementById('formUbahDataAsisten')?.addEventListener('submit', function(e) {

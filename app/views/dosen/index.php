@@ -26,6 +26,12 @@
         <div class="row">
           <!-- Left col -->
           <div class="col-md-12">
+            
+            <!-- Tempat Munculnya Alert -->
+            <div class="alert-area">
+                <?php Flasher::flash(); ?>
+            </div>
+
             <!-- MAP & BOX PANE -->
             <div class="card">
               <div class="card-header">

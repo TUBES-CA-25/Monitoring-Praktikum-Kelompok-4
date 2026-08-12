@@ -45,7 +45,8 @@ class User extends Controller {
         $this->view('user/ubah_user', $data);
     }
     
-    public function prosesUbah() {
+        public function prosesUbah() {
+        
         $data = $_POST;
         $id_user = $data['id_user'];
         
@@ -54,37 +55,54 @@ class User extends Controller {
 
         // 1. Password
         if (empty($data['password'])) {
-            // Jika input kosong, ambil password lama (sudah dalam bentuk hash)
             $data['password'] = $userLama['password'];
         } else {
-            // Jika diisi, gunakan bcrypt
             $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         }
 
-        // 2. Upload Foto Profil (hanya ganti jika ada file baru yang diupload)
-        $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', 'profil_' . $id_user);
-        if ($uploadProfil['status'] === true && isset($uploadProfil['no_upload']) && !$uploadProfil['no_upload'] && !empty($uploadProfil['nama_file'])) {
-            // File baru berhasil diupload → pakai file baru
-            $data['photo_profil'] = $uploadProfil['nama_file'];
-        } else {
-            // Tidak ada upload baru → pertahankan file lama
+        $uploadErrors = [];
+        $uploadSuccess = [];
+
+        // 2. Upload Foto Profil
+        if ($_FILES['photo_profil']['error'] === UPLOAD_ERR_NO_FILE) {
             $data['photo_profil'] = $asistenLama ? ($asistenLama['photo_profil'] ?? null) : ($userLama['photo_profil'] ?? null);
+        } else {
+            $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', 'profil_' . $id_user);
+            if ($uploadProfil['status']) {
+                $data['photo_profil'] = $uploadProfil['nama_file'];
+                $uploadSuccess[] = "Foto Profil (WebP)";
+            } else {
+                $data['photo_profil'] = $asistenLama ? ($asistenLama['photo_profil'] ?? null) : ($userLama['photo_profil'] ?? null);
+                $uploadErrors[] = "Profil: " . $uploadProfil['pesan'];
+            }
         }
 
-        // 3. Upload TTD (hanya ganti jika ada file baru yang diupload)
-        $uploadTTD = $this->prosesUpload('photo_path', 'public/img/signature/', 'ttd_' . $id_user);
-        if ($uploadTTD['status'] === true && isset($uploadTTD['no_upload']) && !$uploadTTD['no_upload'] && !empty($uploadTTD['nama_file'])) {
-            // File baru berhasil diupload → pakai file baru
-            $data['photo_path'] = $uploadTTD['nama_file'];
-        } else {
-            // Tidak ada upload baru → pertahankan file lama
+        // 3. Upload TTD
+        if ($_FILES['photo_path']['error'] === UPLOAD_ERR_NO_FILE) {
             $data['photo_path'] = $asistenLama ? ($asistenLama['photo_path'] ?? null) : ($userLama['photo_path'] ?? null);
+        } else {
+            $uploadTTD = $this->prosesUpload('photo_path', 'public/img/signature/', 'ttd_' . $id_user);
+            if ($uploadTTD['status']) {
+                $data['photo_path'] = $uploadTTD['nama_file'];
+                $uploadSuccess[] = "TTD (WebP)";
+            } else {
+                $data['photo_path'] = $asistenLama ? ($asistenLama['photo_path'] ?? null) : ($userLama['photo_path'] ?? null);
+                $uploadErrors[] = "TTD: " . $uploadTTD['pesan'];
+            }
+        }
+
+        // CEK JIKA ADA ERROR UPLOAD GAMBAR
+        if (!empty($uploadErrors)) {
+            Flasher::setFlash('Gagal Upload Gambar', implode(' | ', $uploadErrors), 'danger');
+            $redirectURL = (isset($_SESSION['role']) && $_SESSION['role'] == 'Asisten') ? '/asisten' : '/user';
+            header('Location: ' . BASEURL . $redirectURL);
+            exit;
         }
 
         // 4. Update Database (Tabel User)
         $updateUser = $this->model('User_model')->ubahDataUser($data);
         
-        // 5. Update Database (Tabel Asisten - Khusus Foto & TTD) jika user adalah asisten
+        // 5. Update Database (Tabel Asisten)
         $updateAsisten = 0;
         if ($asistenLama) {
             $updateAsisten = $this->model('Asisten_model')->updateFilesByUserId(
@@ -111,6 +129,7 @@ class User extends Controller {
         }
         exit;
     }
+
 
     public function hapus($id){
         $this->isAdmin();

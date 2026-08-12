@@ -22,9 +22,9 @@ class Dosen extends Controller {
         $this->isAdmin();
 
         if($this->model('Dosen_model')->tambah($_POST) > 0){
-            Flasher::setFlash(' berhasil ditambahkan', '', 'success');
+            Flasher::setFlash('Dosen', 'berhasil ditambahkan', 'success');
         }else{
-            Flasher::setFlash(' tidak berhasil ditambahkan', '', 'danger');
+            Flasher::setFlash('Dosen', 'tidak berhasil ditambahkan', 'danger');
         }
         header('Location: '.BASEURL. '/dosen');
         exit;
@@ -41,9 +41,9 @@ class Dosen extends Controller {
     public function prosesUbah(){
         $this->isAdmin();
         if($this->model('Dosen_model')->prosesUbah($_POST) > 0){
-            Flasher::setFlash(' berhasil diubah', '', 'success');
+            Flasher::setFlash('Dosen', 'berhasil diubah', 'success');
         }else{
-            Flasher::setFlash(' tidak berhasil diubah', '', 'danger');
+            Flasher::setFlash('Dosen', 'tidak berhasil diubah', 'danger');
         }
         header('Location: '.BASEURL. '/dosen');
         exit;
@@ -52,9 +52,9 @@ class Dosen extends Controller {
     public function hapus($id){
         $this->isAdmin();
         if($this->model('Dosen_model')->prosesHapus($id)){
-            Flasher::setFlash(' berhasil dihapus', '', 'success');
+            Flasher::setFlash('Dosen', 'berhasil dihapus', 'success');
         }else{
-            Flasher::setFlash(' tidak berhasil dihapus', '', 'danger');
+            Flasher::setFlash('Dosen', 'tidak berhasil dihapus', 'danger');
         }
         header('Location: '.BASEURL. '/dosen');
         exit;

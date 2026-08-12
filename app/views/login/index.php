@@ -374,7 +374,7 @@
 
         <!-- Flash message -->
         <div class="alert-area">
-            <?php Flasher::flash(); ?>
+            <?php Flasher::flashLogin(); ?>
         </div>
 
         <!-- Form -->

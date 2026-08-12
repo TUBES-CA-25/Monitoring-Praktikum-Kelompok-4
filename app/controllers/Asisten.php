@@ -132,11 +132,12 @@ class Asisten extends Controller {
         $this->isAdmin();
         $id = $_POST['id'];
         $data['userOptions'] = $this->model('Asisten_model')->tampilUser();
-        $data['ubahdata'] = $this->model('Asisten_model')->ubah($id);
+        $data['ubahdata'] = $this->model('Asisten_model')->getUbahData($id);
         $this->view('asisten/ubah_asisten', $data);
     }
 
-    public function prosesUbah() {
+        public function prosesUbah() {
+
         $this->isAdmin();
         $data = $_POST;
         $id_asisten = $data['id_asisten'];
@@ -146,8 +147,7 @@ class Asisten extends Controller {
         $asistenLama = $this->model('Asisten_model')->detailAsisten($id_asisten);
         $userLama = $this->model('User_model')->getUserById($id_user);
 
-        // 2. VALIDASI EMAIL (Penting agar tidak Duplicate Entry)
-        // Jika email yang diinput BERBEDA dengan email lama, baru kita cek ketersediaannya
+        // 2. VALIDASI EMAIL
         if ($data['username'] !== $userLama['username']) {
             $cekEmail = $this->model('User_model')->getUserByUsernameExceptMe($data['username'], $id_user);
             if ($cekEmail) {
@@ -157,15 +157,16 @@ class Asisten extends Controller {
             }
         }
 
-        // 3. Sanitasi Nama File
+        // 3. Sanitasi Nama File & Variabel Notifikasi
         $namaBersih = preg_replace('/[^A-Za-z0-9]/', '_', $data['nama_asisten']); 
         $uploadErrors = [];
+        $uploadSuccess = []; // Untuk mencatat upload yang berhasil
 
         // 4. Logika Password SHA-256
         if (empty($data['password'])) {
-            $data['password'] = $userLama['password']; // Tetap pakai hash lama
+            $data['password'] = $userLama['password']; 
         } else {
-            $data['password'] = hash('sha256', $data['password']); // Hash baru
+            $data['password'] = hash('sha256', $data['password']); 
         }
 
         // 5. Handle Foto Profil
@@ -173,8 +174,13 @@ class Asisten extends Controller {
             $data['photo_profil'] = $asistenLama['photo_profil'];
         } else {
             $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', $namaBersih . '_profil');
-            $data['photo_profil'] = $uploadProfil['status'] ? $uploadProfil['nama_file'] : $asistenLama['photo_profil'];
-            if (!$uploadProfil['status']) $uploadErrors[] = $uploadProfil['pesan'];
+            if ($uploadProfil['status']) {
+                $data['photo_profil'] = $uploadProfil['nama_file'];
+                $uploadSuccess[] = "Foto Profil (WebP)";
+            } else {
+                $data['photo_profil'] = $asistenLama['photo_profil'];
+                $uploadErrors[] = "Profil: " . $uploadProfil['pesan'];
+            }
         }
 
         // 6. Handle Foto TTD
@@ -182,16 +188,30 @@ class Asisten extends Controller {
             $data['photo_path'] = $asistenLama['photo_path'];
         } else {
             $uploadTTD = $this->prosesUpload('photo_path', 'public/img/signature/', $namaBersih . '_ttd');
-            $data['photo_path'] = $uploadTTD['status'] ? $uploadTTD['nama_file'] : $asistenLama['photo_path'];
-            if (!$uploadTTD['status']) $uploadErrors[] = $uploadTTD['pesan'];
+            if ($uploadTTD['status']) {
+                $data['photo_path'] = $uploadTTD['nama_file'];
+                $uploadSuccess[] = "TTD (WebP)";
+            } else {
+                $data['photo_path'] = $asistenLama['photo_path'];
+                $uploadErrors[] = "TTD: " . $uploadTTD['pesan'];
+            }
+        }
+
+        // CEK JIKA ADA ERROR UPLOAD GAMBAR
+        // Akan menghentikan proses save dan menampilkan errornya!
+        if (!empty($uploadErrors)) {
+            Flasher::setFlash('Gagal Upload Gambar', implode(' | ', $uploadErrors), 'danger');
+            header('Location: ' . BASEURL . '/asisten');
+            exit;
         }
 
         // 7. Eksekusi ke Database
+        $data['nama_user'] = $data['nama_asisten'];
         $updateUser = $this->model('User_model')->ubahDataUser($data);
         $updateAsisten = $this->model('Asisten_model')->ubahData($data);
 
         if ($updateUser >= 0 && $updateAsisten >= 0) {
-            Flasher::setFlash('Berhasil', 'diperbarui', 'success');
+            Flasher::setFlash('Data Asisten', 'berhasil diperbarui', 'success');
         } else {
             Flasher::setFlash('Gagal', 'diperbarui', 'danger');
         }
