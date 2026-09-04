@@ -8,7 +8,7 @@
 
 <aside class="main-sidebar sidebar-light-primary elevation-4">
     <div class="brand-link d-flex align-items-center" style="padding: 10px 14px; border-bottom: 1px solid rgba(0,0,0,0.1);">
-      <img src="<?= BASEURL ?>/public/img/ICLabs.png" alt="ICLabs" class="brand-image img-circle elevation-3" style="opacity: .9; width: 36px; height: 36px; object-fit: cover; flex-shrink: 0;">
+      <img src="<?= BASEURL ?>/public/img/ICLabs.webp" alt="ICLabs" class="brand-image img-circle elevation-3" style="opacity: .9; width: 36px; height: 36px; object-fit: cover; flex-shrink: 0;">
       <div class="ml-2" style="line-height: 1.3; min-width: 0;">
         <span class="d-block font-weight-bold" style="font-size: 0.78rem; color: #333;">Monitoring Praktikum</span>
         <span class="d-block" style="font-size: 0.65rem; color: #888;">ICLabs - FIKOM UMI</span>
@@ -18,7 +18,7 @@
     <div class="sidebar">
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <?php $sidebarFoto = !empty($_SESSION['photo_profil']) ? BASEURL . '/' . $_SESSION['photo_profil'] : BASEURL . '/public/img/user.png'; ?>
+          <?php $sidebarFoto = !empty($_SESSION['photo_profil']) ? BASEURL . '/' . $_SESSION['photo_profil'] : BASEURL . '/public/img/user.webp'; ?>
           <img src="<?= e($sidebarFoto) ?>" class="img-circle elevation-2" alt="User Image" style="width: 35px; height: 35px; object-fit: cover;">
         </div>
         <div class="info">

@@ -35,13 +35,13 @@
 
 <div class="container-fluid">
     <div class="data-title d-flex justify-content-center align-items-center text-center mb-4">
-        <img src="<?= BASEURL; ?>/public/img/UMI-logo.png" width="80">
+        <img src="<?= BASEURL; ?>/public/img/UMI-logo.webp" width="80">
         <div style="width: 100%;">
             <strong>MONITORING PRAKTIKUM</strong><br>
             <strong>LABORATORIUM KOMPUTER - FAKULTAS ILMU KOMPUTER</strong><br>
             <strong>SEMESTER: <?= e($data['detail']['tahun_ajaran']) ?></strong>
         </div>
-        <img src="<?= BASEURL; ?>/public/img/ICLabs-logo.png" width="80">
+        <img src="<?= BASEURL; ?>/public/img/ICLabs-logo.webp" width="80">
     </div>
 
     <div class="row mb-3" style="font-weight: bold;">

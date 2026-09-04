@@ -112,7 +112,7 @@
                     <!-- Map ICLabs will be created here -->
                     <div id="world-map-markers" style="height: 325px; overflow: hidden">
                         <div style="text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%;">
-                            <img src="<?= BASEURL?>/public/img/ICLabs-logo.png" alt="ICLabs" height="150" width="150" style="margin-bottom: 20px;">
+                            <img src="<?= BASEURL?>/public/img/ICLabs-logo.webp" alt="ICLabs" height="150" width="150" style="margin-bottom: 20px;">
                             <p>Integrated Computer Laboratories</p>
                             <p>Jl. Urip Sumoharjo KM. 5 Makassar, Sulawesi Selatan 902311234</p>
                         </div>

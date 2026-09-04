@@ -353,11 +353,11 @@
 <body>
 
 <!-- Background Slideshow -->
-<div class="bg-slide active" style="background-image: url('<?= BASEURL ?>/public/img/background/CV.jpg');"></div>
-<div class="bg-slide" style="background-image: url('<?= BASEURL ?>/public/img/background/DS.jpg');"></div>
-<div class="bg-slide" style="background-image: url('<?= BASEURL ?>/public/img/background/IoT.jpg');"></div>
-<div class="bg-slide" style="background-image: url('<?= BASEURL ?>/public/img/background/Micro.jpg');"></div>
-<div class="bg-slide" style="background-image: url('<?= BASEURL ?>/public/img/background/StartUp.jpg');"></div>
+<div class="bg-slide active" style="background-image: url('<?= BASEURL ?>/public/img/background/CV.webp');"></div>
+<div class="bg-slide" style="background-image: url('<?= BASEURL ?>/public/img/background/DS.webp');"></div>
+<div class="bg-slide" style="background-image: url('<?= BASEURL ?>/public/img/background/IoT.webp');"></div>
+<div class="bg-slide" style="background-image: url('<?= BASEURL ?>/public/img/background/Micro.webp');"></div>
+<div class="bg-slide" style="background-image: url('<?= BASEURL ?>/public/img/background/StartUp.webp');"></div>
 
 <!-- Dark Overlay -->
 <div class="bg-overlay"></div>
@@ -367,7 +367,7 @@
 
         <!-- Logo -->
         <div class="logo-area">
-            <img src="<?= BASEURL;?>/public/img/ICLabs.png" alt="ICLabs Logo">
+            <img src="<?= BASEURL;?>/public/img/ICLabs.webp" alt="ICLabs Logo">
             <h1>Monitoring Praktikum</h1>
             <p>Integrated Computer Laboratorium System</p>
         </div>

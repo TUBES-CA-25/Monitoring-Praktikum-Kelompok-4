@@ -19,7 +19,7 @@
                             <div class="row align-items-center">
                                 <!-- Bagian Kiri: Foto Profil -->
                                 <div class="col-md-4 text-center border-right">
-                                    <?php $foto = !empty($data['user']['photo_profil']) ? BASEURL . '/' . $data['user']['photo_profil'] : BASEURL . '/public/img/user.png'; ?>
+                                    <?php $foto = !empty($data['user']['photo_profil']) ? BASEURL . '/' . $data['user']['photo_profil'] : BASEURL . '/public/img/user.webp'; ?>
                                     <img class="profile-user-img img-fluid img-circle shadow-sm mb-3"
                                          src="<?= e($foto) ?>"
                                          alt="User profile picture"

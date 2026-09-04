@@ -48,7 +48,7 @@
                             <div class="overflow-auto">
                             <div class="data-title d-flex justify-content-center align-items-center text-center" style="background: white; padding: 20px;">
                                 <div>
-                                    <img src="<?= BASEURL; ?>/public/img/UMI-logo.png" alt="Logo UMI" style="max-width: 80px; max-height: 80px;">
+                                    <img src="<?= BASEURL; ?>/public/img/UMI-logo.webp" alt="Logo UMI" style="max-width: 80px; max-height: 80px;">
                                 </div>
                                 <div style="margin: 0 20px; width: 100%;">
                                     <strong>MONITORING PRAKTIKUM</strong><br>
@@ -56,15 +56,15 @@
                                     <strong>SEMESTER: <span><?= e($data['detail']['semester']) ?> <?= e($data['detail']['tahun_ajaran']) ?></span></strong>
                                 </div>
                                 <div>
-                                    <img src="<?= BASEURL; ?>/public/img/ICLabs-logo.png" alt="Logo ICLabs" style="max-width: 80px; max-height: 80px;">
+                                    <img src="<?= BASEURL; ?>/public/img/ICLabs-logo.webp" alt="Logo ICLabs" style="max-width: 80px; max-height: 80px;">
                                 </div>
                             </div>
                                 <!-- <div class="data-title d-flex flex-column justify-content-center align-items-center text-center">
-                                    <img src="<?= BASEURL; ?>/public/img/UMI-logo.png" alt="Logo UMI" style="max-width: 80px; max-height: 80px;">
+                                    <img src="<?= BASEURL; ?>/public/img/UMI-logo.webp" alt="Logo UMI" style="max-width: 80px; max-height: 80px;">
                                     <strong>MONITORING PRAKTIKUM</strong>
                                     <strong>LABORATORIUM KOMPUTER - FAKULTAS ILMU KOMPUTER</strong>
                                     <strong>SEMESTER <span>: <?= e($data['detail']['semester']) ?> <?= e($data['detail']['tahun_ajaran']) ?></span></strong>
-                                    <img src="<?= BASEURL; ?>/public/img/ICLabs-logo.png" alt="Logo ICLabs" style="max-width: 80px; max-height: 80px;">
+                                    <img src="<?= BASEURL; ?>/public/img/ICLabs-logo.webp" alt="Logo ICLabs" style="max-width: 80px; max-height: 80px;">
                                 </div> -->
                                 <!-- <br> -->
                                 <div class="data-frekuensi d-flex flex-row justify-content-between mb-4 text-bold">

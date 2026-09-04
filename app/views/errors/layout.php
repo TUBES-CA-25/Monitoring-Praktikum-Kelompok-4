@@ -20,7 +20,7 @@
 <body>
     <div class="logo-container">
         <a href="<?= defined('BASEURL') ? BASEURL : '/' ?>">
-            <img src="<?= defined('BASEURL') ? BASEURL : '' ?>/public/img/ICLabs-logo.png" alt="ICLabs Logo">
+            <img src="<?= defined('BASEURL') ? BASEURL : '' ?>/public/img/ICLabs-logo.webp" alt="ICLabs Logo">
         </a>
     </div>
     <div class="container">

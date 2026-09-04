@@ -47,7 +47,7 @@
                     <label for="photo_profil" class="form-label">Foto Profil</label>
                     <input type="file" class="form-control" name="photo_profil" accept="image/*"> 
                     <div class="mt-2">
-                        <small class="text-muted d-block">File saat ini: <?= basename($data['ubahdata']['photo_profil'] ?? 'default.jpg') ?></small>
+                        <small class="text-muted d-block">File saat ini: <?= basename($data['ubahdata']['photo_profil'] ?? 'default.webp') ?></small>
                         <?php if(!empty($data['ubahdata']['photo_profil'])): ?>
                             <img src="<?= BASEURL . '/' . $data['ubahdata']['photo_profil'] ?>" alt="Profil" class="img-thumbnail" width="80">
                         <?php endif; ?>
