@@ -78,7 +78,7 @@ class Controller{
         }
     }
 
-    public function prosesUpload($inputName, $targetDirDB, $customName = null) {
+        public function prosesUpload($inputName, $targetDirDB, $customName = null) {
         $file = $_FILES[$inputName] ?? null;
         
         if (!$file) return ['status' => false, 'pesan' => 'File tidak ditemukan'];
@@ -93,19 +93,19 @@ class Controller{
             return ['status' => false, 'pesan' => 'Error kode: ' . $file['error']];
         }
 
-        // Validasi Ekstensi & Ukuran
+        // Validasi Ekstensi & Ukuran (Tetap membolehkan input JPG/PNG)
         $ekstensiValid = ['jpg', 'jpeg', 'png'];
         $ekstensiFile = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($ekstensiFile, $ekstensiValid)) {
-            return ['status' => false, 'pesan' => 'Format harus JPG/PNG'];
+            return ['status' => false, 'pesan' => 'Format file yang diupload harus JPG/PNG'];
         }
 
         if ($file['size'] > 5 * 1024 * 1024) {
             return ['status' => false, 'pesan' => 'Ukuran file maksimal 5MB'];
         }
 
-        // Penentuan Nama File
-        $namaFileBaru = ($customName ? $customName : uniqid()) . '.' . $ekstensiFile;
+        // --- SETTING EKSTENSI OUTPUT JADI WEBP ---
+        $namaFileBaru = ($customName ? $customName : uniqid()) . '.webp';
 
         // Path System (Naik 2 level ke project root)
         $projectRoot = dirname(dirname(__DIR__));
@@ -116,17 +116,40 @@ class Controller{
 
         $fullPath = $targetDirSystem . DIRECTORY_SEPARATOR . $namaFileBaru;
 
-        // Pindahkan File
-        if (move_uploaded_file($file['tmp_name'], $fullPath)) {
-            chmod($fullPath, 0644);
-            // Return path untuk disimpan ke database
-            return [
-                'status' => true, 
-                'nama_file' => str_replace(DIRECTORY_SEPARATOR, '/', $targetDirDB) . '/' . $namaFileBaru
-            ];
+        // --- PROSES KONVERSI GAMBAR (GD LIBRARY) ---
+        $tmpName = $file['tmp_name'];
+        $image = null;
+
+        if ($ekstensiFile === 'jpg' || $ekstensiFile === 'jpeg') {
+            $image = @imagecreatefromjpeg($tmpName);
+        } elseif ($ekstensiFile === 'png') {
+            $image = @imagecreatefrompng($tmpName);
+            // Handle support transparansi untuk file PNG
+            if ($image !== false) {
+                imagepalettetotruecolor($image);
+                imagealphablending($image, true);
+                imagesavealpha($image, true);
+            }
         }
 
-        return ['status' => false, 'pesan' => 'Gagal memindahkan file ke server'];
+        // Jika berhasil di-load ke memory
+        if ($image !== false && $image !== null) {
+            // Konversi dan simpan gambar sebagai file .webp dengan kualitas 80%
+            if (imagewebp($image, $fullPath, 80)) {
+                imagedestroy($image); // Hapus memori sementara
+                chmod($fullPath, 0644);
+                
+                // Return path output baru (.webp) untuk disimpan ke database
+                return [
+                    'status' => true, 
+                    'nama_file' => str_replace(DIRECTORY_SEPARATOR, '/', $targetDirDB) . '/' . $namaFileBaru
+                ];
+            }
+            imagedestroy($image);
+            return ['status' => false, 'pesan' => 'Gagal mengonversi gambar ke WebP'];
+        }
+
+        return ['status' => false, 'pesan' => 'File gambar rusak atau tidak valid'];
     }
 }
 ?>
