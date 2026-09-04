@@ -54,22 +54,45 @@ class Dosen_model{
     }
     
     private function uploadPhoto(){
-        if (!isset($_FILES['photo_path'])) {
+        if (!isset($_FILES['photo_path']) || $_FILES['photo_path']['error'] !== UPLOAD_ERR_OK) {
             return null;
         }
 
         $file = $_FILES['photo_path'];
-        $fileName = $file['name'];
         $fileTmpName = $file['tmp_name'];
-        $fileError = $file['error'];
-    
-        if ($fileError === UPLOAD_ERR_OK) {
-            $destination = 'public/img/signature/' . $fileName;
-            move_uploaded_file($fileTmpName, $destination);
-            return $destination; 
-        } else {
-            return null;
+        $fileNameRaw = pathinfo($file['name'], PATHINFO_FILENAME);
+        $ekstensiFile = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+        
+        $namaFileBaru = preg_replace('/[^A-Za-z0-9]/', '_', $fileNameRaw) . '_' . uniqid() . '.webp';
+        $destination = 'public/img/signature/' . $namaFileBaru;
+        $projectRoot = dirname(dirname(__DIR__));
+        $fullPath = $projectRoot . DIRECTORY_SEPARATOR . $destination;
+
+        $image = null;
+        if ($ekstensiFile === 'jpg' || $ekstensiFile === 'jpeg') {
+            $image = @imagecreatefromjpeg($fileTmpName);
+        } elseif ($ekstensiFile === 'png') {
+            $image = @imagecreatefrompng($fileTmpName);
+            if ($image !== false) {
+                imagepalettetotruecolor($image);
+                imagealphablending($image, true);
+                imagesavealpha($image, true);
+            }
+        } elseif ($ekstensiFile === 'webp') {
+             move_uploaded_file($fileTmpName, $fullPath);
+             return $destination;
         }
+
+        if ($image !== false && $image !== null) {
+            if (imagewebp($image, $fullPath, 80)) {
+                imagedestroy($image);
+                chmod($fullPath, 0644);
+                return $destination;
+            }
+            imagedestroy($image);
+        }
+
+        return null;
     }
 
     public function tampil(){
