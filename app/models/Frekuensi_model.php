@@ -189,16 +189,16 @@ class Frekuensi_model{
     }
 
     public function prosesHapus($id){
-        try {
-            // Ambil data frekuensi yang akan dihapus
-            $frekuensi = $this->ubah($id);
-            if (!$frekuensi) {
-                return 0;
-            }
+        $frekuensi = $this->ubah($id);
+        if (!$frekuensi) {
+            return 0;
+        }
 
-            // Simpan ke tabel restore
+        $this->db->beginTransaction();
+        try {
+            $deletedBy = $_SESSION['id_user'] ?? 0;
             $restoreModel = new Restore_model();
-            $restoreModel->saveToRestore('trs_frekuensi', $frekuensi, $_SESSION['id_user']);
+            $restoreModel->saveToRestore('trs_frekuensi', $frekuensi, $deletedBy);
 
             // Hapus data mentoring terkait
             $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi = :id");
@@ -210,9 +210,12 @@ class Frekuensi_model{
             $this->db->bind("id", $id);
             $this->db->execute();
 
-            return $this->db->rowCount(); 
+            $this->db->commit();
+            return 1;
 
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Gagal menghapus frekuensi ID $id: " . $e->getMessage());
             return 0;
         }
     }

@@ -1,9 +1,18 @@
-Options -Multiviews
+Options -Multiviews -Indexes
 RewriteEngine On
 
-# Ensure that access to existing files and directories is not rewritten
+# 1. Blokir akses langsung ke file sensitif, file konfigurasi, dan dump database
+<FilesMatch "\.(sql|log|env|git|ini|sh|bak|md)$">
+    Require all denied
+</FilesMatch>
+
+# 2. Blokir akses langsung ke folder internal aplikasi
+RewriteRule ^app/ - [F,L]
+RewriteRule ^docs/ - [F,L]
+
+# 3. Teruskan request aset publik jika file fisik ada
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Redirect all other requests to index.php
+# 4. Arahkan seluruh rute ke index.php
 RewriteRule ^(.*)$ index.php?url=$1 [L,QSA]

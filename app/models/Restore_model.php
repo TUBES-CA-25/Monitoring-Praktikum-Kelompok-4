@@ -168,6 +168,47 @@ class Restore_model {
                     $result = 1;
                     break;
 
+                // ── TAHUN AJARAN ─────────────────────────────────────────
+                case 'mst_tahun_ajaran':
+                    $this->db->query("SELECT id_tahun FROM mst_tahun_ajaran WHERE id_tahun = :id");
+                    $this->db->bind(':id', $data['id_tahun']);
+                    if ($this->db->single()) return -1;
+
+                    $this->db->query("INSERT INTO mst_tahun_ajaran (id_tahun, tahun_ajaran)
+                                      VALUES (:id, :tahun)");
+                    $this->db->bind(':id',    $data['id_tahun']);
+                    $this->db->bind(':tahun', $data['tahun_ajaran']);
+                    $this->db->execute();
+                    $result = 1;
+                    break;
+
+                // ── FREKUENSI ────────────────────────────────────────────
+                case 'trs_frekuensi':
+                    $this->db->query("SELECT id_frekuensi FROM trs_frekuensi WHERE id_frekuensi = :id");
+                    $this->db->bind(':id', $data['id_frekuensi']);
+                    if ($this->db->single()) return -1;
+
+                    $this->db->query("INSERT INTO trs_frekuensi 
+                                        (id_frekuensi, frekuensi, id_matkul, id_dosen, id_kelas, id_tahun, id_jurusan, id_ruangan, hari, jam_mulai, jam_selesai, id_asisten1, id_asisten2)
+                                      VALUES 
+                                        (:id, :frek, :matkul, :dosen, :kelas, :tahun, :jurusan, :ruang, :hari, :jm, :js, :as1, :as2)");
+                    $this->db->bind(':id',      $data['id_frekuensi']);
+                    $this->db->bind(':frek',    $data['frekuensi']);
+                    $this->db->bind(':matkul',  $data['id_matkul']);
+                    $this->db->bind(':dosen',   $data['id_dosen']);
+                    $this->db->bind(':kelas',   $data['id_kelas']);
+                    $this->db->bind(':tahun',   $data['id_tahun']);
+                    $this->db->bind(':jurusan', $data['id_jurusan']);
+                    $this->db->bind(':ruang',   $data['id_ruangan']);
+                    $this->db->bind(':hari',    $data['hari']);
+                    $this->db->bind(':jm',      $data['jam_mulai']);
+                    $this->db->bind(':js',      $data['jam_selesai']);
+                    $this->db->bind(':as1',     $data['id_asisten1'] ?? null);
+                    $this->db->bind(':as2',     $data['id_asisten2'] ?? null);
+                    $this->db->execute();
+                    $result = 1;
+                    break;
+
                 default:
                     return 0; // Jenis data tidak dikenal
             }

@@ -51,6 +51,7 @@ class Ajaran extends Controller {
     }
     
     public function hapus($id){
+        $this->verifyCsrfToken();
         $this->isAdmin();
         if($this->model('Ajaran_model')->prosesHapus($id)){
             Flasher::setFlash(' berhasil dihapus', '', 'success');

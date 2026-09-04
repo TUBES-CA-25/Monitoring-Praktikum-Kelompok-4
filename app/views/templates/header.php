@@ -1,8 +1,17 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="csrf-token" content="<?= $_SESSION['csrf_token'] ?>">
   <title><?= $data['title'] ?? 'Restore Data'; ?></title>
   <!-- Google Font: Source Sans Pro -->
   <link rel="stylesheet" href="<?= BASEURL?>/public/css/bootstrap.min.css">

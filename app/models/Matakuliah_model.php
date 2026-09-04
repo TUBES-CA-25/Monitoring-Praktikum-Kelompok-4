@@ -63,7 +63,7 @@ class Matakuliah_model{
                                  mst_matakuliah.sks, 
                                  mst_jurusan.jurusan
                           FROM mst_matakuliah
-                          JOIN mst_jurusan ON mst_matakuliah.id_jurusan = mst_jurusan.id_jurusan");
+                          LEFT JOIN mst_jurusan ON mst_matakuliah.id_jurusan = mst_jurusan.id_jurusan");
         return $this->db->resultSet();
     }
 
@@ -79,16 +79,16 @@ class Matakuliah_model{
     }
 
     public function prosesHapus($id){
-        try {
-            // Ambil data matakuliah yang akan dihapus
-            $matakuliah = $this->ubah($id);
-            if (!$matakuliah) {
-                return 0;
-            }
+        $matakuliah = $this->ubah($id);
+        if (!$matakuliah) {
+            return 0;
+        }
 
-            // Simpan ke tabel restore
+        $this->db->beginTransaction();
+        try {
+            $deletedBy = $_SESSION['id_user'] ?? 0;
             $restoreModel = new Restore_model();
-            $restoreModel->saveToRestore('mst_matakuliah', $matakuliah, $_SESSION['id_user']);
+            $restoreModel->saveToRestore('mst_matakuliah', $matakuliah, $deletedBy);
 
             // Hapus mentoring yang terkait frekuensi matakuliah ini
             $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi IN (SELECT id_frekuensi FROM trs_frekuensi WHERE id_matkul = :id)");
@@ -105,9 +105,12 @@ class Matakuliah_model{
             $this->db->bind(':id', $id);
             $this->db->execute();
 
-            return $this->db->rowCount();
+            $this->db->commit();
+            return 1;
 
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Gagal menghapus matakuliah ID $id: " . $e->getMessage());
             return 0;
         }
     }

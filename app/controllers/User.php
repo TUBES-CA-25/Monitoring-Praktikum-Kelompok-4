@@ -38,6 +38,7 @@ class User extends Controller {
     }
 
     public function ubahModal(){
+        $this->isAdmin();
         $id = $_POST['id'];
         $data['ubahdata'] = $this->model('User_model')->ubah($id);
         $asistenData = $this->model('Asisten_model')->cariDataAsistenByUserId($id);
@@ -46,6 +47,7 @@ class User extends Controller {
     }
     
         public function prosesUbah() {
+        $this->isAdmin();
         
         $data = $_POST;
         $id_user = $data['id_user'];
@@ -132,6 +134,7 @@ class User extends Controller {
 
 
     public function hapus($id){
+        $this->verifyCsrfToken();
         $this->isAdmin();
         if($this->model('User_model')->prosesHapus($id)){
             Flasher::setFlash(' berhasil dihapus', '', 'success');
@@ -179,33 +182,44 @@ class User extends Controller {
     }
 
     public function updateProfil() {
-        $id_user = $_POST['id_user'];
-        $passwordBaru = $_POST['password'];
-        
-        // Ambil data lama agar properti yang tidak diubah tetap aman
-        $userLama = $this->model('User_model')->getUserById($id_user);
+        $this->isLogin(); // Pastikan user telah terotentikasi
 
-        // Jika password diisi, hash dengan bcrypt. Jika kosong, pertahankan password lama.
-        $password = !empty($passwordBaru) ? password_hash($passwordBaru, PASSWORD_DEFAULT) : $userLama['password'];
+        // ID diambil secara mutlak dari sesi, abaikan input $_POST['id_user']
+        $id_user = (int)$_SESSION['id_user'];
+        $passwordLama = $_POST['password_lama'] ?? '';
+        $passwordBaru = $_POST['password_baru'] ?? '';
+        
+        $userLama = $this->model('User_model')->getUserById($id_user);
+        if (!$userLama) {
+            Flasher::setFlash('Gagal', 'Pengguna tidak ditemukan', 'danger');
+            header('Location: ' . BASEURL . '/login');
+            exit;
+        }
+
+        // Jika ingin mengganti password, verifikasi password lama terlebih dahulu
+        $passwordFinal = $userLama['password'];
+        if (!empty($passwordBaru)) {
+            if (empty($passwordLama) || !password_verify($passwordLama, $userLama['password'])) {
+                Flasher::setFlash('Gagal', 'Kata sandi lama salah atau tidak diisi!', 'danger');
+                header('Location: ' . BASEURL . '/user/profil');
+                exit;
+            }
+            $passwordFinal = password_hash($passwordBaru, PASSWORD_DEFAULT);
+        }
 
         $dataUpdate = [
             'id_user'   => $id_user,
-            'username'  => $_POST['username'],
-            'nama_user' => $_POST['nama_user'],
-            'password'  => $password,
-            'role'      => $userLama['role']
+            'username'  => filter_var(trim($_POST['username']), FILTER_SANITIZE_EMAIL),
+            'nama_user' => htmlspecialchars(trim($_POST['nama_user']), ENT_QUOTES, 'UTF-8'),
+            'password'  => $passwordFinal,
+            'role'      => $userLama['role'] // Cegah manipulasi role sendiri
         ];
 
         if ($this->model('User_model')->ubahDataUserLengkap($dataUpdate) >= 0) {
             // Perbarui session agar langsung terlihat perubahannya
             $_SESSION['nama_user'] = $dataUpdate['nama_user'];
             $_SESSION['username'] = $dataUpdate['username'];
-            
-            if (!empty($passwordBaru)) {
-                Flasher::setFlash('Berhasil', 'Profil dan Password telah diperbarui', 'success');
-            } else {
-                Flasher::setFlash('Berhasil', 'Profil Admin telah diperbarui', 'success');
-            }
+            Flasher::setFlash('Berhasil', 'Profil Anda telah berhasil diperbarui', 'success');
         } else {
             Flasher::setFlash('Gagal', 'Gagal memperbarui profil', 'danger');
         }

@@ -59,22 +59,32 @@ class Controller{
     }
 
     public function isAdmin() {
-        if (isset($_SESSION['role']) && $_SESSION['role'] != 'Admin') {  
-            if ($_SESSION['role'] == 'Asisten') {
-                header('Location:' . BASEURL);
-            } else {
-            }
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_user']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'Admin') {
+            header('Location: ' . BASEURL . '/login');
             exit;
         }
     }
 
     public function isAsisten() {
-        if (isset($_SESSION['role']) && $_SESSION['role'] != 'Asisten') {  
-            if ($_SESSION['role'] == 'Admin') {
-                header('Location:' . BASEURL);
-            } else {
-            }
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if (!isset($_SESSION['id_user']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'Asisten') {
+            header('Location: ' . BASEURL . '/login');
             exit;
+        }
+    }
+
+    public function verifyCsrfToken() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            header('HTTP/1.0 403 Forbidden');
+            die('403 Invalid CSRF Token');
         }
     }
 
@@ -105,7 +115,8 @@ class Controller{
         }
 
         // --- SETTING EKSTENSI OUTPUT JADI WEBP ---
-        $namaFileBaru = ($customName ? $customName : uniqid()) . '.webp';
+        $randomHash = bin2hex(random_bytes(8));
+        $namaFileBaru = ($customName ? $customName . '_' . $randomHash : bin2hex(random_bytes(16))) . '.webp';
 
         // Path System (Naik 2 level ke project root)
         $projectRoot = dirname(dirname(__DIR__));

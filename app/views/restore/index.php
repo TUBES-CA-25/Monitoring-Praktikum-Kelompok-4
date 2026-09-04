@@ -110,17 +110,19 @@ $title = $data['judul'] ?? 'Restore Data';
                                                     <i class="fas fa-eye"></i> Detail
                                                 </button>
                                                 <!-- Tombol Restore (Redirect ke controller method kembalikan) -->
-                                                <a href="<?= BASEURL; ?>/restore/kembalikan/<?= e($id) ?>" 
-                                                   class="btn btn-success" 
-                                                   onclick="return confirm('Kembalikan data ini?')">
-                                                    <i class="fas fa-redo-alt"></i> Restore
-                                                </a>
+                                                <form action="<?= BASEURL; ?>/restore/kembalikan/<?= e($id) ?>" method="POST" class="d-inline">
+                                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                    <button type="submit" class="btn btn-success" onclick="return confirm('Kembalikan data ini?')">
+                                                        <i class="fas fa-redo-alt"></i> Restore
+                                                    </button>
+                                                </form>
                                                 <!-- Tombol Hapus (Redirect ke controller method hapusPermanen) -->
-                                                <a href="<?= BASEURL; ?>/restore/hapusPermanen/<?= e($id) ?>" 
-                                                   class="btn btn-danger" 
-                                                   onclick="return confirm('Hapus permanen dari sistem?')">
-                                                    <i class="fas fa-trash"></i> Hapus
-                                                </a>
+                                                <form action="<?= BASEURL; ?>/restore/hapusPermanen/<?= e($id) ?>" method="POST" class="d-inline">
+                                                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Hapus permanen dari sistem?')">
+                                                        <i class="fas fa-trash"></i> Hapus
+                                                    </button>
+                                                </form>
                                             </div>
                                         </td>
                                     </tr>

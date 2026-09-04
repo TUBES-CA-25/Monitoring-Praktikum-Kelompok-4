@@ -64,16 +64,16 @@ class Kelas_model{
     }
 
     public function prosesHapus($id){
-        try {
-            // Ambil data kelas yang akan dihapus
-            $kelas = $this->detailKelas($id);
-            if (!$kelas) {
-                return 0;
-            }
+        $kelas = $this->detailKelas($id);
+        if (!$kelas) {
+            return 0;
+        }
 
-            // Simpan ke tabel restore
+        $this->db->beginTransaction();
+        try {
+            $deletedBy = $_SESSION['id_user'] ?? 0;
             $restoreModel = new Restore_model();
-            $restoreModel->saveToRestore('mst_kelas', $kelas, $_SESSION['id_user']);
+            $restoreModel->saveToRestore('mst_kelas', $kelas, $deletedBy);
 
             // Hapus mentoring yang terkait frekuensi kelas ini
             $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi IN (SELECT id_frekuensi FROM trs_frekuensi WHERE id_kelas = :id)");
@@ -90,9 +90,12 @@ class Kelas_model{
             $this->db->bind(':id', $id);
             $this->db->execute();
 
-            return $this->db->rowCount();
+            $this->db->commit();
+            return 1;
 
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Gagal menghapus kelas ID $id: " . $e->getMessage());
             return 0;
         }
     }

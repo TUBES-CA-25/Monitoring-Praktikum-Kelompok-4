@@ -1,6 +1,11 @@
 <?php
 
 class Mentoring extends Controller {
+    public function __construct() {
+        parent::__construct();
+        $this->isLogin();
+    }
+
     public function index(){
         $data['title'] = 'Data Mentoring';
         $data['mentoring'] = $this->model('Mentoring_model')->tampil();
@@ -72,6 +77,7 @@ class Mentoring extends Controller {
     }
 
     public function hapus($id){
+        $this->verifyCsrfToken();
         if($this->model('Mentoring_model')->prosesHapus($id)){
             Flasher::setFlash(' berhasil dihapus', '', 'success');
         }else{
@@ -82,6 +88,7 @@ class Mentoring extends Controller {
     }
 
     public function prosesHapus($id, $id_frekuensi){
+        $this->verifyCsrfToken();
         if($this->model('Mentoring_model')->prosesHapus($id)){
             Flasher::setFlash('berhasil dihapus', '', 'success');
         } else {

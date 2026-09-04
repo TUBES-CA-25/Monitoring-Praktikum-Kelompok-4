@@ -49,6 +49,7 @@ class Jurusan extends Controller {
     }
     
     public function hapus($id){
+        $this->verifyCsrfToken();
         $this->isAdmin();
         if($this->model('Jurusan_model')->prosesHapus($id)){
             Flasher::setFlash(' berhasil dihapus', '', 'success');

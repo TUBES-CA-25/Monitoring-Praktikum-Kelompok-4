@@ -50,6 +50,7 @@ class Dosen extends Controller {
     }
 
     public function hapus($id){
+        $this->verifyCsrfToken();
         $this->isAdmin();
         if($this->model('Dosen_model')->prosesHapus($id)){
             Flasher::setFlash('Dosen', 'berhasil dihapus', 'success');

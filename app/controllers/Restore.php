@@ -1,6 +1,11 @@
 <?php
 
 class Restore extends Controller {
+    public function __construct() {
+        parent::__construct();
+        $this->isAdmin();
+    }
+
     public function index() {
     $data['judul'] = 'Restore Data';
     $data['restore'] = $this->model('Restore_model')->getAll();
@@ -13,6 +18,7 @@ class Restore extends Controller {
 }
 
     public function kembalikan($id) {
+        $this->verifyCsrfToken();
         if ($this->model('Restore_model')->restoreData($id) > 0) {
             Flasher::setFlash('berhasil', 'dikembalikan', 'success');
         } else {
@@ -23,6 +29,7 @@ class Restore extends Controller {
     }
 
     public function hapusPermanen($id) {
+        $this->verifyCsrfToken();
         if ($this->model('Restore_model')->deletePermanent($id) > 0) {
             Flasher::setFlash('berhasil', 'dihapus permanen', 'success');
         } else {

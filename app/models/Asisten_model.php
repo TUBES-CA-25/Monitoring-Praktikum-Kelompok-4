@@ -26,16 +26,7 @@ class Asisten_model {
         $this->db->bind(':photo_profil', $data['photo_profil']);
         $this->db->bind(':photo_path', $data['photo_path']);
 
-        try {
-            $this->db->execute();
-        } catch (PDOException $e) {
-            echo "<h3>Detail Error Database:</h3>";
-            echo "Pesan: " . $e->getMessage();
-            echo "<br>Data yang dikirim: <pre>";
-            print_r($data);
-            echo "</pre>";
-            die; // Menghentikan sistem agar error terbaca
-        }
+        $this->db->execute();
 
         return $this->db->rowCount();
     }
@@ -93,15 +84,14 @@ class Asisten_model {
     }
 
     public function prosesHapus($id) {
-        try {
-            // 1. Ambil data asisten secara lengkap sebelum dihapus
-            // Pastikan detailAsisten mengembalikan array data asisten
-            $asisten = $this->detailAsisten($id);
-            
-            if (!$asisten) {
-                return 0; // Data tidak ditemukan
-            }
+        $asisten = $this->detailAsisten($id);
+        
+        if (!$asisten) {
+            return 0; // Data tidak ditemukan
+        }
 
+        $this->db->beginTransaction();
+        try {
             $id_user = $asisten['id_user']; 
 
             // 2. Simpan ke tabel trs_restore
@@ -136,9 +126,11 @@ class Asisten_model {
             $this->db->bind(':id_user', $id_user);
             $this->db->execute();
 
-            return $this->db->rowCount(); 
-        } catch (PDOException $e) {
-            // Jika terjadi error, proses akan berhenti di sini
+            $this->db->commit();
+            return 1;
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Gagal menghapus asisten ID $id: " . $e->getMessage());
             return 0;
         }
     }

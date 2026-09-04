@@ -48,35 +48,48 @@ class Jurusan_model{
     }
 
     public function prosesHapus($id){
+        $jurusan = $this->ubah($id);
+        if (!$jurusan) {
+            return 0;
+        }
+
+        $this->db->beginTransaction();
         try {
-            // Ambil data jurusan yang akan dihapus
-            $jurusan = $this->ubah($id);
-            if (!$jurusan) {
-                return 0;
-            }
-
-            // Simpan ke tabel restore
+            $deletedBy = $_SESSION['id_user'] ?? 0;
             $restoreModel = new Restore_model();
-            $restoreModel->saveToRestore('mst_jurusan', $jurusan, $_SESSION['id_user']);
+            $restoreModel->saveToRestore('mst_jurusan', $jurusan, $deletedBy);
 
-            // Hapus mentoring yang terkait frekuensi jurusan ini
+            // 1. Hapus Mentoring terkait frekuensi di jurusan ini
             $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi IN (SELECT id_frekuensi FROM trs_frekuensi WHERE id_jurusan = :id)");
             $this->db->bind(':id', $id);
             $this->db->execute();
 
-            // Hapus frekuensi yang terkait jurusan
+            // 2. Hapus Frekuensi di jurusan ini
             $this->db->query("DELETE FROM trs_frekuensi WHERE id_jurusan = :id");
             $this->db->bind(':id', $id);
             $this->db->execute();
 
-            // Hapus data dari tabel mst_jurusan
+            // 3. Hapus Kelas di jurusan ini
+            $this->db->query("DELETE FROM mst_kelas WHERE id_jurusan = :id");
+            $this->db->bind(':id', $id);
+            $this->db->execute();
+
+            // 4. Hapus Matakuliah di jurusan ini
+            $this->db->query("DELETE FROM mst_matakuliah WHERE id_jurusan = :id");
+            $this->db->bind(':id', $id);
+            $this->db->execute();
+
+            // 5. Hapus Jurusan
             $this->db->query("DELETE FROM mst_jurusan WHERE id_jurusan = :id");
             $this->db->bind(':id', $id);
             $this->db->execute();
 
-            return $this->db->rowCount();
+            $this->db->commit();
+            return 1;
 
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Gagal menghapus jurusan ID $id: " . $e->getMessage());
             return 0;
         }
     }

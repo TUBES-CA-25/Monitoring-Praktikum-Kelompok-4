@@ -10,10 +10,19 @@
     }
     function hapus(a){
       $('.modal-title').html('Hapus Data');
-      $('.modal-body').html('<img src="<?= BASEURL?>/assets/img/Icon Delete.png" alt="Konfirmasi Hapus">');       
-      $('.tombol').html('<a href="<?= BASEURL?>/Asisten/hapus/'+ a +'" class="btn btn-primary" style="background: #06253A; color= #FFFFFF;">Hapus</a>');
+      $('.modal-body').html('<p class="text-center">Apakah Anda yakin ingin menghapus data ini?</p>');       
+      
+      let csrfMeta = document.querySelector('meta[name="csrf-token"]');
+      let csrf = csrfMeta ? csrfMeta.getAttribute('content') : '';
+      let url = '<?= BASEURL?>/Asisten/hapus/' + a;
+      
+      $('.tombol').html(`
+        <form action="${url}" method="POST" class="d-inline">
+            <input type="hidden" name="csrf_token" value="${csrf}">
+            <button type="submit" class="btn btn-primary" style="background: #06253A; color: #FFFFFF;">Hapus</button>
+        </form>
+      `);
       $('#close').html('Batal');
-
     }
 
     // BAGIAN SIDEBAR
@@ -338,22 +347,34 @@
     }
 
     function deleteData(jenis, id) {
+        let csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        let csrf = csrfMeta ? csrfMeta.getAttribute('content') : '';
+        
         $('.modal-title').html('Hapus Data');
         $('.modal-body').html(`
         <div class="text-center mb-3">Hapus Data?</div>
         <div class="text-center">
-            <a href="${BASEURL}/${jenis}/hapus/${id}" class="btn btn-danger">Hapus</a>
+            <form action="${BASEURL}/${jenis}/hapus/${id}" method="POST" class="d-inline">
+                <input type="hidden" name="csrf_token" value="${csrf}">
+                <button type="submit" class="btn btn-danger">Hapus</button>
+            </form>
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
         </div>
         `);
     }
 
     function hapusMentoring(idMentoring, idFrekuensi) {
+        let csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        let csrf = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
         $('.modal-title').html('Hapus Data Mentoring');
         $('.modal-body').html(`
             <div class="text-center mb-3"><p>Hapus data mentoring ini?</p></div>
             <div class="text-center">
-                <a href="${BASEURL}/Mentoring/prosesHapus/${idMentoring}/${idFrekuensi}" class="btn btn-danger">Hapus</a>
+                <form action="${BASEURL}/Mentoring/prosesHapus/${idMentoring}/${idFrekuensi}" method="POST" class="d-inline">
+                    <input type="hidden" name="csrf_token" value="${csrf}">
+                    <button type="submit" class="btn btn-danger">Hapus</button>
+                </form>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
             </div>
         `);

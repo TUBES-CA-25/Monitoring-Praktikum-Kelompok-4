@@ -45,16 +45,16 @@ class Ajaran_model{
     }
 
     public function prosesHapus($id){
-        try {
-            // Ambil data tahun ajaran yang akan dihapus
-            $ajaran = $this->detailAjaran($id);
-            if (!$ajaran) {
-                return 0;
-            }
+        $ajaran = $this->detailAjaran($id);
+        if (!$ajaran) {
+            return 0;
+        }
 
-            // Simpan ke tabel restore
+        $this->db->beginTransaction();
+        try {
+            $deletedBy = $_SESSION['id_user'] ?? 0;
             $restoreModel = new Restore_model();
-            $restoreModel->saveToRestore('mst_tahun_ajaran', $ajaran, $_SESSION['id_user']);
+            $restoreModel->saveToRestore('mst_tahun_ajaran', $ajaran, $deletedBy);
 
             // Hapus mentoring yang terkait frekuensi tahun ajaran ini
             $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi IN (SELECT id_frekuensi FROM trs_frekuensi WHERE id_tahun = :id)");
@@ -71,9 +71,12 @@ class Ajaran_model{
             $this->db->bind(':id', $id);
             $this->db->execute();
 
-            return $this->db->rowCount();
+            $this->db->commit();
+            return 1;
 
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Gagal menghapus tahun ajaran ID $id: " . $e->getMessage());
             return 0;
         }
     }

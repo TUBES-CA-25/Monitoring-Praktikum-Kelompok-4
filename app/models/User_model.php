@@ -41,6 +41,7 @@ class User_model{
     }
 
     public function prosesHapus($id_user) {
+        $this->db->beginTransaction();
         try {
             // 1. Cari tahu apakah user ini adalah seorang asisten
             $this->db->query("SELECT id_asisten FROM mst_asisten WHERE id_user = :id_user");
@@ -66,15 +67,17 @@ class User_model{
                 $this->db->execute();
             }
 
-            // 3. Setelah data asisten bersih, baru hapus data di mst_user
+            // 3. Hapus user
             $this->db->query("DELETE FROM mst_user WHERE id_user = :id_user");
             $this->db->bind(':id_user', $id_user);
             $this->db->execute();
 
-            return $this->db->rowCount(); 
+            $this->db->commit();
+            return 1;
 
-        } catch (PDOException $e) {
-            // Jika gagal karena constraint, kita bisa log errornya
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Gagal menghapus user ID $id_user: " . $e->getMessage());
             return 0;
         }
     }

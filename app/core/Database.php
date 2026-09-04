@@ -20,7 +20,9 @@ class Database {
         try {
             $this->dbh = new PDO($dsn, $this->user, $this->pass, $option);
         } catch(PDOException $e) {
-            die($e->getMessage());
+            error_log($e->getMessage());
+            // Mengalihkan atau menghentikan tanpa membocorkan pesan error DB
+            die("Database connection failed. Please contact the administrator.");
         }        
     }
 

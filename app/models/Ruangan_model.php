@@ -44,16 +44,16 @@ class Ruangan_model{
     }
 
     public function prosesHapus($id){
-        try {
-            // Ambil data ruangan yang akan dihapus
-            $ruangan = $this->detailRuangan($id);
-            if (!$ruangan) {
-                return 0;
-            }
+        $ruangan = $this->detailRuangan($id);
+        if (!$ruangan) {
+            return 0;
+        }
 
-            // Simpan ke tabel restore
+        $this->db->beginTransaction();
+        try {
+            $deletedBy = $_SESSION['id_user'] ?? 0;
             $restoreModel = new Restore_model();
-            $restoreModel->saveToRestore('mst_ruangan', $ruangan, $_SESSION['id_user']);
+            $restoreModel->saveToRestore('mst_ruangan', $ruangan, $deletedBy);
 
             // Hapus mentoring yang terkait frekuensi di ruangan ini
             $this->db->query("DELETE FROM trs_mentoring WHERE id_frekuensi IN (SELECT id_frekuensi FROM trs_frekuensi WHERE id_ruangan = :id)");
@@ -70,9 +70,12 @@ class Ruangan_model{
             $this->db->bind(':id', $id);
             $this->db->execute();
 
-            return $this->db->rowCount();
+            $this->db->commit();
+            return 1;
 
-        } catch (PDOException $e) {
+        } catch (Exception $e) {
+            $this->db->rollBack();
+            error_log("Gagal menghapus ruangan ID $id: " . $e->getMessage());
             return 0;
         }
     }
