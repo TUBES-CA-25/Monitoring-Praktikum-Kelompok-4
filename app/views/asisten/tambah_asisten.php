@@ -67,16 +67,16 @@
 
             <div class="form-group mb-3">
                 <label for="formFile" class="form-label">Masukkan Foto Profil</label>
-                <input class="form-control" type="file" name="photo_profil" accept="image/jpeg,image/png,image/gif">
+                <input class="form-control" type="file" name="photo_profil" accept="image/jpeg,image/png,image/gif,image/webp">
                 <small class="text-muted d-block mt-1">
-                    Format: JPG, PNG, atau GIF | Maksimal: 5MB
+                    Format: JPG, PNG, GIF, atau WEBP | Maksimal: 5MB
                 </small>
             </div>
             <div class="form-group mb-3">
                 <label for="formFile" class="form-label">Masukkan Foto TTD</label>
-                <input class="form-control" type="file" name="photo_path" accept="image/jpeg,image/png,image/gif">
+                <input class="form-control" type="file" name="photo_path" accept="image/jpeg,image/png,image/gif,image/webp">
                 <small class="text-muted d-block mt-1">
-                    Format: JPG, PNG, atau GIF | Maksimal: 5MB
+                    Format: JPG, PNG, GIF, atau WEBP | Maksimal: 5MB
                 </small>
             </div><br>
         </div>

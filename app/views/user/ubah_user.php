@@ -1,5 +1,5 @@
 <div class="container">
-    <?php if (isset($data['ubahdata'])) : ?>
+    <?php if (!empty($data['ubahdata'])) : ?>
     <form id="formUbahUser" action="<?= BASEURL ?>/User/prosesUbah" method="post" autocomplete="off" enctype="multipart/form-data">
         
         <!-- Hidden ID -->
@@ -42,14 +42,18 @@
                 </div>
                 <?php endif; ?>
 
+                <?php 
+                    $currPhoto = $data['foto_asisten']['photo_profil'] ?? $data['ubahdata']['photo_profil'] ?? null; 
+                    $currTTD = $data['foto_asisten']['photo_path'] ?? $data['ubahdata']['photo_path'] ?? null;
+                ?>
                 <!-- EDIT FOTO PROFIL -->
                 <div class="form-group mb-3">
-                    <label for="photo_profil" class="form-label">Foto Profil</label>
+                    <label for="photo_profil" class="form-label">Foto Profil (Admin/Asisten)</label>
                     <input type="file" class="form-control" name="photo_profil" accept="image/*"> 
                     <div class="mt-2">
-                        <small class="text-muted d-block">File saat ini: <?= basename($data['ubahdata']['photo_profil'] ?? 'default.webp') ?></small>
-                        <?php if(!empty($data['ubahdata']['photo_profil'])): ?>
-                            <img src="<?= BASEURL . '/' . $data['ubahdata']['photo_profil'] ?>" alt="Profil" class="img-thumbnail" width="80">
+                        <small class="text-muted d-block">File saat ini: <?= basename($currPhoto ?? 'default.webp') ?></small>
+                        <?php if(!empty($currPhoto)): ?>
+                            <img src="<?= BASEURL . '/' . $currPhoto ?>" alt="Profil" class="img-thumbnail" width="80">
                         <?php endif; ?>
                     </div>
                 </div>
@@ -59,9 +63,9 @@
                     <label for="photo_path" class="form-label">Tanda Tangan Digital (TTD)</label>
                     <input type="file" class="form-control" name="photo_path" accept="image/*"> 
                     <div class="mt-2">
-                        <small class="text-muted d-block">File saat ini: <?= basename($data['ubahdata']['photo_path'] ?? 'Tidak ada') ?></small>
-                        <?php if(!empty($data['ubahdata']['photo_path'])): ?>
-                            <img src="<?= BASEURL . '/' . $data['ubahdata']['photo_path'] ?>" alt="TTD" class="img-thumbnail" width="120">
+                        <small class="text-muted d-block">File saat ini: <?= basename($currTTD ?? 'Tidak ada') ?></small>
+                        <?php if(!empty($currTTD)): ?>
+                            <img src="<?= BASEURL . '/' . $currTTD ?>" alt="TTD" class="img-thumbnail" width="120">
                         <?php endif; ?>
                     </div>
                 </div>

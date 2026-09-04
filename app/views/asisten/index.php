@@ -77,11 +77,7 @@
                                   </tbody>
                               </table>
                               <div class="text-right mt-4 pt-3 border-top">
-                                  <a href="javascript:void(0);" 
-                                    class="btn btn-primary px-4" 
-                                    data-bs-toggle="modal" 
-                                    data-bs-target="#myModal"
-                                    onclick="change('User', '<?= e($u['id_user']) ?>')">
+                                  <a class="btn btn-primary px-4 text-white" onclick="change('User', '<?= e($u['id_user']) ?>')" role="button" data-bs-toggle="modal" data-bs-target="#myModal">
                                     <i class="fa fa-edit mr-1"></i> Edit Profil
                                   </a>
                               </div>

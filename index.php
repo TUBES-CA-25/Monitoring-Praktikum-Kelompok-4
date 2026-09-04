@@ -47,7 +47,7 @@ function customShutdownHandler() {
 }
 
 set_exception_handler('customExceptionHandler');
-set_error_handler('customErrorHandler');
+// set_error_handler('customErrorHandler');
 register_shutdown_function('customShutdownHandler');
 
 require_once 'app/init.php';

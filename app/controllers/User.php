@@ -37,20 +37,32 @@ class User extends Controller {
         exit;
     }
 
-    public function ubahModal(){
-        $this->isAdmin();
+    public function ubahModal() {
         $id = $_POST['id'];
-        $data['ubahdata'] = $this->model('User_model')->ubah($id);
-        $asistenData = $this->model('Asisten_model')->cariDataAsistenByUserId($id);
-        $data['foto_asisten'] = $asistenData; 
+        
+        // Cek Izin: Hanya Admin, ATAU Asisten yang mengedit dirinya sendiri
+        if ($_SESSION['role'] !== 'Admin' && $_SESSION['id_user'] != $id) {
+            header('HTTP/1.0 403 Forbidden');
+            exit('Akses ditolak');
+        }
+
+        $data['ubahdata'] = $this->model('User_model')->detailUser($id);
+        
+        // Ambil juga data asisten untuk photo dan ttd (jika dia asisten)
+        $data['foto_asisten'] = $this->model('Asisten_model')->getByUserId($id); 
+
         $this->view('user/ubah_user', $data);
     }
     
         public function prosesUbah() {
-        $this->isAdmin();
-        
         $data = $_POST;
         $id_user = $data['id_user'];
+        
+        // Cek Izin: Hanya Admin, ATAU Asisten yang mengedit dirinya sendiri
+        if ($_SESSION['role'] !== 'Admin' && $_SESSION['id_user'] != $id_user) {
+            header('HTTP/1.0 403 Forbidden');
+            exit('Akses ditolak');
+        }
         
         $userLama = $this->model('User_model')->getUserById($id_user);
         $asistenLama = $this->model('Asisten_model')->getByUserId($id_user); 
@@ -169,14 +181,9 @@ class User extends Controller {
         $this->view('templates/header', $data);
         $this->view('templates/topbar');
         $this->view('templates/sidebar');
-
-        if ($_SESSION['role'] == 'Admin') {
-            $this->view('user/profil', $data); 
-        } else {
-            // Jika asisten, arahkan ke halaman profil asisten yang sesuai
-            header('Location: ' . BASEURL . '/asisten'); 
-            exit;
-        }
+        
+        // Hapus pengecekan role Admin agar Asisten juga bisa akses profil
+        $this->view('user/profil', $data); 
 
         $this->view('templates/footer');
     }
@@ -209,16 +216,41 @@ class User extends Controller {
 
         $dataUpdate = [
             'id_user'   => $id_user,
-            'username'  => filter_var(trim($_POST['username']), FILTER_SANITIZE_EMAIL),
-            'nama_user' => htmlspecialchars(trim($_POST['nama_user']), ENT_QUOTES, 'UTF-8'),
+            'username'  => filter_var(trim($_POST['username'] ?? ''), FILTER_SANITIZE_EMAIL),
+            'nama_user' => htmlspecialchars(trim($_POST['nama_user'] ?? ''), ENT_QUOTES, 'UTF-8'),
             'password'  => $passwordFinal,
             'role'      => $userLama['role'] // Cegah manipulasi role sendiri
         ];
+
+        // Proses Upload Foto Profil
+        $photoProfilBaru = null;
+        if (isset($_FILES['photo_profil']) && $_FILES['photo_profil']['error'] === UPLOAD_ERR_OK) {
+            $uploadProfil = $this->prosesUpload('photo_profil', 'public/img/uploads/', 'profil_' . $id_user);
+            if ($uploadProfil['status']) {
+                $photoProfilBaru = $uploadProfil['nama_file'];
+                $_SESSION['photo_profil'] = $photoProfilBaru;
+            } else {
+                Flasher::setFlash('Gagal', 'Upload foto gagal: ' . $uploadProfil['pesan'], 'danger');
+                header('Location: ' . BASEURL . '/user/profil');
+                exit;
+            }
+        }
 
         if ($this->model('User_model')->ubahDataUserLengkap($dataUpdate) >= 0) {
             // Perbarui session agar langsung terlihat perubahannya
             $_SESSION['nama_user'] = $dataUpdate['nama_user'];
             $_SESSION['username'] = $dataUpdate['username'];
+            
+            // Simpan foto ke DB jika ada yang diupload
+            if ($photoProfilBaru) {
+                $asistenLama = $this->model('Asisten_model')->getByUserId($id_user); 
+                if ($asistenLama) {
+                    $this->model('Asisten_model')->updateFotoViaUser($id_user, $photoProfilBaru);
+                } else {
+                    $this->model('User_model')->updateFotoViaUser($id_user, $photoProfilBaru);
+                }
+            }
+            
             Flasher::setFlash('Berhasil', 'Profil Anda telah berhasil diperbarui', 'success');
         } else {
             Flasher::setFlash('Gagal', 'Gagal memperbarui profil', 'danger');

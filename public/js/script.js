@@ -1,20 +1,23 @@
     function ubahdata(x){
+        $('#modal-size').addClass('modal-lg');
         $('.modal-title').html('Ubah Data');
-        let url = '<?= BASEURL?>/Asisten/ubahModal';
+        let url = BASEURL + '/Asisten/ubahModal';
         $.post(url, {
           id : x
         }, function(data, success){
           $('.modal-body').html(data);
         });
-        $('.tombol').html('<a href="<?= BASEURL?>/Asisten/prosesUbah/'+ x +'" class="btn btn-primary" style="background: #06253A; color= #FFFFFF;">Ubah Data</a>');
+        $('.tombol').html('<button type="submit" form="formUbahDataAsisten" class="btn btn-primary" style="background: #06253A; color: #FFFFFF;">Simpan Perubahan</button>');
+        $('#close').html('<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>');
     }
     function hapus(a){
+      $('#modal-size').removeClass('modal-lg');
       $('.modal-title').html('Hapus Data');
       $('.modal-body').html('<p class="text-center">Apakah Anda yakin ingin menghapus data ini?</p>');       
       
       let csrfMeta = document.querySelector('meta[name="csrf-token"]');
       let csrf = csrfMeta ? csrfMeta.getAttribute('content') : '';
-      let url = '<?= BASEURL?>/Asisten/hapus/' + a;
+      let url = BASEURL + '/Asisten/hapus/' + a;
       
       $('.tombol').html(`
         <form action="${url}" method="POST" class="d-inline">
@@ -324,6 +327,12 @@
 
 // --- 5. FUNGSI GLOBAL (Bisa dipanggil dari atribut onclick di HTML) ---
     function add(jenis, id = null) {
+        if (jenis === 'Asisten' || jenis === 'User') {
+            $('#modal-size').addClass('modal-lg');
+        } else {
+            $('#modal-size').removeClass('modal-lg');
+        }
+        
         $('.modal-title').html('Tambah Data');
         let url = `${BASEURL}/${jenis}/modalTambah${id ? '/' + id : ''}`;
 
@@ -336,13 +345,27 @@
                     <button type="button" class="btn btn-secondary ml-2" data-bs-dismiss="modal">Batal</button>
                 </div>
             `);
+            
+            // clear footer
+            $('.tombol').html('');
+            $('#close').html('');
         }).fail(() => console.error("Gagal memuat modal tambah"));
     }
 
     function change(jenis, id) {
+        if (jenis === 'Asisten' || jenis === 'User') {
+            $('#modal-size').addClass('modal-lg');
+        } else {
+            $('#modal-size').removeClass('modal-lg');
+        }
+        
         $('.modal-title').html('Ubah Data');
         $.post(`${BASEURL}/${jenis}/ubahModal`, { id: id }, function(data) {
             $('.modal-body').html(data);
+            
+            // clear footer
+            $('.tombol').html('');
+            $('#close').html('');
         }).fail(() => console.error("Gagal memuat modal ubah"));
     }
 

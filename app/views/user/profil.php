@@ -16,26 +16,35 @@
                 <div class="col-md-12">
                     <div class="card card-primary card-outline shadow-sm">
                         <div class="card-body">
-                            <div class="row align-items-center">
-                                <!-- Bagian Kiri: Foto Profil -->
-                                <div class="col-md-4 text-center border-right">
-                                    <?php $foto = !empty($data['user']['photo_profil']) ? BASEURL . '/' . $data['user']['photo_profil'] : BASEURL . '/public/img/user.webp'; ?>
-                                    <img class="profile-user-img img-fluid img-circle shadow-sm mb-3"
-                                         src="<?= e($foto) ?>"
-                                         alt="User profile picture"
-                                         style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%;">
-                                    <h3 class="profile-username" style="font-weight: 600;">
-                                        <?= e($data['user']['nama_user'] ?? $_SESSION['nama_user']) ?>
-                                    </h3>
-                                    <p class="text-muted"><span class="badge badge-primary px-3 py-2" style="font-size: 0.9rem;"><?= e($_SESSION['role']) ?></span></p>
-                                </div>
-                                
-                                <!-- Bagian Kanan: Detail & Ganti Password -->
-                                <div class="col-md-8 px-4">
-                                    <h4 class="mb-4 text-primary" style="font-weight: 600;"><i class="fas fa-info-circle"></i> Detail Informasi & Keamanan</h4>
+                            <form action="<?= BASEURL; ?>/user/updateProfil" method="post" enctype="multipart/form-data" class="w-100">
+                                <div class="row align-items-center w-100 m-0">
+                                    <!-- Bagian Kiri: Foto Profil -->
+                                    <div class="col-md-4 text-center border-right">
+                                        <?php $foto = !empty($data['user']['photo_profil']) ? BASEURL . '/' . $data['user']['photo_profil'] : BASEURL . '/public/img/user.webp'; ?>
+                                        <img class="profile-user-img img-fluid img-circle shadow-sm mb-3"
+                                             src="<?= e($foto) ?>"
+                                             alt="User profile picture"
+                                             id="preview-img"
+                                             style="width: 180px; height: 180px; object-fit: cover; border-radius: 50%;">
+                                        <h3 class="profile-username" style="font-weight: 600;">
+                                            <?= e($data['user']['nama_user'] ?? $_SESSION['nama_user']) ?>
+                                        </h3>
+                                        <p class="text-muted"><span class="badge badge-primary px-3 py-2" style="font-size: 0.9rem;"><?= e($_SESSION['role']) ?></span></p>
+                                        
+                                        <!-- Upload button -->
+                                        <div class="mt-3">
+                                            <label for="photo_profil" class="btn btn-sm btn-outline-primary" style="cursor:pointer;">
+                                                <i class="fas fa-camera"></i> Ganti Foto
+                                            </label>
+                                            <input type="file" id="photo_profil" name="photo_profil" accept="image/*" style="display:none;" onchange="previewImage(this)">
+                                            <small class="d-block text-muted mt-1">Maks 2MB (JPG/PNG)</small>
+                                        </div>
+                                    </div>
                                     
-                                    <?php if ($_SESSION['role'] == 'Admin') : ?>
-                                    <form action="<?= BASEURL; ?>/user/updateProfil" method="post">
+                                    <!-- Bagian Kanan: Detail & Ganti Password -->
+                                    <div class="col-md-8 px-4">
+                                        <h4 class="mb-4 text-primary" style="font-weight: 600;"><i class="fas fa-info-circle"></i> Detail Informasi & Keamanan</h4>
+                                        
                                         <input type="hidden" name="id_user" value="<?= e($data['user']['id_user'] ?? $_SESSION['id_user']) ?>">
                                         
                                         <div class="form-group row mb-4">
@@ -56,18 +65,32 @@
                                         <hr>
                                         <h5 class="mt-4 mb-3" style="font-weight: 600;">Keamanan</h5>
                                         
+                                        <div class="form-group row mb-4">
+                                            <label class="col-sm-3 col-form-label text-muted">Password Lama</label>
+                                            <div class="col-sm-9">
+                                                <div class="input-group">
+                                                    <input type="password" id="passwordLama" name="password_lama" class="form-control" placeholder="Masukkan password lama">
+                                                    <div class="input-group-append">
+                                                        <button type="button" class="btn btn-outline-secondary togglePassword" data-target="passwordLama">
+                                                            <i class="fas fa-eye"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="form-group row">
                                             <label class="col-sm-3 col-form-label text-muted">Password Baru</label>
                                             <div class="col-sm-9">
                                                 <div class="input-group">
-                                                    <input type="password" id="passwordInput" name="password" class="form-control" placeholder="Biarkan kosong jika tidak ingin ganti password">
+                                                    <input type="password" id="passwordBaru" name="password_baru" class="form-control" placeholder="Masukkan password baru">
                                                     <div class="input-group-append">
-                                                        <button type="button" class="btn btn-outline-secondary" id="togglePassword">
-                                                            <i class="fas fa-eye" id="eyeIcon"></i>
+                                                        <button type="button" class="btn btn-outline-secondary togglePassword" data-target="passwordBaru">
+                                                            <i class="fas fa-eye"></i>
                                                         </button>
                                                     </div>
                                                 </div>
-                                                <small class="text-muted mt-1 d-block">Gunakan password yang kuat untuk meningkatkan keamanan akun Anda.</small>
+                                                <small class="text-muted mt-1 d-block">Biarkan kosong jika tidak ingin ganti password.</small>
                                             </div>
                                         </div>
                                         
@@ -76,14 +99,9 @@
                                                 <i class="fas fa-save mr-1"></i> Simpan Perubahan
                                             </button>
                                         </div>
-                                    </form>
-                                    <?php else : ?>
-                                        <div class="alert alert-info mt-3">
-                                            <i class="fas fa-info-circle"></i> Untuk perubahan data atau password, silakan hubungi Admin.
-                                        </div>
-                                    <?php endif; ?>
+                                    </div>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -94,19 +112,34 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", function() {
-        const toggleBtn = document.getElementById('togglePassword');
-        const passwordInput = document.getElementById('passwordInput');
+        const toggleButtons = document.querySelectorAll('.togglePassword');
         
-        if (toggleBtn && passwordInput) {
-            toggleBtn.addEventListener('click', function () {
+        toggleButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const passwordInput = document.getElementById(targetId);
+                const icon = this.querySelector('i');
+                
                 if (passwordInput.type === 'password') {
                     passwordInput.type = 'text';
-                    toggleBtn.innerHTML = '<i class="fas fa-eye-slash" id="eyeIcon"></i>';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
                 } else {
                     passwordInput.type = 'password';
-                    toggleBtn.innerHTML = '<i class="fas fa-eye" id="eyeIcon"></i>';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
                 }
             });
-        }
+        });
     });
+</script><script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        var reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('preview-img').src = e.target.result;
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
 </script>

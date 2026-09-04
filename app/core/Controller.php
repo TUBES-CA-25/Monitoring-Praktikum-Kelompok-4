@@ -103,11 +103,11 @@ class Controller{
             return ['status' => false, 'pesan' => 'Error kode: ' . $file['error']];
         }
 
-        // Validasi Ekstensi & Ukuran (Tetap membolehkan input JPG/PNG)
-        $ekstensiValid = ['jpg', 'jpeg', 'png'];
+        // Validasi Ekstensi & Ukuran
+        $ekstensiValid = ['jpg', 'jpeg', 'png', 'webp'];
         $ekstensiFile = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
         if (!in_array($ekstensiFile, $ekstensiValid)) {
-            return ['status' => false, 'pesan' => 'Format file yang diupload harus JPG/PNG'];
+            return ['status' => false, 'pesan' => 'Format file yang diupload harus JPG/PNG/WEBP'];
         }
 
         if ($file['size'] > 5 * 1024 * 1024) {
@@ -127,8 +127,21 @@ class Controller{
 
         $fullPath = $targetDirSystem . DIRECTORY_SEPARATOR . $namaFileBaru;
 
-        // --- PROSES KONVERSI GAMBAR (GD LIBRARY) ---
         $tmpName = $file['tmp_name'];
+        
+        // --- JIKA SUDAH WEBP, LANGSUNG PINDAH ---
+        if ($ekstensiFile === 'webp') {
+            if (move_uploaded_file($tmpName, $fullPath)) {
+                chmod($fullPath, 0644);
+                return [
+                    'status' => true, 
+                    'nama_file' => str_replace(DIRECTORY_SEPARATOR, '/', $targetDirDB) . '/' . $namaFileBaru
+                ];
+            }
+            return ['status' => false, 'pesan' => 'Gagal mengupload file WebP'];
+        }
+
+        // --- PROSES KONVERSI GAMBAR (GD LIBRARY) UNTUK JPG/PNG ---
         $image = null;
 
         if ($ekstensiFile === 'jpg' || $ekstensiFile === 'jpeg') {

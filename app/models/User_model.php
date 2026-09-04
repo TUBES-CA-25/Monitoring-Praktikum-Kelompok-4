@@ -86,13 +86,17 @@ class User_model{
         $query = "UPDATE mst_user SET 
                     username = :username,
                     password = :password,
-                    nama_user = :nama
+                    nama_user = :nama,
+                    photo_profil = :photo_profil,
+                    photo_path = :photo_path
                 WHERE id_user = :id_user";
         
         $this->db->query($query);
         $this->db->bind('username', $data['username']);
         $this->db->bind('password', $data['password']);
         $this->db->bind('nama', $data['nama_user']); 
+        $this->db->bind('photo_profil', $data['photo_profil'] ?? null);
+        $this->db->bind('photo_path', $data['photo_path'] ?? null);
         $this->db->bind('id_user', $data['id_user']);
 
         return $this->db->execute();
@@ -152,5 +156,14 @@ class User_model{
         $this->db->bind('id_user', $id_user);
         
         return $this->db->single();
+    }
+
+    public function updateFotoViaUser($id_user, $foto_baru) {
+        $this->db->query("UPDATE mst_user SET photo_profil = :photo_profil WHERE id_user = :id_user");
+        $this->db->bind(':photo_profil', $foto_baru);
+        $this->db->bind(':id_user', $id_user);
+        
+        $this->db->execute();
+        return $this->db->rowCount();
     }
 }
