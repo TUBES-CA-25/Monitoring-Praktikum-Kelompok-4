@@ -425,7 +425,9 @@ Tim pengembang wajib mengisi dan memastikan seluruh checklist berikut bernilai *
 
 ---
 
-## 7. LEMBAR TANDA TANGAN & PERSETUJUAN
+---
+
+## 7. LEMBAR TANDA TANGAN & PERSETUJUAN AWAL
 
 Laporan ini disusun secara resmi untuk menjadi acuan kerja tim teknis pengembang perangkat lunak Sistem Monitoring Praktikum ICLabs FIKOM UMI.
 
@@ -438,4 +440,40 @@ Makassar, 04 September 2026
 | <br><br><br>**( Senior Bug Hunter & Security Auditor )**<br>*Security & Production Readiness Division* | <br><br><br>**( Lead Software Engineer )**<br>*Development Team Kelompok 4* |
 
 ---
-*Catatan Dokumen: Dokumen ini mengikat secara teknis. Segala bentuk bypass terhadap blocker prioritas P0 tanpa persetujuan tertulis dari auditor keamanan merupakan pelanggaran protokol rilis sistem informasi.*
+
+## 8. ADDENDUM: HASIL RE-AUDIT PASCA-PERBAIKAN (COMMIT `e7dfb6f`)
+**Tanggal Re-Audit:** 04 September 2026 (13:30 WITA)  
+**Tinjauan Komit:** `e7dfb6f` (*perbaikan keamanan web*)  
+**Status Terbaru:** 🟡 **CONDITIONAL — READY WITH CONDITIONS (LAYAK DENGAN SYARAT)**  
+**Skor Terbaru:** **72 / 100** *(Meningkat dari 28 / 100)*
+
+### A. Tabel Verifikasi Status Temuan
+
+| Kode Temuan | Status Perbaikan | Hasil Verifikasi Teknis |
+|---|:---:|---|
+| **SEC-01 (Bypass `isAdmin()`)** | ✅ **RESOLVED** | Logika fungsi `isAdmin()` dan `isAsisten()` di `Controller.php` telah diperketat dengan memeriksa `isset($_SESSION['id_user'])` dan mencocokkan string peran (`$_SESSION['role'] === 'Admin'`). Pengunjung non-login langsung di-redirect ke `/login` dan skrip dihentikan (`exit;`). |
+| **SEC-02 (IDOR & Auth Profil)** | ✅ **RESOLVED (Backend)** | `User::updateProfil()` kini mewajibkan `$this->isLogin();`, mengambil `id_user` dari `$_SESSION['id_user']`, dan memverifikasi kata sandi lama via `password_verify()`. |
+| **SEC-03 (Dump Database di Webroot)** | ✅ **RESOLVED** | File `db_monitoring_praktikum.sql` dan `temp.sql` telah dihapus dari web root, serta dilindungi melalui rule `<FilesMatch>` pada `.htaccess`. |
+| **SEC-04 (Mentoring & Restore Tanpa Auth)** | ✅ **RESOLVED** | Konstruktor `Mentoring.php` kini mewajibkan `$this->isLogin();` dan konstruktor `Restore.php` mewajibkan `$this->isAdmin();`. Seluruh aksi dilindungi secara menyeluruh. |
+| **SEC-05 (CSRF & Hapus via GET)** | ✅ **RESOLVED (Aksi Hapus)** | Seluruh fungsi `hapus()`, `prosesHapus()`, `kembalikan()`, dan `hapusPermanen()` kini diverifikasi dengan `$this->verifyCsrfToken();`. Form modal JavaScript dan tombol restore telah diubah menggunakan form HTTP `POST` ber-token. |
+| **SEC-06 (Script Debug di Webroot)** | ✅ **RESOLVED** | File `debug_tambah_asisten.php` dan `test_upload.php` telah dihapus secara permanen dari server. |
+| **SEC-07 (Host Header Injection)** | ✅ **RESOLVED** | `BASEURL` pada `app/config/config.php` telah di-hardcode ke domain resmi (`http://localhost/monitoring-praktikum`). |
+| **DAT-01 (Multi-Delete Tanpa Transaksi)** | ✅ **RESOLVED** | Seluruh metode `prosesHapus()` pada seluruh model kini dibungkus dengan `$this->db->beginTransaction()`, `$this->db->commit()`, dan `$this->db->rollBack()`. |
+| **DAT-02 (Restore Tidak Lengkap)** | ✅ **RESOLVED** | Kasus `'mst_tahun_ajaran'` dan `'trs_frekuensi'` telah ditambahkan ke `Restore_model::restoreData()`. |
+| **SEC-08 (Error Leaks & Die in Model)** | ✅ **RESOLVED** | Kode `print_r($_POST); die;` di `Asisten_model` dan `die($e->getMessage())` di `Database.php` telah dihapus dan digantikan pencatatan log internal (`error_log`). |
+| **SEC-10 (File Upload Collision)** | ✅ **RESOLVED** | `Controller::prosesUpload()` kini menyematkan string acak aman (`bin2hex(random_bytes(8))`) sehingga foto asisten bernama sama tidak saling menimpa. |
+| **SEC-11 (XSS pada Flash Message)** | ✅ **RESOLVED** | `Flasher::flash()` dan `flashLogin()` telah dibungkus menggunakan `htmlspecialchars(..., ENT_QUOTES, 'UTF-8')`. |
+| **LOG-01 (Mata Kuliah Hilang)** | ✅ **RESOLVED** | Query `tampil()` pada `Matakuliah_model` telah diganti menjadi `LEFT JOIN mst_jurusan`. |
+| **INF-01 (Koneksi Ganda Database)** | ✅ **RESOLVED** | Variabel redundan `$connect = mysqli_connect(...)` pada `config.php` telah dihapus. |
+
+---
+
+### B. Catatan Kritis Baru Pasca-Perbaikan (Action Required Sebelum Deploy)
+
+Meskipun aspek keamanan inti telah diperbaiki, ditemukan **1 ketidaksesuaian fungsional (Functional Mismatch)** antara Controller dan View profil:
+
+> ⚠️ **SINKRONISASI FORM PROFIL PENGGUNA (`app/views/user/profil.php`):**  
+> Controller `User::updateProfil()` kini memeriksa `$_POST['password_lama']` dan `$_POST['password_baru']`. Namun, formulir di [`app/views/user/profil.php`](file:///C:/xampp/htdocs/monitoring-praktikum/app/views/user/profil.php#L63) masih menggunakan atribut `name="password"` dan **belum memiliki field input untuk kata sandi lama**.  
+> **Dampak:** Pengguna/Admin saat ini tidak dapat mengganti kata sandi melalui antarmuka karena selalu dianggap kata sandi lama tidak diisi atau salah.  
+> **Solusi Developer:** Tambahkan `<input type="password" name="password_lama">` dan ubah input sandi baru menjadi `<input type="password" name="password_baru">` pada form profil.
+
